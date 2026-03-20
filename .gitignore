@@ -1,0 +1,49 @@
+# ========================
+# IGNORE DATA & MODEL
+# ========================
+
+# Dataset
+Dataset/
+**/Dataset/
+
+# Model
+model/
+**/model/
+
+# Results
+results/
+**/results/
+
+# Temp
+temp/
+**/temp/
+
+# ========================
+# KEEP ONLY CODE FILES
+# ========================
+
+# Ignore everything else in those folders (optional safety)
+# (không cần nếu bạn đã ignore folder trên)
+
+# ========================
+# PYTHON
+# ========================
+__pycache__/
+*.pyc
+
+# ========================
+# JUPYTER
+# ========================
+.ipynb_checkpoints/
+
+# ========================
+# ENV
+# ========================
+.env
+venv/
+
+# ========================
+# OS
+# ========================
+.DS_Store
+Thumbs.db
