@@ -1,8 +1,8 @@
 """
-Combined Model App — SVM + PhoBERT Ensemble
-Phân loại tin tức Vietnamnet bằng cách kết hợp 2 mô hình.
+Combined App — SVM + PhoBERT Ensemble
+Phân loại tin tức Vietnamnet bằng xác suất có điều kiện.
 
-Chạy: streamlit run main_app_combine.py
+Chạy: streamlit run main_app_combined.py
 """
 
 import os, re, json, pickle, datetime, warnings
@@ -47,7 +47,7 @@ def load_phobert():
     import torch
     from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
-    device = "cuda" if __import__("torch").cuda.is_available() else "cpu"
+    device = "cuda" if torch.cuda.is_available() else "cpu"
 
     with open(PHO_CONFIG, encoding="utf-8") as f:
         cfg = json.load(f)
@@ -57,15 +57,19 @@ def load_phobert():
     model.to(device)
     model.eval()
 
-    thresholds = None
+    thresholds  = None
+    temperature = 1.0
     if os.path.exists(PHO_THRESHOLD):
-        with open(PHO_THRESHOLD, encoding="utf-8") as f:
-            thr = json.load(f)
-        thresholds = np.array(
-            [thr["thresholds"].get(cls, 1.0) for cls in cfg["classes"]],
-            dtype=np.float32,
-        )
-    return tokenizer, model, cfg, thresholds, device
+        try:
+            thr         = json.load(open(PHO_THRESHOLD, encoding="utf-8"))
+            temperature = float(thr.get("temperature", 1.0))
+            thresholds  = np.array(
+                [thr["thresholds"].get(cls, 1.0) for cls in cfg["classes"]],
+                dtype=np.float32,
+            )
+        except Exception:
+            pass
+    return tokenizer, model, cfg, thresholds, temperature, device
 
 
 # ── Scraper ────────────────────────────────────────────────────────────────────
@@ -79,8 +83,10 @@ def scrape_article(url: str) -> tuple:
         tag.decompose()
 
     title = ""
-    for sel in ["h1.content-detail-title", "h1.ArticleTitle", "h1.title-detail",
-                "h1[class*='title']", "h1"]:
+    for sel in [
+        "h1.content-detail-title", "h1.ArticleTitle", "h1.title-detail",
+        "h1[class*='title']", "h1",
+    ]:
         el = soup.select_one(sel)
         if el:
             t = el.get_text(strip=True)
@@ -89,9 +95,11 @@ def scrape_article(url: str) -> tuple:
                 break
 
     content = ""
-    for sel in ["div.ArticleContent", "div.content-detail-body",
-                "div[class*='ArticleContent']", "div[class*='article-content']",
-                "div[class*='content-detail']", "article", "main"]:
+    for sel in [
+        "div.ArticleContent", "div.content-detail-body",
+        "div[class*='ArticleContent']", "div[class*='article-content']",
+        "div[class*='content-detail']", "article", "main",
+    ]:
         el = soup.select_one(sel)
         if el:
             paras = [p.get_text(strip=True) for p in el.find_all("p")
@@ -102,7 +110,8 @@ def scrape_article(url: str) -> tuple:
 
     if not content:
         content = " ".join(
-            p.get_text(strip=True) for p in soup.find_all("p")
+            p.get_text(strip=True)
+            for p in soup.find_all("p")
             if len(p.get_text(strip=True)) > 30
         )
     return title.strip(), content.strip()
@@ -150,8 +159,8 @@ def head_tail_encode(text: str, tokenizer, device: str) -> dict:
         attn += [0] * pad_n
 
     return {
-        "input_ids":      __import__("torch").tensor([ids],  dtype=__import__("torch").long).to(device),
-        "attention_mask": __import__("torch").tensor([attn], dtype=__import__("torch").long).to(device),
+        "input_ids":      torch.tensor([ids],  dtype=torch.long).to(device),
+        "attention_mask": torch.tensor([attn], dtype=torch.long).to(device),
     }
 
 
@@ -168,7 +177,7 @@ def _predict_svm(title: str, content: str, pipeline: dict) -> np.ndarray:
 def _predict_phobert(title: str, content: str,
                      tokenizer, model, cfg: dict,
                      thresholds, device: str) -> np.ndarray:
-    """Trả về mảng xác suất (softmax of logits), theo thứ tự cfg['classes']."""
+    """Trả về mảng xác suất (softmax + threshold calibration nếu có), theo thứ tự cfg['classes']."""
     import torch
     clean = preprocess_phobert(title, content)
     enc   = head_tail_encode(clean, tokenizer, device)
@@ -176,7 +185,9 @@ def _predict_phobert(title: str, content: str,
     with torch.no_grad():
         logits = model(**enc).logits[0].float().cpu().numpy()
 
-    exp_s = np.exp(logits - logits.max())
+    # Temperature Scaling -> calibrated softmax
+    logits_s = logits / max(float(temperature), 1e-3)
+    exp_s = np.exp(logits_s - logits_s.max())
     probs = exp_s / exp_s.sum()
 
     if thresholds is not None:
@@ -186,47 +197,43 @@ def _predict_phobert(title: str, content: str,
     return probs
 
 
-# ── Ensemble ──────────────────────────────────────────────────────────────────
+# ── Ensemble (xác suất có điều kiện) ─────────────────────────────────────────
 def ensemble_predict(title: str, content: str,
                      pipeline: dict,
-                     tokenizer, pho_model, pho_cfg: dict, thresholds, device: str,
-                     w_phobert: float = 0.6) -> dict:
+                     tokenizer, pho_model, pho_cfg: dict,
+                     thresholds, device: str) -> dict:
     """
-    Kết hợp 2 mô hình bằng weighted average.
-    Cả 2 model phải dùng cùng 19 classes (theo tên).
+    Kết hợp 2 mô hình bằng xác suất có điều kiện:
+        P(c | SVM, BERT) ∝ P_SVM(c) × P_BERT(c)
+    Khi 2 model cùng cho xác suất cao ở class c → xác suất tích càng lớn.
     """
     if not title.strip() and not content.strip():
         raise ValueError("Không có nội dung để phân loại.")
 
-    classes_svm = pipeline["classes"]           # list[str], 19 classes
-    classes_pho = pho_cfg["classes"]            # list[str], 19 classes
+    classes_svm = pipeline["classes"]
+    classes_pho = pho_cfg["classes"]
 
     svm_probs = _predict_svm(title, content, pipeline)
     pho_probs = _predict_phobert(title, content, tokenizer, pho_model,
-                                 pho_cfg, thresholds, device)
+                                 pho_cfg, thresholds, temperature, device)
 
-    # Chuyển về dict để align theo tên class (phòng thứ tự khác nhau)
     svm_dict = {cls: float(p) for cls, p in zip(classes_svm, svm_probs)}
     pho_dict = {cls: float(p) for cls, p in zip(classes_pho, pho_probs)}
 
     # Union classes
     all_classes = sorted(set(classes_svm) | set(classes_pho))
 
-    w_svm = 1.0 - w_phobert
-    combined = {}
-    for cls in all_classes:
-        combined[cls] = w_svm * svm_dict.get(cls, 0.0) + w_phobert * pho_dict.get(cls, 0.0)
-
-    # Renormalize
-    total = sum(combined.values())
-    combined = {cls: p / total for cls, p in combined.items()}
+    # Tích xác suất (conditional probability)
+    raw = {cls: svm_dict.get(cls, 1e-9) * pho_dict.get(cls, 1e-9) for cls in all_classes}
+    total    = sum(raw.values())
+    combined = {cls: p / total for cls, p in raw.items()}
 
     top_sorted = sorted(combined.items(), key=lambda x: -x[1])
     pred_class = top_sorted[0][0]
 
-    svm_pred  = classes_svm[int(np.argmax(svm_probs))]
-    pho_pred  = classes_pho[int(np.argmax(pho_probs))]
-    agree     = (svm_pred == pho_pred)
+    svm_pred = classes_svm[int(np.argmax(svm_probs))]
+    pho_pred = classes_pho[int(np.argmax(pho_probs))]
+    agree    = (svm_pred == pho_pred)
 
     return {
         "pred_class":      pred_class,
@@ -247,7 +254,7 @@ def ensemble_predict(title: str, content: str,
 
 # ── Top keywords SVM ──────────────────────────────────────────────────────────
 def get_top_keywords(pipeline: dict, pred_class: str, n: int = 8) -> list:
-    classes       = pipeline["classes"]
+    classes = pipeline["classes"]
     if pred_class not in classes:
         return []
     class_idx     = classes.index(pred_class)
@@ -262,7 +269,6 @@ def show_result(res: dict, pipeline: dict, source_label: str = ""):
     conf_pct = res["confidence"] * 100
     agree    = res["agree"]
 
-    # ── Badge đồng thuận ──────────────────────────────────────────────────────
     if agree:
         st.success(
             f"**Hai mô hình đồng thuận:** cả SVM lẫn PhoBERT đều dự đoán "
@@ -275,7 +281,6 @@ def show_result(res: dict, pipeline: dict, source_label: str = ""):
             f"Kết quả ensemble: **{res['pred_class']}** ({conf_pct:.1f}%)"
         )
 
-    # ── Màu theo confidence ───────────────────────────────────────────────────
     if conf_pct >= 60:
         color, badge = "#27ae60", "Tin cậy cao"
     elif conf_pct >= 40:
@@ -285,7 +290,6 @@ def show_result(res: dict, pipeline: dict, source_label: str = ""):
 
     agree_note = " · 🤝 Đồng thuận" if agree else " · ⚡ Ensemble"
 
-    # ── Layout 3 cột ──────────────────────────────────────────────────────────
     col_main, col_models, col_content = st.columns([2, 2, 2])
 
     # Cột 1: Kết quả tổng hợp
@@ -323,9 +327,8 @@ def show_result(res: dict, pipeline: dict, source_label: str = ""):
     with col_models:
         st.subheader("Từng mô hình")
 
-        # SVM
-        svm_pct  = res["svm_conf"] * 100
-        svm_col  = "#27ae60" if res["svm_pred"] == res["pred_class"] else "#e67e22"
+        svm_pct = res["svm_conf"] * 100
+        svm_col = "#27ae60" if res["svm_pred"] == res["pred_class"] else "#e67e22"
         st.markdown(
             f"""<div style='background:{svm_col}12;border:1px solid {svm_col}55;
                            padding:12px 16px;border-radius:8px;margin-bottom:10px'>
@@ -336,29 +339,26 @@ def show_result(res: dict, pipeline: dict, source_label: str = ""):
             unsafe_allow_html=True,
         )
 
-        # PhoBERT
-        pho_pct  = res["pho_conf"] * 100
-        pho_col  = "#27ae60" if res["pho_pred"] == res["pred_class"] else "#e67e22"
+        pho_pct = res["pho_conf"] * 100
+        pho_col = "#27ae60" if res["pho_pred"] == res["pred_class"] else "#e67e22"
         st.markdown(
             f"""<div style='background:{pho_col}12;border:1px solid {pho_col}55;
                            padding:12px 16px;border-radius:8px;margin-bottom:10px'>
-                    <div style='font-weight:700;color:{pho_col}'>PhoBERT</div>
+                    <div style='font-weight:700;color:{pho_col}'>PhoBERT Large</div>
                     <div style='font-size:1.1rem;font-weight:600'>{res["pho_pred"]}</div>
                     <div style='color:#666;font-size:.85rem'>Softmax score: {pho_pct:.1f}%</div>
                 </div>""",
             unsafe_allow_html=True,
         )
 
-        # Top 5 comparison table
         st.markdown("**Top 5 — so sánh:**")
-        all_cls = sorted(set(list(res["svm_probs"].keys())) | set(list(res["pho_probs"].keys())))
         top5_cls = [c for c, _ in res["top5"]]
         rows = []
         for cls in top5_cls:
             rows.append({
-                "Chủ đề": cls,
-                "SVM %":  f"{res['svm_probs'].get(cls, 0)*100:.1f}",
-                "PhoBERT %": f"{res['pho_probs'].get(cls, 0)*100:.1f}",
+                "Chủ đề":     cls,
+                "SVM %":      f"{res['svm_probs'].get(cls, 0)*100:.1f}",
+                "PhoBERT %":  f"{res['pho_probs'].get(cls, 0)*100:.1f}",
                 "Combined %": f"{res['all_probs'].get(cls, 0)*100:.1f}",
             })
         st.dataframe(pd.DataFrame(rows), hide_index=True, use_container_width=True)
@@ -378,13 +378,13 @@ def show_result(res: dict, pipeline: dict, source_label: str = ""):
 
     # Lưu lịch sử
     st.session_state.history.insert(0, {
-        "Thời gian":    datetime.datetime.now().strftime("%H:%M:%S"),
-        "Nguồn":        source_label[:70] or res["title"][:70] or "—",
-        "Ensemble":     res["pred_class"],
-        "SVM":          res["svm_pred"],
-        "PhoBERT":      res["pho_pred"],
-        "Đồng thuận":   "✅" if res["agree"] else "❌",
-        "Tin cậy":      f"{conf_pct:.1f}%",
+        "Thời gian":  datetime.datetime.now().strftime("%H:%M:%S"),
+        "Nguồn":      source_label[:70] or res["title"][:70] or "—",
+        "Ensemble":   res["pred_class"],
+        "SVM":        res["svm_pred"],
+        "PhoBERT":    res["pho_pred"],
+        "Đồng thuận": "✅" if res["agree"] else "❌",
+        "Tin cậy":    f"{conf_pct:.1f}%",
     })
 
 
@@ -422,7 +422,7 @@ def main():
 
     st.title("🇻🇳 Phân loại tin tức Vietnamnet — Ensemble SVM + PhoBERT")
     st.markdown(
-        "Kết hợp **LinearSVC + TF-IDF** và **PhoBERT** để tăng độ chính xác. "
+        "Kết hợp **LinearSVC + TF-IDF** và **PhoBERT Large** bằng **xác suất có điều kiện**. "
         "Khi hai mô hình đồng thuận, kết quả đáng tin cậy hơn đáng kể."
     )
 
@@ -437,7 +437,7 @@ def main():
     try:
         tokenizer, pho_model, pho_cfg, thresholds, device = load_phobert()
     except Exception as e:
-        tokenizer = pho_model = pho_cfg = thresholds = device = None
+        tokenizer = pho_model = pho_cfg = thresholds = temperature = device = None
         errors.append(f"❌ Không load được PhoBERT: `{e}`  →  Chạy `main_PhoBERT.ipynb` trước.")
 
     if errors:
@@ -445,27 +445,26 @@ def main():
             st.error(err)
         st.stop()
 
-    # ── Sidebar: trọng số ─────────────────────────────────────────────────────
+    # ── Sidebar ───────────────────────────────────────────────────────────────
     with st.sidebar:
-        st.header("Cài đặt Ensemble")
-        w_phobert = st.slider(
-            "Trọng số PhoBERT",
-            min_value=0.0, max_value=1.0, value=0.6, step=0.05,
-            help="Trọng số SVM = 1 - trọng số PhoBERT"
-        )
-        w_svm = round(1.0 - w_phobert, 2)
-        st.caption(f"PhoBERT: **{w_phobert:.0%}**  |  SVM: **{w_svm:.0%}**")
-        st.divider()
+        st.header("Thông tin mô hình")
         st.caption(
-            f"**SVM:** `inference_pipeline.pkl`  \n"
+            f"**SVM:** `inference_pipeline.pkl`\n\n"
             f"Classes: {len(pipeline['classes'])}  \n"
             f"Max features: {pipeline['config'].get('max_features', '?'):,}"
         )
+        st.divider()
         st.caption(
-            f"**PhoBERT:** `{os.path.basename(PHO_MODEL_DIR)}/`  \n"
+            f"**PhoBERT Large:** `model/`\n\n"
             f"Classes: {len(pho_cfg['classes'])}  \n"
             f"Device: {device.upper()}  \n"
             f"Threshold calibration: {'BẬT' if thresholds is not None else 'tắt'}"
+        )
+        st.divider()
+        st.markdown(
+            "**Công thức ensemble:**\n\n"
+            "`P(c|SVM,BERT) ∝ P_SVM(c) × P_BERT(c)`\n\n"
+            "Tích xác suất của cả hai mô hình, sau đó chuẩn hóa về tổng = 1."
         )
 
     if "history" not in st.session_state:
@@ -504,7 +503,6 @@ def main():
                         res = ensemble_predict(
                             title, content, pipeline,
                             tokenizer, pho_model, pho_cfg, thresholds, device,
-                            w_phobert=w_phobert,
                         )
                     st.divider()
                     show_result(res, pipeline, source_label=url.strip())
@@ -526,7 +524,6 @@ def main():
                     res2 = ensemble_predict(
                         t_title.strip(), t_content.strip(), pipeline,
                         tokenizer, pho_model, pho_cfg, thresholds, device,
-                        w_phobert=w_phobert,
                     )
                 st.divider()
                 show_result(res2, pipeline,
@@ -538,7 +535,10 @@ def main():
         with st.form("form_batch", border=False):
             batch_raw = st.text_area(
                 "Danh sách URL",
-                placeholder="https://vietnamnet.vn/bai-bao-1\nhttps://vietnamnet.vn/bai-bao-2\n...",
+                placeholder=(
+                    "https://vietnamnet.vn/bai-bao-1\n"
+                    "https://vietnamnet.vn/bai-bao-2\n..."
+                ),
                 height=200,
                 label_visibility="collapsed",
             )
@@ -553,40 +553,41 @@ def main():
                 prog = st.progress(0.0, text="Đang xử lý…")
 
                 for idx, u in enumerate(urls_list):
-                    prog.progress((idx + 1) / len(urls_list),
-                                  text=f"[{idx+1}/{len(urls_list)}] {u[:60]}…")
+                    prog.progress(
+                        (idx + 1) / len(urls_list),
+                        text=f"[{idx+1}/{len(urls_list)}] {u[:60]}…",
+                    )
                     try:
                         _t, _c = scrape_article(u)
                         _r = ensemble_predict(
                             _t, _c, pipeline,
                             tokenizer, pho_model, pho_cfg, thresholds, device,
-                            w_phobert=w_phobert,
                         )
                         results.append({
-                            "URL":         u,
-                            "Tiêu đề":     _t[:80],
-                            "Ensemble":    _r["pred_class"],
-                            "SVM":         _r["svm_pred"],
-                            "PhoBERT":     _r["pho_pred"],
-                            "Đồng thuận":  "✅" if _r["agree"] else "❌",
-                            "Tin cậy":     f"{_r['confidence']*100:.1f}%",
-                            "Trạng thái":  "✅ OK",
+                            "URL":        u,
+                            "Tiêu đề":    _t[:80],
+                            "Ensemble":   _r["pred_class"],
+                            "SVM":        _r["svm_pred"],
+                            "PhoBERT":    _r["pho_pred"],
+                            "Đồng thuận": "✅" if _r["agree"] else "❌",
+                            "Tin cậy":    f"{_r['confidence']*100:.1f}%",
+                            "Trạng thái": "✅ OK",
                         })
                         st.session_state.history.insert(0, {
-                            "Thời gian":   datetime.datetime.now().strftime("%H:%M:%S"),
-                            "Nguồn":       u[:70],
-                            "Ensemble":    _r["pred_class"],
-                            "SVM":         _r["svm_pred"],
-                            "PhoBERT":     _r["pho_pred"],
-                            "Đồng thuận":  "✅" if _r["agree"] else "❌",
-                            "Tin cậy":     f"{_r['confidence']*100:.1f}%",
+                            "Thời gian":  datetime.datetime.now().strftime("%H:%M:%S"),
+                            "Nguồn":      u[:70],
+                            "Ensemble":   _r["pred_class"],
+                            "SVM":        _r["svm_pred"],
+                            "PhoBERT":    _r["pho_pred"],
+                            "Đồng thuận": "✅" if _r["agree"] else "❌",
+                            "Tin cậy":    f"{_r['confidence']*100:.1f}%",
                         })
                     except Exception as e:
                         results.append({
-                            "URL":         u, "Tiêu đề": "—",
-                            "Ensemble":    "—", "SVM": "—", "PhoBERT": "—",
-                            "Đồng thuận":  "—", "Tin cậy": "—",
-                            "Trạng thái":  f"❌ {e}",
+                            "URL":        u, "Tiêu đề": "—",
+                            "Ensemble":   "—", "SVM": "—", "PhoBERT": "—",
+                            "Đồng thuận": "—", "Tin cậy": "—",
+                            "Trạng thái": f"❌ {e}",
                         })
 
                 prog.empty()

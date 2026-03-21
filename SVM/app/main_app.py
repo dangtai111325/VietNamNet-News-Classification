@@ -102,9 +102,8 @@ def predict(title: str, content: str, pipeline: dict) -> dict:
     vec     = pipeline["vectorizer"].transform([clean])
     classes = pipeline["classes"]
 
-    scores  = pipeline["model"].decision_function(vec)[0]
-    exp_s   = np.exp(scores - scores.max())
-    probs   = exp_s / exp_s.sum()
+    # predict_proba() dung Platt scaling (calibrated) — chinh xac hon decision_function + softmax
+    probs   = pipeline["model"].predict_proba(vec)[0]
     top_idx = np.argsort(probs)[::-1]
 
     return {

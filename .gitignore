@@ -5,6 +5,13 @@
 # Dataset
 Dataset/
 **/Dataset/
+# Ngoại lệ: giữ lại các file URL/debug JSON (không chứa data nặng)
+!Dataset/data_URLs.json
+!**/Dataset/data_URLs.json
+!Dataset/data_URLs_empty_title.json
+!**/Dataset/data_URLs_empty_title.json
+!Dataset/data_URLs_empty_content.json
+!**/Dataset/data_URLs_empty_content.json
 
 # Model
 model/

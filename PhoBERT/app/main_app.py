@@ -47,17 +47,21 @@ def load_model():
     model.to(DEVICE)
     model.eval()
 
-    # Load threshold calibration nếu có
-    thresholds = None
+    # Load threshold calibration + temperature nếu có
+    thresholds  = None
+    temperature = 1.0
     if os.path.exists(THRESHOLD_PATH):
-        with open(THRESHOLD_PATH, encoding="utf-8") as f:
-            thr_data = json.load(f)
-        thresholds = np.array(
-            [thr_data["thresholds"].get(cls, 1.0) for cls in cfg["classes"]],
-            dtype=np.float32,
-        )
+        try:
+            thr_data    = json.load(open(THRESHOLD_PATH, encoding="utf-8"))
+            temperature = float(thr_data.get("temperature", 1.0))
+            thresholds  = np.array(
+                [thr_data["thresholds"].get(cls, 1.0) for cls in cfg["classes"]],
+                dtype=np.float32,
+            )
+        except Exception:
+            pass
 
-    return tokenizer, model, cfg, thresholds
+    return tokenizer, model, cfg, thresholds, temperature
 
 
 # ── Scraper ────────────────────────────────────────────────────────────────────
@@ -145,7 +149,8 @@ def head_tail_encode(text: str, tokenizer) -> dict:
 
 # ── Predict ────────────────────────────────────────────────────────────────────
 def predict(title: str, content: str, tokenizer, model, cfg: dict,
-            thresholds: np.ndarray | None = None) -> dict:
+            thresholds: np.ndarray | None = None,
+            temperature: float = 1.0) -> dict:
     if not title.strip() and not content.strip():
         raise ValueError("Không có nội dung để phân loại.")
 
@@ -156,8 +161,9 @@ def predict(title: str, content: str, tokenizer, model, cfg: dict,
     with torch.no_grad():
         logits = model(**enc).logits[0].float().cpu().numpy()
 
-    # Softmax → xác suất thô
-    exp_s = np.exp(logits - logits.max())
+    # Temperature Scaling → softmax calibrated (giam overconfidence)
+    logits_scaled = logits / max(float(temperature), 1e-3)
+    exp_s = np.exp(logits_scaled - logits_scaled.max())
     probs = exp_s / exp_s.sum()
 
     # Áp dụng threshold calibration nếu có
@@ -286,7 +292,7 @@ def main():
     )
 
     try:
-        tokenizer, model, cfg, thresholds = load_model()
+        tokenizer, model, cfg, thresholds, temperature = load_model()
     except Exception as e:
         st.error(
             f"❌ Không thể load mô hình từ `{MODEL_DIR}`:\n\n`{e}`\n\n"
@@ -338,7 +344,7 @@ def main():
                     st.error("❌ Không tìm thấy nội dung — thử tab **📝 Nhập text**.")
                 else:
                     with st.spinner("Đang phân loại..."):
-                        res = predict(title, content, tokenizer, model, cfg, thresholds)
+                        res = predict(title, content, tokenizer, model, cfg, thresholds, temperature)
                     st.divider()
                     show_result(res, source_label=url.strip())
 
@@ -398,7 +404,7 @@ def main():
                     )
                     try:
                         _title, _content = scrape_article(u)
-                        _res = predict(_title, _content, tokenizer, model, cfg, thresholds)
+                        _res = predict(_title, _content, tokenizer, model, cfg, thresholds, temperature)
                         batch_results.append({
                             "URL":        u,
                             "Tiêu đề":    _title[:80],
