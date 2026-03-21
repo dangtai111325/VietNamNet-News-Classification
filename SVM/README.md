@@ -45,9 +45,20 @@ SVM/
 3. tiền xử lý tiếng Việt
 4. vector hóa bằng TF-IDF
 5. train `SVC`
-6. đánh giá bằng accuracy, F1-weighted, F1-macro, confusion matrix
+6. đánh giá bằng accuracy, F1-weighted, F1-macro, confusion matrix và các biểu đồ chẩn đoán dễ đọc hơn
 7. export `inference_pipeline.pkl`
 8. in thêm section chẩn đoán để xem class yếu, cặp class nhầm nhiều, lệch precision/recall và gợi ý tối ưu tiếp theo
+
+## Visualization đầu ra
+
+Notebook hiện lưu thêm các hình trong `results/` để đọc kết quả nhanh hơn:
+
+- `01_class_distribution.png`: số mẫu theo class và tỷ lệ từng class
+- `02_text_length.png`: phân bố độ dài văn bản với median, P90, P95 và boxplot theo class
+- `03_tfidf_vocab.png`: top unigram / bigram nổi bật theo IDF
+- `04_confusion_matrix.png`: confusion matrix chuẩn hóa, raw counts và top confusion pairs
+- `05_f1_per_class.png`: Precision / Recall / F1 theo từng class
+- `06_support_vs_f1.png`: tương quan giữa support và F1 để nhìn ra lớp ít mẫu nhưng khó
 
 ## Tiền xử lý
 
@@ -159,6 +170,12 @@ Sau khi notebook chạy xong, section chẩn đoán cuối notebook sẽ in:
 - class đang thiếu recall hoặc thiếu precision
 - top cặp class bị nhầm nhiều nhất
 - gợi ý tuning tiếp theo cho SVM
+
+Nếu chỉ cần xem nhanh model đang yếu ở đâu, ưu tiên nhìn theo thứ tự:
+
+1. `04_confusion_matrix.png`
+2. `05_f1_per_class.png`
+3. `06_support_vs_f1.png`
 
 ## Cách chạy app
 

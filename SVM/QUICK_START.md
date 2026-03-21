@@ -18,7 +18,11 @@ pip install streamlit requests beautifulsoup4
 3. đợi notebook tạo:
    - `model/model_results.pkl`
    - `model/inference_pipeline.pkl`
-4. xem section chẩn đoán cuối notebook để biết class nào cần ưu tiên cải thiện
+4. xem thêm các file trong `results/`:
+   - `04_confusion_matrix.png`
+   - `05_f1_per_class.png`
+   - `06_support_vs_f1.png`
+5. xem section chẩn đoán cuối notebook để biết class nào cần ưu tiên cải thiện
 
 ## Chạy app
 

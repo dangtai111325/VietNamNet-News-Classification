@@ -21,7 +21,12 @@ Bạn cần cài `torch` đúng bản CUDA của máy.
    - `model/model.safetensors`
    - `model/label_config.json`
    - `model/thresholds.json`
-4. xem section chẩn đoán cuối notebook để biết class nào cần ưu tiên cải thiện ở vòng train tiếp theo
+4. xem thêm các file trong `results/`:
+   - `03_confusion_matrix.png`
+   - `04_f1_per_class.png`
+   - `05_support_vs_f1.png`
+   - `07_threshold_calibration.png`
+5. xem section chẩn đoán cuối notebook để biết class nào cần ưu tiên cải thiện ở vòng train tiếp theo
 
 ## Chạy app
 

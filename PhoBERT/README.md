@@ -53,10 +53,22 @@ PhoBERT/
 4. tiền xử lý tiếng Việt
 5. tokenize theo chiến lược head-tail
 6. fine-tune PhoBERT
-7. đánh giá accuracy, F1-weighted, F1-macro
+7. đánh giá accuracy, F1-weighted, F1-macro và các biểu đồ theo từng lớp
 8. export `label_config.json`
 9. threshold calibration và lưu `thresholds.json`
 10. in thêm section chẩn đoán để xem class yếu, delta F1 trước/sau calibration, confusion pairs và gợi ý tối ưu tiếp theo
+
+## Visualization đầu ra
+
+Notebook hiện lưu các hình trong `results/` theo hướng dễ giải thích hơn:
+
+- `01_class_distribution.png`: số mẫu theo class và tỷ lệ từng class
+- `02_text_length.png`: phân bố độ dài văn bản với median, P90, P95 và boxplot theo class
+- `03_confusion_matrix.png`: confusion matrix chuẩn hóa, raw counts và top confusion pairs
+- `04_f1_per_class.png`: Precision / Recall / F1 theo từng class
+- `05_support_vs_f1.png`: tương quan giữa support và F1 để nhìn ra lớp ít mẫu nhưng khó
+- `06_training_curves.png`: loss, accuracy và F1 theo tiến trình fine-tune
+- `07_threshold_calibration.png`: delta F1 sau calibration và threshold của từng class
 
 ## Tiền xử lý
 
@@ -191,6 +203,13 @@ Sau khi notebook chạy xong, section chẩn đoán cuối notebook sẽ in:
 - class đang thiếu recall hoặc thiếu precision sau calibration
 - top cặp class bị nhầm nhiều nhất
 - gợi ý tuning tiếp theo cho PhoBERT
+
+Nếu muốn đọc kết quả nhanh, nên nhìn theo thứ tự:
+
+1. `03_confusion_matrix.png`
+2. `04_f1_per_class.png`
+3. `05_support_vs_f1.png`
+4. `07_threshold_calibration.png`
 
 ## Cách chạy app
 
