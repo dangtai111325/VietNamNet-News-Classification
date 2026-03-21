@@ -1,154 +1,197 @@
-# Phân Loại Tin Tức Vietnamnet — LinearSVC
+# SVM
 
-Hệ thống phân loại tự động bài báo tiếng Việt vào **19 chủ đề** sử dụng
-TF-IDF + LinearSVC. Bao gồm pipeline training đầy đủ và app web Streamlit
-để demo và sử dụng thực tế.
+Tài liệu này mô tả nhánh SVM của project: notebook train, artifact model và app demo.
 
----
+Nếu bạn chỉ muốn chạy nhanh, đọc [QUICK_START.md](./QUICK_START.md).
 
-## Cấu Trúc Thư Mục
+## Mục tiêu
 
-```
+Nhánh này phân loại bài báo Vietnamnet vào 19 chủ đề bằng:
+
+- `TF-IDF`
+- `SVC`
+
+Đây là nhánh nhẹ hơn PhoBERT, phù hợp khi:
+
+- cần train và inference nhanh hơn
+- muốn chạy tốt trên CPU
+- muốn có pipeline gọn, dễ triển khai trên CPU
+
+## Cấu trúc thư mục
+
+```text
 SVM/
-├── main_SVM.ipynb              ← Notebook training (chạy để tạo model)
-├── app_SVM.ipynb               ← Notebook khởi động app Streamlit
-├── README                      ← File này
-│
+├── main_SVM.ipynb
+├── README.md
+├── QUICK_START.md
 ├── app/
-│   └── main_app.py             ← Source code app Streamlit
-│
-├── model/                      ← Sinh ra sau khi chạy main_SVM.ipynb
-│   ├── model_results.pkl       ← Kết quả training (metrics, y_pred...)
-│   └── inference_pipeline.pkl  ← Pipeline đầy đủ cho inference (app dùng file này)
-│
-├── results/                    ← Sinh ra sau khi chạy main_SVM.ipynb
-│   ├── 01_class_distribution.png
-│   ├── 02_text_length.png
-│   ├── 03_tfidf_vocab.png
-│   ├── 04_confusion_matrix.png
-│   ├── 05_f1_per_class.png
-│   └── classification_report.txt
-│
-└── temp/                       ← Cache trung gian (có thể xoá để train lại từ đầu)
-    ├── processed_data.pkl      ← Corpus đã tokenize
-    └── tfidf_data.pkl          ← Ma trận TF-IDF + train/test split
+│   ├── app_SVM.py
+│   ├── app_SVM.ipynb
+│   ├── README.md
+│   └── QUICK_START.md
+├── model/
+│   ├── model_results.pkl
+│   └── inference_pipeline.pkl
+├── results/
+└── temp/
 ```
 
----
+## Notebook chính làm gì
 
-## 19 Chủ Đề
+[main_SVM.ipynb](./main_SVM.ipynb) đi theo luồng:
 
-Bạn đọc · Bảo vệ người tiêu dùng · Bất động sản · Chính trị · Công nghệ ·
-Dân tộc - Tôn giáo · Đời sống · Du lịch · Giáo dục · Kinh doanh ·
-Ô tô - Xe máy · Pháp luật · Sức khỏe · Thế giới · Thể thao ·
-Thị trường tiêu dùng · Thời sự · Tuần Việt Nam · Văn hóa - Giải trí
+1. đọc dữ liệu từ `Dataset/`
+2. EDA phân bố lớp và độ dài văn bản
+3. tiền xử lý tiếng Việt
+4. vector hóa bằng TF-IDF
+5. train `SVC`
+6. đánh giá bằng accuracy, F1-weighted, F1-macro, confusion matrix
+7. export `inference_pipeline.pkl`
+8. in thêm section chẩn đoán để xem class yếu, cặp class nhầm nhiều, lệch precision/recall và gợi ý tối ưu tiếp theo
 
----
+## Tiền xử lý
 
-## Yêu Cầu
+Pipeline hiện tại của notebook SVM dùng:
 
-Python 3.9+ và các thư viện sau:
+1. ghép title theo kiểu tăng trọng số trước content
+2. lowercase
+3. bỏ dấu câu
+4. bỏ số
+5. `ViTokenizer`
+6. loại stopwords
 
+Điểm quan trọng:
+
+- title được tăng trọng số trước content trong pipeline export
+- nếu thay preprocessing trong notebook, artifact export cũng sẽ thay theo
+
+## Mô hình hiện tại
+
+Notebook hiện được cấu hình:
+
+- `SVC(C=1, class_weight="balanced", probability=False)`
+- `TfidfVectorizer(max_features=150000, ngram_range=(1, 2), min_df=2, sublinear_tf=True)`
+- split `85/15` có `stratify`
+
+Notebook có cache:
+
+- `temp/processed_data.pkl`
+- `temp/tfidf_data.pkl`
+- `model/model_results.pkl`
+
+Nếu file cache đã tồn tại, notebook sẽ không tạo lại bước tương ứng.
+
+## File đầu ra quan trọng
+
+### 1. `model/model_results.pkl`
+
+Chứa:
+
+- model đã train
+- nhãn dự đoán trên test
+- metric
+- thời gian train
+- config train
+
+### 2. `model/inference_pipeline.pkl`
+
+Đây là file dùng cho inference.
+
+Nó chứa:
+
+- `vectorizer`
+- `model`
+- `stopwords`
+- `classes`
+- `config`
+
+## Thư viện cần cài
+
+Nhánh SVM cần các thư viện:
+
+- `pandas`
+- `numpy`
+- `matplotlib`
+- `seaborn`
+- `scikit-learn`
+- `pyvi`
+- `joblib`
+- `pyarrow`
+- `tqdm`
+
+Cài nhanh:
+
+```bash
+pip install pandas numpy matplotlib seaborn scikit-learn pyvi joblib pyarrow tqdm
 ```
-pip install scikit-learn pandas numpy pyvi joblib
-pip install matplotlib seaborn
+
+Nếu muốn chạy app SVM, cài thêm:
+
+```bash
 pip install streamlit requests beautifulsoup4
 ```
 
-Dữ liệu cần có trong `../Dataset/` (19 file `.parquet`, mỗi file 1 chủ đề)
-và file `../vietnamese-stopwords.txt`.
+## Cách train
 
----
+Mở [main_SVM.ipynb](./main_SVM.ipynb) và chạy theo thứ tự từ trên xuống.
 
-## Hướng Dẫn Sử Dụng
+Các bước nặng đều có cache, nên:
 
-### 1. Training Model
+- lần đầu sẽ lâu hơn
+- các lần sau sẽ nhanh hơn nếu không xóa cache
 
-Mở `main_SVM.ipynb` trong Jupyter và chọn **Run All**.
+Nếu muốn train lại từ đầu:
 
-Pipeline gồm 7 section, mỗi section nặng đều có cache — lần đầu chạy
-mất khoảng 20–40 phút (tokenize), các lần sau load từ cache trong vài giây.
+1. xóa `temp/`
+2. xóa `model/`
+3. chạy lại notebook
 
-| Section | Nội dung | Cache |
-|---------|----------|-------|
-| 0. Setup | Import, cấu hình đường dẫn | — |
-| 1. Load data | Đọc 19 parquet, lọc bài thiếu cả title lẫn content | — |
-| 2. EDA | Biểu đồ phân bố, độ dài văn bản, bảng tổng hợp | — |
-| 3. Tiền xử lý | ViTokenizer song song (joblib), loại stopwords | `temp/processed_data.pkl` |
-| 4. TF-IDF | Vectorize, train/test split 85/15 | `temp/tfidf_data.pkl` |
-| 5. Training | LinearSVC C=1, class_weight=balanced | `model/model_results.pkl` |
-| 6. Đánh giá | Report, confusion matrix, F1 per class | `results/` |
-| 7. Export | Đóng gói pipeline cho app | `model/inference_pipeline.pkl` |
+Nếu chỉ muốn train lại model:
 
-Để **train lại từ đầu**: xoá thư mục `temp/` và `model/`, sau đó Run All.
+1. xóa `model/model_results.pkl`
+2. xóa `model/inference_pipeline.pkl` nếu muốn export lại sạch
+3. chạy lại từ section train trở xuống
 
-Để **chỉ train lại model** (giữ tokenize + TF-IDF): xoá chỉ `model/`, chạy lại từ Section 5.
+Sau khi notebook chạy xong, section chẩn đoán cuối notebook sẽ in:
 
----
+- các class yếu nhất theo F1
+- các class ít mẫu nhất
+- class đang thiếu recall hoặc thiếu precision
+- top cặp class bị nhầm nhiều nhất
+- gợi ý tuning tiếp theo cho SVM
 
-### 2. Chạy App
+## Cách chạy app
 
-**Cách A — Dùng notebook** (khuyến nghị):
+App của nhánh này nằm trong [app/](./app/).
 
-Mở `app_SVM.ipynb`, chạy tuần tự:
-- Cell 0: Kiểm tra thư viện và pipeline
-- Cell 1: Ghi code vào `app/main_app.py`
-- Cell 2: Khởi động Streamlit
-
-Mở trình duyệt tại: **http://localhost:8501**
-
-**Cách B — Dùng terminal trực tiếp**:
+Chạy bằng terminal:
 
 ```bash
 cd SVM
-streamlit run app/main_app.py
+streamlit run app/app_SVM.py
 ```
 
-> Yêu cầu: `model/inference_pipeline.pkl` phải tồn tại (đã chạy Section 7
-> trong `main_SVM.ipynb`).
+Hoặc dùng notebook launcher:
 
----
+- [app/app_SVM.ipynb](./app/app_SVM.ipynb)
 
-## Tính Năng App
+Tài liệu app chi tiết:
 
-| Tab | Mô tả |
-|-----|-------|
-| 🔗 Nhập URL | Dán link bài báo → tự động scrape → phân loại (nhấn Enter hoặc nút) |
-| 📝 Nhập text | Paste title + content thủ công (dùng khi URL bị chặn / paywall) |
-| 📋 Batch URL | Nhiều URL cùng lúc, hiển thị bảng kết quả, tải CSV |
-| 📜 Lịch sử | Toàn bộ lịch sử phân loại trong session, tải CSV, xoá |
+- [app/README.md](./app/README.md)
+- [app/QUICK_START.md](./app/QUICK_START.md)
 
-Mỗi kết quả phân loại hiển thị:
-- Chủ đề dự đoán + màu tin cậy (xanh / cam / đỏ)
-- Top 5 chủ đề khả năng kèm thanh progress
-- **Top 10 từ khoá** đóng góp vào quyết định (từ `LinearSVC.coef_`)
-- **Cảnh báo** nếu top-1 và top-2 chênh lệch < 5%
-- Nội dung bài báo đã scrape (xem trước 600 ký tự)
+## Khi nào cần cập nhật app
 
----
+Bạn nên restart app khi:
 
-## Thông Số Mô Hình
+- vừa train lại model SVM
+- vừa export pipeline mới
+- vừa sửa `app/app_SVM.py`
 
-| Thành phần | Cấu hình |
-|------------|----------|
-| Vectorizer | `TfidfVectorizer(max_features=150_000, ngram_range=(1,2), min_df=2, sublinear_tf=True)` |
-| Classifier | `LinearSVC(C=1, class_weight='balanced', max_iter=5000)` |
-| Tiền xử lý | lowercase → bỏ dấu câu → bỏ số → ViTokenizer → loại stopwords |
-| Tiêu đề | Lặp 2 lần trước content để tăng trọng số |
-| Split | 85% train / 15% test, stratified |
+## Tóm tắt
 
----
+Nhánh SVM là baseline mạnh, gọn và dễ chạy. Nó phù hợp khi bạn cần:
 
-## Workflow Cập Nhật Model
-
-Khi train lại model (dữ liệu mới, thay đổi tham số):
-
-```
-1. Chỉnh sửa tham số trong main_SVM.ipynb (Section 0 — Config)
-2. Xoá các folder cần train lại: temp/ và/hoặc model/
-3. Run All main_SVM.ipynb
-4. Mở app_SVM.ipynb → chạy Cell 2 (Streamlit tự reload pipeline mới)
-```
-
-App không cần cấu hình thêm — đường dẫn pipeline được tự động tính
-tương đối từ vị trí `main_app.py`.
+- một pipeline truyền thống cho tiếng Việt
+- model nhẹ hơn PhoBERT
+- inference đơn giản bằng một file pipeline duy nhất

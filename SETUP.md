@@ -5,9 +5,9 @@ Dự án gồm **3 bước** theo thứ tự. Mỗi bước chỉ cần bấm **
 ```
 Bước 1  →  Crawling Data/crawl_data.ipynb       (tạo Dataset)
 Bước 2  →  SVM/main_SVM.ipynb                   (train mô hình SVM)
-         hoặc  PhoBERT/main_PhoBERT.ipynb        (train mô hình PhoBERT)
-Bước 3  →  SVM/app_SVM.ipynb                    (chạy web app SVM)
-         hoặc  PhoBERT/app_PhoBERT.ipynb         (chạy web app PhoBERT)
+         hoặc  PhoBERT/main_PhoBERT.ipynb       (train mô hình PhoBERT)
+Bước 3  →  SVM/app/app_SVM.ipynb                (chạy web app SVM)
+         hoặc  PhoBERT/app/app_PhoBERT.ipynb    (chạy web app PhoBERT)
 ```
 
 ---
@@ -61,9 +61,8 @@ pip install pandas numpy matplotlib seaborn scikit-learn pyvi joblib pyarrow tqd
 | 3 | Load & EDA | — |
 | 4 | Tiền xử lý + tokenize | `temp/processed_data.pkl` |
 | 5 | TF-IDF vectorization | `temp/tfidf_data.pkl` |
-| 6 | Train LinearSVC | — |
-| 7 | Đánh giá + visualization | `results/` |
-| 8 | Export pipeline | `model/inference_pipeline.pkl` |
+| 6 | Đánh giá | `results/` |
+| 7 | Export inference pipeline | `model/inference_pipeline.pkl` |
 
 > Nếu cache đã có, các bước nặng sẽ được bỏ qua tự động.
 
@@ -79,13 +78,13 @@ pip install pandas numpy matplotlib seaborn scikit-learn pyvi joblib pyarrow tqd
 ### Yêu cầu hệ thống
 | VRAM GPU | Mô hình được chọn | Batch |
 |----------|------------------|-------|
-| ≥ 24 GB (RTX 4090, A100 40GB) | `phobert-large` | 64 |
-| 16–23 GB (RTX 4080, T4 16GB) | `phobert-large` | 32 × accum 2 |
-| 10–15 GB (RTX 3080, 2080 Ti) | `phobert-base-v2` | 32 × accum 2 |
+| ≥ 24 GB (RTX 4090, A100 40GB) | `phobert-large` hoặc `phobert-base-v2` | 64 |
+| 16–23 GB (RTX 4080, T4 16GB) | `phobert-large` hoặc `phobert-base-v2` | 32 × accum 2 |
+| 10–15 GB (RTX 3080 10GB, A3000 12GB) | `phobert-base-v2` | 32 × accum 2 |
 | 6–9 GB (RTX 3060, 2060) | `phobert-base-v2` | 16 × accum 4 |
 | < 6 GB | `phobert-base-v2` | 8 × accum 8 (chậm) |
 
-> Notebook tự động detect GPU và chọn cấu hình phù hợp — không cần chỉnh tay.
+> Notebook có bảng gợi ý theo VRAM. Cấu hình hiện tại của repo đang ưu tiên `phobert-base-v2`.
 
 ### Yêu cầu thư viện
 ```
@@ -95,7 +94,7 @@ pip install transformers accelerate seaborn matplotlib scikit-learn tqdm pyarrow
 > Thay `cu121` bằng version CUDA phù hợp với máy bạn. Xem: https://pytorch.org/get-started/locally/
 
 ### Yêu cầu khác
-- **Kết nối internet** để download model `vinai/phobert-large` hoặc `vinai/phobert-base-v2` lần đầu (~400 MB / ~270 MB)
+- **Kết nối internet** để download model PhoBERT lần đầu, thường là `vinai/phobert-base-v2`
 
 ### Luồng chạy
 | Section | Nội dung | Cache |
@@ -117,14 +116,14 @@ pip install transformers accelerate seaborn matplotlib scikit-learn tqdm pyarrow
 
 ---
 
-## Bước 3a — Web App SVM (`SVM/app_SVM.ipynb`)
+## Bước 3a — Web App SVM (`SVM/app/app_SVM.ipynb`)
 
 ### Yêu cầu
 - File `SVM/model/inference_pipeline.pkl` phải tồn tại (chạy Bước 2a trước)
 - Thư viện: `pip install streamlit requests beautifulsoup4 pyvi scikit-learn numpy pandas`
 
 ### Cách chạy
-1. Bấm **Run All** trong `app_SVM.ipynb`
+1. Bấm **Run All** trong `app/app_SVM.ipynb`
 2. Trình duyệt tự mở tại `http://localhost:8501`
 3. Nhấn **■ Interrupt Kernel** để dừng app
 
@@ -136,14 +135,14 @@ pip install transformers accelerate seaborn matplotlib scikit-learn tqdm pyarrow
 
 ---
 
-## Bước 3b — Web App PhoBERT (`PhoBERT/app_PhoBERT.ipynb`)
+## Bước 3b — Web App PhoBERT (`PhoBERT/app/app_PhoBERT.ipynb`)
 
 ### Yêu cầu
 - Thư mục `PhoBERT/model/` phải có: `model.safetensors`, `label_config.json`, `config.json`, `tokenizer_config.json`
 - Thư viện: `pip install streamlit requests beautifulsoup4 pyvi torch transformers numpy pandas scipy`
 
 ### Cách chạy
-1. Bấm **Run All** trong `app_PhoBERT.ipynb`
+1. Bấm **Run All** trong `app/app_PhoBERT.ipynb`
 2. Trình duyệt tự mở tại `http://localhost:8501`
 3. Nhấn **■ Interrupt Kernel** để dừng app
 
@@ -155,8 +154,8 @@ pip install transformers accelerate seaborn matplotlib scikit-learn tqdm pyarrow
 Run All  →  Crawling Data/crawl_data.ipynb     (~vài tiếng tùy tốc độ mạng)
 Run All  →  SVM/main_SVM.ipynb                 (~30-60 phút)
          hoặc PhoBERT/main_PhoBERT.ipynb       (~2-8 tiếng tùy GPU)
-Run All  →  SVM/app_SVM.ipynb                  (< 1 phút, app chạy liền)
-         hoặc PhoBERT/app_PhoBERT.ipynb        (< 1 phút, app chạy liền)
+Run All  →  SVM/app/app_SVM.ipynb              (< 1 phút, app chạy liền)
+         hoặc PhoBERT/app/app_PhoBERT.ipynb    (< 1 phút, app chạy liền)
 ```
 
 > Nếu đã có Dataset và Model sẵn, chỉ cần **1 lần Run All** ở bước App là đủ.
