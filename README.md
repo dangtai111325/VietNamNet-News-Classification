@@ -32,7 +32,6 @@ VietNamNet News Classification/
 ├── SVM/
 ├── PhoBERT/
 ├── Combined_Model_App/
-├── LR/
 ├── README.md
 └── SETUP.md
 ```
@@ -125,16 +124,6 @@ Tài liệu:
 
 - [Combined_Model_App/README.md](./Combined_Model_App/README.md)
 - [Combined_Model_App/QUICK_START.md](./Combined_Model_App/QUICK_START.md)
-
-### `LR/`
-
-Thư mục thử nghiệm để so sánh nhanh với SVM:
-
-- notebook chính: `LR/main_LR.ipynb`
-- không có app
-- không phải nhánh chính của project
-
-Nếu mô hình này không hữu ích, bạn có thể xóa cả thư mục `LR/`.
 
 ## Cách bắt đầu nhanh
 
