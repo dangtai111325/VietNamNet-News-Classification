@@ -1,15 +1,13 @@
-# VietNamNet News Classification
+# VietNamNet's News Classification
 
-Project này phân loại bài báo tiếng Việt của VietNamNet vào 19 chủ đề bằng 3 hướng chính:
+Project này phân loại bài báo tiếng Việt của VietNamNet vào 19 chủ đề bằng 2 hướng chính:
 
 - `SVM/`: TF-IDF + `LinearSVC`
 - `PhoBERT/`: `vinai/phobert-base-v2`
-- `Combined_Model_App/`: app kết hợp điểm từ SVM và PhoBERT
 
 Ngoài ra repo còn có:
-
+- `Combined_Model_App/`: app kết hợp điểm từ SVM và PhoBERT
 - `Crawling Data/`: notebook crawl dữ liệu và tạo dataset
-- `LR/`: notebook thử nghiệm Logistic Regression để so sánh nhanh với SVM
 
 ## Tải Full Project
 
