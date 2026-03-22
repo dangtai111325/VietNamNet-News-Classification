@@ -3,7 +3,7 @@
 Chạy: streamlit run app_PhoBERT.py
 """
 
-import os, re, json, datetime, warnings
+import os, re, json, datetime, warnings, html
 import requests
 import urllib3
 from bs4 import BeautifulSoup
@@ -32,6 +32,17 @@ HEADERS = {
     "Accept-Language": "vi-VN,vi;q=0.9,en;q=0.8",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
 }
+
+
+def sanitize_error_text(message: str) -> str:
+    if not message:
+        return ""
+    return (
+        str(message)
+        .replace(MODEL_DIR, "PhoBERT/model")
+        .replace(CONFIG_PATH, "PhoBERT/model/label_config.json")
+        .replace(THRESHOLD_PATH, "PhoBERT/model/thresholds.json")
+    )
 
 
 # ── Load mô hình (cache — chỉ load 1 lần) ─────────────────────────────────────
@@ -119,6 +130,18 @@ def preprocess(title: str, content: str) -> str:
     text = re.sub(r"\d+",     " ", text)
     text = ViTokenizer.tokenize(text)
     return re.sub(r"\s+", " ", text).strip()
+
+
+def render_content_preview(content: str, height: int = 400) -> None:
+    safe_content = html.escape(content or "(không có nội dung)")
+    st.markdown(
+        f"""
+        <div class="article-preview" style="height:{height}px;">
+            {safe_content}
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 # ── Head-Tail tokenize ─────────────────────────────────────────────────────────
@@ -228,14 +251,14 @@ def show_result(res: dict, source_label: str = ""):
                     </div>
                     <div style='color:#555;font-size:.9rem'>
                         Xác suất softmax: <b>{conf_pct:.1f}%</b> &nbsp;·&nbsp; {badge}
-                        {"&nbsp;·&nbsp; 🎯 Threshold calibrated" if res.get("calibrated") else ""}
+                        {"&nbsp;·&nbsp; 🎯 Đã hiệu chỉnh ngưỡng" if res.get("calibrated") else ""}
                     </div>
                 </div>""",
             unsafe_allow_html=True,
         )
         st.caption(
-            f"Điểm quyết định sau calibration: {decision_pct:.1f}%"
-            f"  |  Temperature={res.get('temperature', 1.0):.3f}"
+            f"Điểm quyết định sau hiệu chỉnh: {decision_pct:.1f}%"
+            f"  |  Nhiệt độ={res.get('temperature', 1.0):.3f}"
         )
 
         st.markdown("**Top 5 chủ đề có thể:**")
@@ -249,14 +272,8 @@ def show_result(res: dict, source_label: str = ""):
         st.subheader("Nội dung bài báo")
         if res["title"]:
             st.markdown(f"**Tiêu đề:** {res['title']}")
-        st.caption(f"Tokens ViTokenizer sau tiền xử lý: {res['n_tokens']:,}")
-        st.text_area(
-            "_content",
-            value=res["content_preview"] or "(không có nội dung)",
-            height=400,
-            disabled=True,
-            label_visibility="collapsed",
-        )
+        st.caption(f"Số token sau tiền xử lý: {res['n_tokens']:,}")
+        render_content_preview(res["content_preview"], height=400)
 
     # Lưu lịch sử
     st.session_state.history.insert(0, {
@@ -270,7 +287,7 @@ def show_result(res: dict, source_label: str = ""):
 # ── Tab Lịch sử ───────────────────────────────────────────────────────────────
 def show_history():
     if not st.session_state.get("history"):
-        st.info("Chưa có lịch sử phân loại trong session này.")
+        st.info("Chưa có lịch sử phân loại trong phiên này.")
         return
 
     df_hist = pd.DataFrame(st.session_state.history)
@@ -320,6 +337,19 @@ def main():
             border-radius: 10px !important;
             border: 1px solid #d7e0e7 !important;
         }
+        .article-preview {
+            background: #ffffff;
+            color: #14212b;
+            border: 1px solid #d7e0e7;
+            border-radius: 14px;
+            padding: 16px 18px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            line-height: 1.7;
+            font-size: 1rem;
+            user-select: text;
+            box-shadow: 0 10px 30px rgba(20, 33, 43, 0.06);
+        }
         .stTabs [data-baseweb="tab-list"] {
             gap: 0.5rem;
         }
@@ -358,22 +388,22 @@ def main():
         tokenizer, model, cfg, thresholds, temperature = load_model()
     except Exception as e:
         st.error(
-            f"❌ Không thể load mô hình từ `{MODEL_DIR}`:\n\n`{e}`\n\n"
+            f"❌ Không thể load mô hình PhoBERT.\n\n`{sanitize_error_text(e)}`\n\n"
             "Chạy **Section 5** trong `main_PhoBERT.ipynb` để huấn luyện và lưu mô hình."
         )
         st.stop()
 
     model_name = cfg.get("model_name", "PhoBERT")
     st.markdown(
-        f"Phân loại tự động bài báo vào **19 chủ đề** bằng **{model_name}** + Head-Tail tokenization."
+        f"Phân loại tự động bài báo vào **19 chủ đề** bằng **{model_name}** + cắt head-tail."
     )
 
-    thr_status = "🎯 Threshold calibration: **BẬT**" if thresholds is not None \
-                 else "Threshold calibration: tắt"
+    thr_status = "🎯 Hiệu chỉnh ngưỡng: **BẬT**" if thresholds is not None \
+                 else "Hiệu chỉnh ngưỡng: tắt"
     st.caption(
-        f"`{MODEL_DIR}`  |  {len(cfg['classes'])} chủ đề  |  "
+        f"Model đã nạp  |  {len(cfg['classes'])} chủ đề  |  "
         f"MAX_LENGTH={cfg.get('max_length', MAX_LENGTH)}  |  "
-        f"Device: {DEVICE.upper()}  |  {thr_status}"
+        f"Thiết bị: {DEVICE.upper()}  |  {thr_status}"
     )
 
     if "history" not in st.session_state:
@@ -382,7 +412,7 @@ def main():
     st.divider()
 
     tab1, tab2, tab3, tab4 = st.tabs([
-        "🔗 Nhập URL", "📝 Nhập text", "📋 Batch URL", "📜 Lịch sử",
+        "🔗 Nhập URL", "📝 Nhập văn bản", "📋 Nhiều URL", "📜 Lịch sử",
     ])
 
     # ── Tab 1: Nhập URL ───────────────────────────────────────────────────────
@@ -405,18 +435,18 @@ def main():
                         title, content = scrape_article(url.strip())
                     except Exception as e:
                         st.error(f"❌ Không thể tải URL: {e}")
-                        st.info("Nếu URL bị chặn, dùng tab **📝 Nhập text** để dán nội dung thủ công.")
+                        st.info("Nếu URL bị chặn, dùng tab **📝 Nhập văn bản** để dán nội dung thủ công.")
                         st.stop()
 
                 if not title and not content:
-                    st.error("❌ Không tìm thấy nội dung — thử tab **📝 Nhập text**.")
+                    st.error("❌ Không tìm thấy nội dung — thử tab **📝 Nhập văn bản**.")
                 else:
                     with st.spinner("Đang phân loại..."):
                         res = predict(title, content, tokenizer, model, cfg, thresholds, temperature)
                     st.divider()
                     show_result(res, source_label=url.strip())
 
-    # ── Tab 2: Nhập text ──────────────────────────────────────────────────────
+    # ── Tab 2: Nhập văn bản ──────────────────────────────────────────────────
     with tab2:
         st.markdown(
             "Dùng khi URL không lấy được nội dung (paywall, Cloudflare, lỗi scrape…)."
@@ -440,9 +470,9 @@ def main():
                     res2 = predict(t_title.strip(), t_content.strip(),
                                    tokenizer, model, cfg, thresholds, temperature)
                 st.divider()
-                show_result(res2, source_label=t_title.strip()[:70] or "text input")
+                show_result(res2, source_label=t_title.strip()[:70] or "nhập thủ công")
 
-    # ── Tab 3: Batch URL ──────────────────────────────────────────────────────
+    # ── Tab 3: Nhiều URL ─────────────────────────────────────────────────────
     with tab3:
         st.markdown("Dán nhiều URL (mỗi dòng 1 URL) — phân loại hàng loạt rồi tải CSV.")
         with st.form("form_batch", border=False):

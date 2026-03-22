@@ -1,13 +1,27 @@
 # VietNamNet News Classification
 
-Project này phân loại bài báo tiếng Việt của Vietnamnet vào 19 chủ đề.
+Project này phân loại bài báo tiếng Việt của VietNamNet vào 19 chủ đề bằng 3 hướng chính:
 
-Repo hiện có 4 phần chính:
+- `SVM/`: TF-IDF + `LinearSVC`
+- `PhoBERT/`: `vinai/phobert-base-v2`
+- `Combined_Model_App/`: app kết hợp điểm từ SVM và PhoBERT
 
-- `Crawling Data/`: crawl dữ liệu và tạo dataset `.parquet`
-- `SVM/`: pipeline TF-IDF + SVC và app riêng
-- `PhoBERT/`: pipeline PhoBERT và app riêng
-- `Combined_Model_App/`: app kết hợp SVM + PhoBERT
+Ngoài ra repo còn có:
+
+- `Crawling Data/`: notebook crawl dữ liệu và tạo dataset
+- `LR/`: notebook thử nghiệm Logistic Regression để so sánh nhanh với SVM
+
+## Tải Full Project
+
+Do GitHub không đẩy kèm toàn bộ dataset, cache và artifact model lớn, bạn có thể tải bản đầy đủ tại:
+
+- Google Drive: <https://drive.google.com/drive/folders/1gW393KCdnYU4TDWjDZZBluvZT9aqSLIp?usp=drive_link>
+
+Phù hợp khi bạn muốn:
+
+- mở project và chạy ngay mà không phải tạo lại toàn bộ cache
+- có sẵn model để `Run All` notebook hoặc chạy app
+- lấy các thư mục không được đưa lên GitHub
 
 ## Cấu trúc repo
 
@@ -18,6 +32,7 @@ VietNamNet News Classification/
 ├── SVM/
 ├── PhoBERT/
 ├── Combined_Model_App/
+├── LR/
 ├── README.md
 └── SETUP.md
 ```
@@ -44,83 +59,97 @@ VietNamNet News Classification/
 - Tuần Việt Nam
 - Văn hóa - Giải trí
 
-## Các nhánh mô hình
+## Tóm tắt từng thư mục
 
-### 1. SVM
+### `Crawling Data/`
 
-Nằm trong [SVM/](./SVM/).
+Notebook `crawl_data.ipynb` dùng để:
 
-Nhánh này dùng:
+- crawl danh sách URL bài viết theo chuyên mục
+- lấy `title` và `content`
+- lưu dữ liệu về `Dataset/`
 
-- `TF-IDF`
-- `SVC`
+Tài liệu:
 
-Phù hợp khi cần:
+- [Crawling Data/README.md](./Crawling%20Data/README.md)
+- [Crawling Data/QUICK_START.md](./Crawling%20Data/QUICK_START.md)
 
-- mô hình nhẹ hơn
-- train và inference nhanh hơn
-- giải thích quyết định bằng từ khóa
+### `SVM/`
 
-Xem thêm:
+Nhánh SVM hiện dùng:
+
+- `TfidfVectorizer(max_features=150000, ngram_range=(1, 2), min_df=2, sublinear_tf=True)`
+- `LinearSVC(C=1.5, class_weight="balanced")`
+
+Notebook `main_SVM.ipynb` có logic cache:
+
+- nếu đã có `model/model_results.pkl`, notebook sẽ không train lại
+- nếu chỉ có `model/inference_pipeline.pkl`, notebook sẽ predict lại tập test rồi tiếp tục vẽ / đánh giá
+- chỉ train khi chưa có artifact model
+
+Tài liệu:
 
 - [SVM/README.md](./SVM/README.md)
 - [SVM/QUICK_START.md](./SVM/QUICK_START.md)
 
-### 2. PhoBERT
+### `PhoBERT/`
 
-Nằm trong [PhoBERT/](./PhoBERT/).
-
-Nhánh này dùng:
+Nhánh PhoBERT hiện dùng:
 
 - `vinai/phobert-base-v2`
 - head-tail tokenization
 - weighted loss
 - threshold calibration
 
-Phù hợp khi cần:
+Notebook `main_PhoBERT.ipynb` có logic cache:
 
-- độ chính xác cao hơn SVM
-- xác suất class từ transformer
-- xử lý tốt hơn các lớp khó hoặc ít mẫu
+- nếu `PhoBERT/model/` đã có model export, notebook bỏ qua fine-tune
+- nếu đã có `PhoBERT/model/thresholds.json`, notebook bỏ qua calibration grid search
+- notebook vẫn load model để chạy đánh giá và vẽ biểu đồ
 
-Xem thêm:
+Tài liệu:
 
 - [PhoBERT/README.md](./PhoBERT/README.md)
 - [PhoBERT/QUICK_START.md](./PhoBERT/QUICK_START.md)
 
-### 3. App kết hợp
+### `Combined_Model_App/`
 
-Nằm trong [Combined_Model_App/](./Combined_Model_App/).
+App kết hợp:
 
-App này:
+- load pipeline SVM
+- load model PhoBERT
+- chuẩn hóa điểm của từng nhánh
+- đưa ra dự đoán cuối cùng và hiển thị kết quả riêng của từng model
 
-- load cả SVM và PhoBERT
-- lấy xác suất từ từng model
-- kết hợp theo xác suất có điều kiện
-
-Xem thêm:
+Tài liệu:
 
 - [Combined_Model_App/README.md](./Combined_Model_App/README.md)
 - [Combined_Model_App/QUICK_START.md](./Combined_Model_App/QUICK_START.md)
 
-## Bắt đầu nhanh
+### `LR/`
 
-### Cách 1: theo thứ tự đầy đủ
+Thư mục thử nghiệm để so sánh nhanh với SVM:
 
-1. crawl dữ liệu bằng [Crawling Data/crawl_data.ipynb](./Crawling%20Data/crawl_data.ipynb)
-2. train một trong hai nhánh:
+- notebook chính: `LR/main_LR.ipynb`
+- không có app
+- không phải nhánh chính của project
+
+Nếu mô hình này không hữu ích, bạn có thể xóa cả thư mục `LR/`.
+
+## Cách bắt đầu nhanh
+
+### Cách đầy đủ
+
+1. Tạo dataset bằng [Crawling Data/crawl_data.ipynb](./Crawling%20Data/crawl_data.ipynb).
+2. Chạy một trong hai notebook train:
    - [SVM/main_SVM.ipynb](./SVM/main_SVM.ipynb)
    - [PhoBERT/main_PhoBERT.ipynb](./PhoBERT/main_PhoBERT.ipynb)
-3. chạy app tương ứng:
+3. Chạy app:
    - `streamlit run SVM/app/app_SVM.py`
    - `streamlit run PhoBERT/app/app_PhoBERT.py`
    - `streamlit run Combined_Model_App/app_combined.py`
 
-### Cách 2: nếu đã có model
-
-Bạn chỉ cần chạy app.
-
-Ví dụ:
+### Cách nhanh nếu đã có model
 
 ```bash
 streamlit run SVM/app/app_SVM.py
@@ -128,15 +157,9 @@ streamlit run PhoBERT/app/app_PhoBERT.py
 streamlit run Combined_Model_App/app_combined.py
 ```
 
-## Tài liệu theo thư mục
-
-- crawler: [Crawling Data/README.md](./Crawling%20Data/README.md)
-- SVM: [SVM/README.md](./SVM/README.md)
-- PhoBERT: [PhoBERT/README.md](./PhoBERT/README.md)
-- app combine: [Combined_Model_App/README.md](./Combined_Model_App/README.md)
-- hướng dẫn setup chung: [SETUP.md](./SETUP.md)
-
 ## Ghi chú
 
-- tài liệu trong từng thư mục được viết theo logic của chính thư mục đó
-- nếu một folder thay đổi đường dẫn chạy, artifact, preprocessing hoặc model, README và QUICK_START của folder đó cần được cập nhật theo
+- Các notebook hiện được chỉnh theo hướng `Run All` an toàn hơn với cache có sẵn.
+- Các app đều có giao diện sáng và khung preview nội dung bài báo có thể cuộn, chọn và copy.
+- Sau khi thay đổi model, preprocessing, artifact hoặc đường dẫn, cần cập nhật lại tài liệu của thư mục liên quan.
+- Hướng dẫn cài đặt và chạy tổng thể nằm ở [SETUP.md](./SETUP.md).

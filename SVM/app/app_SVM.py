@@ -3,7 +3,7 @@
 Chạy: streamlit run app_SVM.py
 """
 
-import os, re, pickle, datetime, warnings
+import os, re, pickle, datetime, warnings, html
 import requests
 import urllib3
 from bs4 import BeautifulSoup
@@ -26,6 +26,12 @@ HEADERS = {
     "Accept-Language": "vi-VN,vi;q=0.9,en;q=0.8",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
 }
+
+
+def sanitize_error_text(message: str) -> str:
+    if not message:
+        return ""
+    return str(message).replace(PIPELINE_PATH, "SVM/model/inference_pipeline.pkl")
 
 
 # ── Load pipeline (cache — chỉ load 1 lần) ────────────────────────────────────
@@ -91,6 +97,18 @@ def preprocess(title: str, content: str, pipeline: dict) -> str:
     text = ViTokenizer.tokenize(text)
     return re.sub(r"\s+", " ",
                   " ".join(t for t in text.split() if t not in sw)).strip()
+
+
+def render_content_preview(content: str, height: int = 400) -> None:
+    safe_content = html.escape(content or "(không có nội dung)")
+    st.markdown(
+        f"""
+        <div class="article-preview" style="height:{height}px;">
+            {safe_content}
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 def score_to_probs(scores: np.ndarray) -> np.ndarray:
@@ -181,7 +199,7 @@ def show_result(res: dict, pipeline: dict, source_label: str = ""):
 
         kws = get_top_keywords(pipeline, res["pred_class"], n=10)
         if kws:
-            st.markdown("**Top 10 từ khoá quyết định:**")
+            st.markdown("**Top 10 từ khóa quyết định:**")
             df_kws = pd.DataFrame(kws, columns=["Từ / Bigram", "Trọng số (coef)"])
             df_kws.index += 1
             st.dataframe(
@@ -190,21 +208,15 @@ def show_result(res: dict, pipeline: dict, source_label: str = ""):
                 height=340,
             )
         else:
-            st.info("Model hiện tại không hỗ trợ hiển thị từ khoá quyết định.")
+            st.info("Mô hình hiện tại không hỗ trợ hiển thị từ khóa quyết định.")
 
     # ── Cột phải ──────────────────────────────────────────────────────────────
     with col_right:
         st.subheader("Nội dung bài báo")
         if res["title"]:
             st.markdown(f"**Tiêu đề:** {res['title']}")
-        st.caption(f"Tokens sau tiền xử lý: {res['n_tokens']:,}")
-        st.text_area(
-            "_content",
-            value=res["content_preview"] or "(không có nội dung)",
-            height=400,
-            disabled=True,
-            label_visibility="collapsed",
-        )
+        st.caption(f"Số token sau tiền xử lý: {res['n_tokens']:,}")
+        render_content_preview(res["content_preview"], height=400)
 
     # Lưu lịch sử
     st.session_state.history.insert(0, {
@@ -218,7 +230,7 @@ def show_result(res: dict, pipeline: dict, source_label: str = ""):
 # ── Tab Lịch sử ───────────────────────────────────────────────────────────────
 def show_history():
     if not st.session_state.get("history"):
-        st.info("Chưa có lịch sử phân loại trong session này.")
+        st.info("Chưa có lịch sử phân loại trong phiên này.")
         return
 
     df_hist = pd.DataFrame(st.session_state.history)
@@ -242,29 +254,96 @@ def show_history():
 # ── Main ───────────────────────────────────────────────────────────────────────
 def main():
     st.set_page_config(
-        page_title="Phân loại tin tức Vietnamnet",
+        page_title="Phân loại tin tức — LinearSVC",
         page_icon="🇻🇳",
         layout="wide",
+        initial_sidebar_state="collapsed",
+    )
+
+    st.markdown(
+        """
+        <style>
+        .stApp {
+            background: linear-gradient(180deg, #f8fafc 0%, #eef4f7 100%);
+            color: #14212b;
+        }
+        .stApp [data-testid="stHeader"] {
+            background: rgba(248, 250, 252, 0.88);
+        }
+        .stApp [data-testid="stSidebar"] {
+            background: #f3f6f8;
+        }
+        .stApp [data-testid="stTextInput"] input,
+        .stApp textarea {
+            background: #ffffff !important;
+            color: #14212b !important;
+            border-radius: 10px !important;
+            border: 1px solid #d7e0e7 !important;
+        }
+        .article-preview {
+            background: #ffffff;
+            color: #14212b;
+            border: 1px solid #d7e0e7;
+            border-radius: 14px;
+            padding: 16px 18px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            line-height: 1.7;
+            font-size: 1rem;
+            user-select: text;
+            box-shadow: 0 10px 30px rgba(20, 33, 43, 0.06);
+        }
+        .stTabs [data-baseweb="tab-list"] {
+            gap: 0.5rem;
+        }
+        .stTabs [data-baseweb="tab"] {
+            background: #ffffff;
+            border-radius: 10px 10px 0 0;
+            border: 1px solid #d7e0e7;
+            color: #334a5a;
+            padding: 0.65rem 1rem;
+        }
+        .stTabs [aria-selected="true"] {
+            background: #dff1e7 !important;
+            color: #103326 !important;
+            border-bottom-color: #dff1e7 !important;
+        }
+        .stButton > button, .stDownloadButton > button, .stFormSubmitButton > button {
+            background: #1f7a4f !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 10px !important;
+        }
+        .stProgress > div > div > div > div {
+            background-color: #1f7a4f;
+        }
+        [data-testid="stDataFrame"], .stTextArea, .stAlert {
+            border-radius: 12px;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
     )
 
     st.title("🇻🇳 Phân loại tin tức Vietnamnet")
     st.markdown(
-        "Phân loại tự động bài báo vào **19 chủ đề** bằng **SVM + TF-IDF**."
+        "Phân loại tự động bài báo vào **19 chủ đề** bằng **LinearSVC + TF-IDF**."
     )
 
     try:
         pipeline = load_pipeline()
     except FileNotFoundError:
         st.error(
-            f"❌ Không tìm thấy pipeline:\n\n`{PIPELINE_PATH}`\n\n"
+            "❌ Không tìm thấy pipeline `SVM/model/inference_pipeline.pkl`.\n\n"
             "Chạy **Section 7** trong `main_SVM.ipynb` để tạo file này."
         )
         st.stop()
 
     st.caption(
         f"`inference_pipeline.pkl`  |  {len(pipeline['classes'])} chủ đề  |  "
-        f"max_features={pipeline['config'].get('max_features', '?'):,}  |  "
-        f"C={pipeline['config'].get('C', '?')}"
+        f"Số đặc trưng tối đa={pipeline['config'].get('max_features', '?'):,}  |  "
+        f"C={pipeline['config'].get('C', '?')}  |  "
+        f"Mô hình={pipeline.get('config', {}).get('model_name', 'LinearSVC')}"
     )
 
     if "history" not in st.session_state:
@@ -273,7 +352,7 @@ def main():
     st.divider()
 
     tab1, tab2, tab3, tab4 = st.tabs([
-        "🔗 Nhập URL", "📝 Nhập text", "📋 Batch URL", "📜 Lịch sử",
+        "🔗 Nhập URL", "📝 Nhập văn bản", "📋 Nhiều URL", "📜 Lịch sử",
     ])
 
     # ── Tab 1: Nhập URL ───────────────────────────────────────────────────────
@@ -296,18 +375,18 @@ def main():
                         title, content = scrape_article(url.strip())
                     except Exception as e:
                         st.error(f"❌ Không thể tải URL: {e}")
-                        st.info("Nếu URL bị chặn, dùng tab **📝 Nhập text** để dán nội dung thủ công.")
+                        st.info("Nếu URL bị chặn, dùng tab **📝 Nhập văn bản** để dán nội dung thủ công.")
                         st.stop()
 
                 if not title and not content:
-                    st.error("❌ Không tìm thấy nội dung — thử tab **📝 Nhập text**.")
+                    st.error("❌ Không tìm thấy nội dung — thử tab **📝 Nhập văn bản**.")
                 else:
                     with st.spinner("Đang phân loại..."):
                         res = predict(title, content, pipeline)
                     st.divider()
                     show_result(res, pipeline, source_label=url.strip())
 
-    # ── Tab 2: Nhập text ──────────────────────────────────────────────────────
+    # ── Tab 2: Nhập văn bản ──────────────────────────────────────────────────
     with tab2:
         st.markdown(
             "Dùng khi URL không lấy được nội dung (paywall, Cloudflare, lỗi scrape…)."
@@ -331,9 +410,9 @@ def main():
                     res2 = predict(t_title.strip(), t_content.strip(), pipeline)
                 st.divider()
                 show_result(res2, pipeline,
-                            source_label=t_title.strip()[:70] or "text input")
+                            source_label=t_title.strip()[:70] or "nhập thủ công")
 
-    # ── Tab 3: Batch URL ──────────────────────────────────────────────────────
+    # ── Tab 3: Nhiều URL ─────────────────────────────────────────────────────
     with tab3:
         st.markdown("Dán nhiều URL (mỗi dòng 1 URL) — phân loại hàng loạt rồi tải CSV.")
         with st.form("form_batch", border=False):

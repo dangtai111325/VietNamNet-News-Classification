@@ -1,11 +1,11 @@
 """
-Combined App — SVM + PhoBERT Ensemble
+Ứng dụng kết hợp — SVM + PhoBERT
 Phân loại tin tức Vietnamnet bằng điểm tin cậy kết hợp.
 
 Chạy: streamlit run app_combined.py
 """
 
-import os, re, json, pickle, datetime, warnings
+import os, re, json, pickle, datetime, warnings, html
 import requests
 import urllib3
 from bs4 import BeautifulSoup
@@ -33,6 +33,18 @@ HEADERS = {
     "Accept-Language": "vi-VN,vi;q=0.9,en;q=0.8",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
 }
+
+
+def sanitize_error_text(message: str) -> str:
+    if not message:
+        return ""
+    return (
+        str(message)
+        .replace(SVM_PIPELINE, "SVM/model/inference_pipeline.pkl")
+        .replace(PHO_MODEL_DIR, "PhoBERT/model")
+        .replace(PHO_CONFIG, "PhoBERT/model/label_config.json")
+        .replace(PHO_THRESHOLD, "PhoBERT/model/thresholds.json")
+    )
 
 
 # ── Load models (cache) ───────────────────────────────────────────────────────
@@ -145,6 +157,18 @@ def preprocess_phobert(title: str, content: str) -> str:
     return re.sub(r"\s+", " ", text).strip()
 
 
+def render_content_preview(content: str, height: int = 460) -> None:
+    safe_content = html.escape(content or "(không có nội dung)")
+    st.markdown(
+        f"""
+        <div class="article-preview" style="height:{height}px;">
+            {safe_content}
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
 # ── Head-Tail tokenize ────────────────────────────────────────────────────────
 def head_tail_encode(text: str, tokenizer, device: str) -> dict:
     import torch
@@ -183,7 +207,7 @@ def _predict_svm(title: str, content: str, pipeline: dict) -> np.ndarray:
 def _predict_phobert(title: str, content: str,
                      tokenizer, model, cfg: dict,
                      thresholds, temperature: float, device: str) -> np.ndarray:
-    """Trả về mảng xác suất (softmax + threshold calibration nếu có), theo thứ tự cfg['classes']."""
+    """Trả về mảng xác suất (softmax + hiệu chỉnh ngưỡng nếu có), theo thứ tự cfg['classes'].""" 
     import torch
     clean = preprocess_phobert(title, content)
     enc   = head_tail_encode(clean, tokenizer, device)
@@ -285,7 +309,7 @@ def show_result(res: dict, pipeline: dict, source_label: str = ""):
         st.warning(
             f"**Hai mô hình bất đồng:** SVM → **{res['svm_pred']}**  |  "
             f"PhoBERT → **{res['pho_pred']}**  |  "
-            f"Kết quả ensemble: **{res['pred_class']}** ({conf_pct:.1f}%)"
+            f"Kết quả kết hợp: **{res['pred_class']}** ({conf_pct:.1f}%)"
         )
 
     if conf_pct >= 60:
@@ -295,13 +319,13 @@ def show_result(res: dict, pipeline: dict, source_label: str = ""):
     else:
         color, badge = "#e74c3c", "Tin cậy thấp"
 
-    agree_note = " · 🤝 Đồng thuận" if agree else " · ⚡ Ensemble"
+    agree_note = " · 🤝 Đồng thuận" if agree else " · ⚡ Kết hợp"
 
     col_main, col_models, col_content = st.columns([2, 2, 2])
 
     # Cột 1: Kết quả tổng hợp
     with col_main:
-        st.subheader("Kết quả Ensemble")
+        st.subheader("Kết quả kết hợp")
         st.markdown(
             f"""<div style='background:{color}18;border-left:5px solid {color};
                            padding:16px 20px;border-radius:8px;margin-bottom:14px'>
@@ -314,13 +338,13 @@ def show_result(res: dict, pipeline: dict, source_label: str = ""):
             unsafe_allow_html=True,
         )
 
-        st.markdown("**Top 5 chủ đề (combined):**")
+        st.markdown("**Top 5 chủ đề kết hợp:**")
         for i, (cls, prob) in enumerate(res["top5"]):
             label = f"🥇 **{cls}**" if i == 0 else f"{i+1}. {cls}"
             st.markdown(f"{label}&nbsp;`{prob*100:.1f}%`", unsafe_allow_html=True)
             st.progress(float(prob))
 
-        st.markdown("**Top từ khoá (SVM):**")
+        st.markdown("**Top từ khóa (SVM):**")
         kws = get_top_keywords(pipeline, res["pred_class"])
         if kws:
             df_kws = pd.DataFrame(kws, columns=["Từ / Bigram", "Coef"])
@@ -339,7 +363,7 @@ def show_result(res: dict, pipeline: dict, source_label: str = ""):
         st.markdown(
             f"""<div style='background:{svm_col}12;border:1px solid {svm_col}55;
                            padding:12px 16px;border-radius:8px;margin-bottom:10px'>
-                    <div style='font-weight:700;color:{svm_col}'>SVM + TF-IDF</div>
+                    <div style='font-weight:700;color:{svm_col}'>LinearSVC + TF-IDF</div>
                     <div style='font-size:1.1rem;font-weight:600'>{res["svm_pred"]}</div>
                     <div style='color:#666;font-size:.85rem'>Điểm tin cậy suy ra: {svm_pct:.1f}%</div>
                 </div>""",
@@ -353,7 +377,7 @@ def show_result(res: dict, pipeline: dict, source_label: str = ""):
                            padding:12px 16px;border-radius:8px;margin-bottom:10px'>
                     <div style='font-weight:700;color:{pho_col}'>{res.get("pho_model_name", "PhoBERT")}</div>
                     <div style='font-size:1.1rem;font-weight:600'>{res["pho_pred"]}</div>
-                    <div style='color:#666;font-size:.85rem'>Điểm sau calibration: {pho_pct:.1f}%</div>
+                    <div style='color:#666;font-size:.85rem'>Điểm sau hiệu chỉnh: {pho_pct:.1f}%</div>
                 </div>""",
             unsafe_allow_html=True,
         )
@@ -366,7 +390,7 @@ def show_result(res: dict, pipeline: dict, source_label: str = ""):
                 "Chủ đề":     cls,
                 "SVM %":      f"{res['svm_probs'].get(cls, 0)*100:.1f}",
                 "PhoBERT %":  f"{res['pho_probs'].get(cls, 0)*100:.1f}",
-                "Combined %": f"{res['all_probs'].get(cls, 0)*100:.1f}",
+                "Kết hợp %": f"{res['all_probs'].get(cls, 0)*100:.1f}",
             })
         st.dataframe(pd.DataFrame(rows), hide_index=True, use_container_width=True)
 
@@ -375,19 +399,13 @@ def show_result(res: dict, pipeline: dict, source_label: str = ""):
         st.subheader("Nội dung bài báo")
         if res["title"]:
             st.markdown(f"**Tiêu đề:** {res['title']}")
-        st.text_area(
-            "_content",
-            value=res["content_preview"] or "(không có nội dung)",
-            height=460,
-            disabled=True,
-            label_visibility="collapsed",
-        )
+        render_content_preview(res["content_preview"], height=460)
 
     # Lưu lịch sử
     st.session_state.history.insert(0, {
         "Thời gian":  datetime.datetime.now().strftime("%H:%M:%S"),
         "Nguồn":      source_label[:70] or res["title"][:70] or "—",
-        "Ensemble":   res["pred_class"],
+        "Kết hợp":    res["pred_class"],
         "SVM":        res["svm_pred"],
         "PhoBERT":    res["pho_pred"],
         "Đồng thuận": "✅" if res["agree"] else "❌",
@@ -398,7 +416,7 @@ def show_result(res: dict, pipeline: dict, source_label: str = ""):
 # ── Tab Lịch sử ───────────────────────────────────────────────────────────────
 def show_history():
     if not st.session_state.get("history"):
-        st.info("Chưa có lịch sử phân loại trong session này.")
+        st.info("Chưa có lịch sử phân loại trong phiên này.")
         return
 
     df = pd.DataFrame(st.session_state.history)
@@ -422,14 +440,80 @@ def show_history():
 # ── Main ──────────────────────────────────────────────────────────────────────
 def main():
     st.set_page_config(
-        page_title="Phân loại tin tức — Ensemble",
+        page_title="Phân loại tin tức — Kết hợp",
         page_icon="🇻🇳",
         layout="wide",
+        initial_sidebar_state="collapsed",
     )
 
-    st.title("🇻🇳 Phân loại tin tức Vietnamnet — Ensemble SVM + PhoBERT")
     st.markdown(
-            "Kết hợp **SVM + TF-IDF** và **PhoBERT** bằng **điểm tin cậy kết hợp**. "
+        """
+        <style>
+        .stApp {
+            background: linear-gradient(180deg, #f8fafc 0%, #eef4f7 100%);
+            color: #14212b;
+        }
+        .stApp [data-testid="stHeader"] {
+            background: rgba(248, 250, 252, 0.88);
+        }
+        .stApp [data-testid="stSidebar"] {
+            background: #f3f6f8;
+        }
+        .stApp [data-testid="stTextInput"] input,
+        .stApp textarea {
+            background: #ffffff !important;
+            color: #14212b !important;
+            border-radius: 10px !important;
+            border: 1px solid #d7e0e7 !important;
+        }
+        .article-preview {
+            background: #ffffff;
+            color: #14212b;
+            border: 1px solid #d7e0e7;
+            border-radius: 14px;
+            padding: 16px 18px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            line-height: 1.7;
+            font-size: 1rem;
+            user-select: text;
+            box-shadow: 0 10px 30px rgba(20, 33, 43, 0.06);
+        }
+        .stTabs [data-baseweb="tab-list"] {
+            gap: 0.5rem;
+        }
+        .stTabs [data-baseweb="tab"] {
+            background: #ffffff;
+            border-radius: 10px 10px 0 0;
+            border: 1px solid #d7e0e7;
+            color: #334a5a;
+            padding: 0.65rem 1rem;
+        }
+        .stTabs [aria-selected="true"] {
+            background: #dff1e7 !important;
+            color: #103326 !important;
+            border-bottom-color: #dff1e7 !important;
+        }
+        .stButton > button, .stDownloadButton > button, .stFormSubmitButton > button {
+            background: #1f7a4f !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 10px !important;
+        }
+        .stProgress > div > div > div > div {
+            background-color: #1f7a4f;
+        }
+        [data-testid="stDataFrame"], .stTextArea, .stAlert {
+            border-radius: 12px;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.title("🇻🇳 Phân loại tin tức Vietnamnet — Kết hợp LinearSVC + PhoBERT")
+    st.markdown(
+            "Kết hợp **LinearSVC + TF-IDF** và **PhoBERT** bằng **điểm tin cậy kết hợp**. "
             "Khi hai mô hình đồng thuận, kết quả đáng tin cậy hơn đáng kể."
     )
 
@@ -439,13 +523,17 @@ def main():
         pipeline = load_svm()
     except Exception as e:
         pipeline = None
-        errors.append(f"❌ Không load được SVM: `{e}`  →  Chạy `main_SVM.ipynb` trước.")
+        errors.append(
+            f"❌ Không load được SVM: `{sanitize_error_text(e)}`  →  Chạy `main_SVM.ipynb` trước."
+        )
 
     try:
         tokenizer, pho_model, pho_cfg, thresholds, temperature, device = load_phobert()
     except Exception as e:
         tokenizer = pho_model = pho_cfg = thresholds = temperature = device = None
-        errors.append(f"❌ Không load được PhoBERT: `{e}`  →  Chạy `main_PhoBERT.ipynb` trước.")
+        errors.append(
+            f"❌ Không load được PhoBERT: `{sanitize_error_text(e)}`  →  Chạy `main_PhoBERT.ipynb` trước."
+        )
 
     if errors:
         for err in errors:
@@ -456,16 +544,16 @@ def main():
     with st.sidebar:
         st.header("Thông tin mô hình")
         st.caption(
-            f"**SVM:** `inference_pipeline.pkl`\n\n"
-            f"Classes: {len(pipeline['classes'])}  \n"
-            f"Max features: {pipeline['config'].get('max_features', '?'):,}"
+            f"**LinearSVC:** đã nạp pipeline\n\n"
+            f"Số chủ đề: {len(pipeline['classes'])}  \n"
+            f"Số đặc trưng tối đa: {pipeline['config'].get('max_features', '?'):,}"
         )
         st.divider()
         st.caption(
-            f"**{pho_cfg.get('model_name', 'PhoBERT')}:** `PhoBERT/model/`\n\n"
-            f"Classes: {len(pho_cfg['classes'])}  \n"
-            f"Device: {device.upper()}  \n"
-            f"Threshold calibration: {'BẬT' if thresholds is not None else 'tắt'}"
+            f"**{pho_cfg.get('model_name', 'PhoBERT')}:** đã nạp model\n\n"
+            f"Số chủ đề: {len(pho_cfg['classes'])}  \n"
+            f"Thiết bị: {device.upper()}  \n"
+            f"Hiệu chỉnh ngưỡng: {'BẬT' if thresholds is not None else 'tắt'}"
         )
         st.divider()
         st.markdown(
@@ -480,7 +568,7 @@ def main():
     st.divider()
 
     tab1, tab2, tab3, tab4 = st.tabs([
-        "🔗 Nhập URL", "📝 Nhập text", "📋 Batch URL", "📜 Lịch sử",
+        "🔗 Nhập URL", "📝 Nhập văn bản", "📋 Nhiều URL", "📜 Lịch sử",
     ])
 
     # ── Tab 1: URL ────────────────────────────────────────────────────────────
@@ -500,11 +588,11 @@ def main():
                         title, content = scrape_article(url.strip())
                     except Exception as e:
                         st.error(f"❌ Không thể tải URL: {e}")
-                        st.info("Dùng tab **📝 Nhập text** để dán nội dung thủ công.")
+                        st.info("Dùng tab **📝 Nhập văn bản** để dán nội dung thủ công.")
                         st.stop()
 
                 if not title and not content:
-                    st.error("❌ Không tìm thấy nội dung — thử tab **📝 Nhập text**.")
+                    st.error("❌ Không tìm thấy nội dung — thử tab **📝 Nhập văn bản**.")
                 else:
                     with st.spinner("Đang chạy SVM + PhoBERT..."):
                         res = ensemble_predict(
@@ -514,7 +602,7 @@ def main():
                     st.divider()
                     show_result(res, pipeline, source_label=url.strip())
 
-    # ── Tab 2: Text ───────────────────────────────────────────────────────────
+    # ── Tab 2: Nhập văn bản ──────────────────────────────────────────────────
     with tab2:
         st.markdown("Dùng khi URL bị chặn (paywall, Cloudflare…).")
         with st.form("form_text", border=False):
@@ -534,9 +622,9 @@ def main():
                     )
                 st.divider()
                 show_result(res2, pipeline,
-                            source_label=t_title.strip()[:70] or "text input")
+                            source_label=t_title.strip()[:70] or "nhập thủ công")
 
-    # ── Tab 3: Batch ──────────────────────────────────────────────────────────
+    # ── Tab 3: Nhiều URL ─────────────────────────────────────────────────────
     with tab3:
         st.markdown("Dán nhiều URL (mỗi dòng 1 URL) — phân loại hàng loạt.")
         with st.form("form_batch", border=False):
@@ -573,7 +661,7 @@ def main():
                         results.append({
                             "URL":        u,
                             "Tiêu đề":    _t[:80],
-                            "Ensemble":   _r["pred_class"],
+                            "Kết hợp":    _r["pred_class"],
                             "SVM":        _r["svm_pred"],
                             "PhoBERT":    _r["pho_pred"],
                             "Đồng thuận": "✅" if _r["agree"] else "❌",
@@ -583,7 +671,7 @@ def main():
                         st.session_state.history.insert(0, {
                             "Thời gian":  datetime.datetime.now().strftime("%H:%M:%S"),
                             "Nguồn":      u[:70],
-                            "Ensemble":   _r["pred_class"],
+                            "Kết hợp":    _r["pred_class"],
                             "SVM":        _r["svm_pred"],
                             "PhoBERT":    _r["pho_pred"],
                             "Đồng thuận": "✅" if _r["agree"] else "❌",
@@ -592,7 +680,7 @@ def main():
                     except Exception as e:
                         results.append({
                             "URL":        u, "Tiêu đề": "—",
-                            "Ensemble":   "—", "SVM": "—", "PhoBERT": "—",
+                            "Kết hợp":    "—", "SVM": "—", "PhoBERT": "—",
                             "Đồng thuận": "—", "Tin cậy": "—",
                             "Trạng thái": f"❌ {e}",
                         })

@@ -1,25 +1,25 @@
 # PhoBERT
 
-Tài liệu này mô tả nhánh PhoBERT của project: notebook train, artifact model và app demo.
+Tài liệu này mô tả nhánh PhoBERT của project: notebook train, artifact model và app.
 
-Nếu bạn chỉ muốn chạy nhanh, đọc [QUICK_START.md](./QUICK_START.md).
+Nếu chỉ cần bắt đầu nhanh, đọc [QUICK_START.md](./QUICK_START.md).
 
 ## Mục tiêu
 
-Nhánh này phân loại bài báo Vietnamnet vào 19 chủ đề bằng mô hình transformer tiếng Việt.
+Nhánh này phân loại bài báo VietNamNet bằng transformer tiếng Việt.
 
-Cấu hình hiện tại của notebook dùng:
+Cấu hình hiện tại:
 
 - `vinai/phobert-base-v2`
-- chiến lược `head-tail`
-- weighted loss cho dữ liệu lệch lớp
-- threshold calibration sau train
+- head-tail tokenization
+- weighted loss
+- threshold calibration
 
 Nhánh này phù hợp khi:
 
 - ưu tiên độ chính xác cao hơn SVM
-- có GPU để train hoặc inference nhanh hơn
-- cần xác suất class và calibration tốt hơn
+- cần score xác suất từ transformer
+- muốn tối ưu tốt hơn cho các lớp khó hoặc ít mẫu
 
 ## Cấu trúc thư mục
 
@@ -29,16 +29,7 @@ PhoBERT/
 ├── README.md
 ├── QUICK_START.md
 ├── app/
-│   ├── app_PhoBERT.py
-│   ├── app_PhoBERT.ipynb
-│   ├── README.md
-│   └── QUICK_START.md
 ├── model/
-│   ├── model.safetensors
-│   ├── config.json
-│   ├── tokenizer_config.json
-│   ├── label_config.json
-│   └── thresholds.json
 ├── results/
 └── temp/
 ```
@@ -53,42 +44,47 @@ PhoBERT/
 4. tiền xử lý tiếng Việt
 5. tokenize theo chiến lược head-tail
 6. fine-tune PhoBERT
-7. đánh giá accuracy, F1-weighted, F1-macro và các biểu đồ theo từng lớp
-8. export `label_config.json`
-9. threshold calibration và lưu `thresholds.json`
-10. in thêm section chẩn đoán để xem class yếu, delta F1 trước/sau calibration, confusion pairs và gợi ý tối ưu tiếp theo
+7. đánh giá bằng accuracy, F1-weighted, F1-macro và biểu đồ theo class
+8. export model và `label_config.json`
+9. calibration và lưu `thresholds.json`
+10. in thêm phần chẩn đoán để xem class yếu
 
 ## Visualization đầu ra
 
-Notebook hiện lưu các hình trong `results/` theo hướng dễ giải thích hơn:
+Notebook lưu trong `results/`:
 
-- `01_class_distribution.png`: số mẫu theo class và tỷ lệ từng class
-- `02_text_length.png`: phân bố độ dài văn bản với median, P90, P95 và boxplot theo class
-- `03_confusion_matrix.png`: confusion matrix chuẩn hóa, raw counts và top confusion pairs
-- `04_f1_per_class.png`: Precision / Recall / F1 theo từng class
-- `05_support_vs_f1.png`: tương quan giữa support và F1 để nhìn ra lớp ít mẫu nhưng khó
-- `06_training_curves.png`: loss, accuracy và F1 theo tiến trình fine-tune
-- `07_threshold_calibration.png`: delta F1 sau calibration và threshold của từng class
+- `01_class_distribution.png`
+- `02_text_length.png`
+- `03_confusion_matrix.png`
+- `04_f1_per_class.png`
+- `05_training_curves.png`
+- `06_threshold_calibration.png`
+- `07_support_vs_f1.png`
+
+Các biểu đồ hiện tại:
+
+- không dùng pie chart
+- có confusion matrix raw counts và normalized
+- training curves gói gọn vào 3 chart chính
+- calibration có thêm delta F1 theo class và threshold theo class
 
 ## Tiền xử lý
 
-Pipeline hiện tại của notebook PhoBERT dùng:
+Pipeline hiện dùng:
 
 1. ghép `title + content`
 2. lowercase
 3. bỏ dấu câu
 4. bỏ số
 5. `ViTokenizer`
-6. không loại stopwords
+6. chuẩn hóa khoảng trắng
 
 Metadata export hiện ghi:
 
 - `title_weight = 1`
 - `stopwords = False`
 
-## Mô hình hiện tại
-
-Cấu hình hiện tại của notebook là:
+## Cấu hình chính hiện tại
 
 - `MODEL_NAME = "vinai/phobert-base-v2"`
 - `MAX_LENGTH = 256`
@@ -96,37 +92,25 @@ Cấu hình hiện tại của notebook là:
 - `LR = 1e-5`
 - `metric_for_best_model = "f1_macro"`
 
-Trên máy 12 GB VRAM, notebook đang ưu tiên `phobert-base-v2` thay vì `phobert-large`.
+## Cache và logic `Run All`
 
-## Threshold calibration
+Logic hiện tại:
 
-Sau khi train và đánh giá, notebook có thêm bước threshold calibration.
-
-Kết quả được lưu tại:
-
-- `model/thresholds.json`
-
-File này chứa:
-
-- `temperature`
-- threshold riêng cho từng class
-
-Inference sau này có thể dùng:
-
-- softmax sau temperature scaling
-- chia tiếp theo threshold để ra quyết định class cuối cùng
+- nếu `model/` đã có model export, notebook bỏ qua fine-tune
+- nếu `model/thresholds.json` đã tồn tại, notebook bỏ qua calibration grid search
+- notebook vẫn load model để chạy inference trên tập test, in báo cáo và vẽ
 
 ## File đầu ra quan trọng
 
-### 1. `model/`
+### `model/`
 
-Trainer sẽ lưu:
+Chứa:
 
-- model
-- tokenizer
-- config
+- `model.safetensors`
+- `config.json`
+- `tokenizer_config.json`
 
-### 2. `model/label_config.json`
+### `model/label_config.json`
 
 Chứa:
 
@@ -136,39 +120,22 @@ Chứa:
 - `id2label`
 - metadata preprocessing
 
-### 3. `model/thresholds.json`
+### `model/thresholds.json`
 
 Chứa:
 
 - `temperature`
-- threshold per-class
+- threshold theo từng class
 
 ## Thư viện cần cài
-
-Nhánh PhoBERT cần các thư viện:
-
-- `pandas`
-- `numpy`
-- `torch`
-- `transformers`
-- `accelerate`
-- `matplotlib`
-- `seaborn`
-- `scikit-learn`
-- `pyvi`
-- `pyarrow`
-- `tqdm`
-- `scipy`
-
-Ví dụ cài nhanh:
 
 ```bash
 pip install transformers accelerate pandas numpy matplotlib seaborn scikit-learn pyvi pyarrow tqdm scipy
 ```
 
-PyTorch cần cài theo đúng CUDA của máy bạn.
+PyTorch cần cài đúng theo CUDA hoặc CPU của máy.
 
-Nếu muốn chạy app PhoBERT, cài thêm:
+Nếu muốn chạy app, cài thêm:
 
 ```bash
 pip install streamlit requests beautifulsoup4
@@ -178,72 +145,30 @@ pip install streamlit requests beautifulsoup4
 
 Mở [main_PhoBERT.ipynb](./main_PhoBERT.ipynb) và chạy từ trên xuống.
 
-Notebook có cache cho các bước nặng như:
-
-- processed data
-- dataset đã tokenize
-
 Nếu muốn train lại từ đầu:
 
 1. xóa `temp/`
 2. xóa `model/`
 3. chạy lại notebook
 
-Nếu chỉ muốn fine-tune lại:
+## Cách đọc nhanh kết quả
 
-1. xóa `model/`
-2. giữ `temp/`
-3. chạy lại từ phần train trở xuống
-
-Sau khi notebook chạy xong, section chẩn đoán cuối notebook sẽ in:
-
-- các class yếu nhất sau calibration
-- các class ít mẫu nhất
-- class tăng hoặc giảm F1 nhiều nhất sau threshold calibration
-- class đang thiếu recall hoặc thiếu precision sau calibration
-- top cặp class bị nhầm nhiều nhất
-- gợi ý tuning tiếp theo cho PhoBERT
-
-Nếu muốn đọc kết quả nhanh, nên nhìn theo thứ tự:
+Nên xem theo thứ tự:
 
 1. `03_confusion_matrix.png`
 2. `04_f1_per_class.png`
-3. `05_support_vs_f1.png`
-4. `07_threshold_calibration.png`
+3. `06_threshold_calibration.png`
+4. `07_support_vs_f1.png`
 
 ## Cách chạy app
 
-App của nhánh này nằm trong [app/](./app/).
-
-Chạy bằng terminal:
+Từ thư mục `PhoBERT/`, chạy:
 
 ```bash
-cd PhoBERT
 streamlit run app/app_PhoBERT.py
 ```
 
-Hoặc dùng notebook launcher:
-
-- [app/app_PhoBERT.ipynb](./app/app_PhoBERT.ipynb)
-
-Tài liệu app chi tiết:
+Tài liệu app:
 
 - [app/README.md](./app/README.md)
 - [app/QUICK_START.md](./app/QUICK_START.md)
-
-## Khi nào cần restart app
-
-Bạn nên restart app khi:
-
-- vừa train lại model
-- vừa cập nhật `label_config.json`
-- vừa cập nhật `thresholds.json`
-- vừa sửa `app/app_PhoBERT.py`
-
-## Tóm tắt
-
-Nhánh PhoBERT là pipeline mạnh hơn về mặt mô hình. Nó phù hợp khi bạn cần:
-
-- mô hình ngữ cảnh tốt hơn SVM
-- xác suất class từ transformer
-- threshold calibration cho các lớp khó hoặc ít mẫu
