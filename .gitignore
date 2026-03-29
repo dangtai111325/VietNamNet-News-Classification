@@ -1,30 +1,17 @@
-# ========================
-# IGNORE DATA & MODEL
+﻿# ========================
+# DATA ARTIFACTS
 # ========================
 
-# Dataset
-Dataset/**
-**/Dataset/**
-# Ngoại lệ: giữ lại các file URL/debug JSON (không chứa data nặng)
-!Dataset/
-!**/Dataset/
-!Dataset/**/*.json
-!**/Dataset/**/*.json
+# Chỉ bỏ qua dữ liệu parquet nặng
+*.parquet
+**/*.parquet
 
-# Model
+# Bỏ qua cache và model đã huấn luyện
 model/
 **/model/
 
-# Temp
 temp/
 **/temp/
-
-# ========================
-# KEEP ONLY CODE FILES
-# ========================
-
-# Ignore everything else in those folders (optional safety)
-# (không cần nếu bạn đã ignore folder trên)
 
 # ========================
 # PYTHON
@@ -42,6 +29,7 @@ __pycache__/
 # ========================
 .env
 venv/
+.venv/
 
 # ========================
 # OS

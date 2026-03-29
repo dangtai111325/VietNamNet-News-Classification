@@ -1,152 +1,409 @@
-# VietNamNet's News Classification
+﻿# VietNamNet News Classification
 
-Project này phân loại bài báo tiếng Việt của VietNamNet vào 19 chủ đề bằng 2 hướng chính:
+## 1. Đây là dự án gì?
 
-- `SVM/`: TF-IDF + `LinearSVC`
-- `PhoBERT/`: `vinai/phobert-base-v2`
+Đây là dự án phân loại tin tức tiếng Việt theo **19 chuyên mục** bằng mô hình **PhoBERT**.
 
-Ngoài ra repo còn có:
-- `Combined_Model_App/`: app kết hợp điểm từ SVM và PhoBERT
-- `Crawling Data/`: notebook crawl dữ liệu và tạo dataset
+Toàn bộ quy trình được gom vào một notebook duy nhất:
 
-## Tải Full Project
+- `VietNamNet_News_Classification.ipynb`
 
-Do GitHub không đẩy kèm toàn bộ dataset, cache và artifact model lớn, bạn có thể tải bản đầy đủ tại:
+Notebook này được thiết kế để chạy theo đúng trình tự thực tế:
 
-- Google Drive: <https://drive.google.com/drive/folders/1gW393KCdnYU4TDWjDZZBluvZT9aqSLIp?usp=drive_link>
+1. Thu thập danh sách bài viết từ VietNamNet
+2. Crawl tiêu đề và nội dung
+3. Làm sạch và chuẩn hóa dữ liệu
+4. Tiền xử lý văn bản
+5. Tokenize dữ liệu cho PhoBERT
+6. Huấn luyện mô hình
+7. Đánh giá mô hình
+8. Hiệu chỉnh ngưỡng dự đoán
+9. Lưu mô hình, cache và kết quả ra thư mục
 
-Phù hợp khi bạn muốn:
+Nếu bạn là người mới, bạn có thể hiểu ngắn gọn như sau:
 
-- mở project và chạy ngay mà không phải tạo lại toàn bộ cache
-- có sẵn model để `Run All` notebook hoặc chạy app
-- lấy các thư mục không được đưa lên GitHub
+- `dataset` là nơi chứa dữ liệu tin tức
+- `temp` là nơi chứa các file trung gian để tránh xử lý lại từ đầu
+- `model` là nơi chứa mô hình sau khi huấn luyện
+- `result` là nơi chứa hình ảnh và báo cáo đánh giá
 
-## Cấu trúc repo
+Notebook đã giữ lại logic xử lý sẵn có, bao gồm cả cơ chế kiểm tra cache để:
+
+- không crawl lại nếu dữ liệu URL đã tồn tại
+- không crawl lại nội dung nếu file dữ liệu đã có
+- không tokenize lại nếu cache xử lý trung gian đã có
+- không huấn luyện lại nếu mô hình đã tồn tại
+- không hiệu chỉnh lại ngưỡng nếu file cấu hình ngưỡng đã có
+
+Nói cách khác, đây là một notebook có thể chạy toàn bộ pipeline, nhưng cũng biết cách tận dụng kết quả cũ để tiết kiệm thời gian.
+
+### Tải bản đầy đủ của project
+
+Nếu bạn không muốn chạy lại toàn bộ pipeline từ đầu, hoặc chỉ muốn mở project để xem ngay dữ liệu, cache, mô hình và kết quả đã sinh sẵn, bạn có thể tải bản đầy đủ của project tại đây:
+
+- `https://drive.google.com/drive/folders/14-C9U6N_7IOZmfA17Uf_1IzTO0v08bhQ?usp=drive_link`
+
+Sau khi tải về, hãy giữ nguyên cấu trúc thư mục của project để notebook nhận đúng các thư mục `dataset`, `temp`, `model` và `result`.
+## 2. Dự án này phù hợp với ai?
+
+Tài liệu này được viết cho:
+
+- người mới học về xử lý ngôn ngữ tự nhiên
+- người mới dùng Jupyter Notebook hoặc VS Code để chạy notebook
+- người muốn hiểu toàn bộ luồng từ thu thập dữ liệu đến huấn luyện mô hình
+- người cần một project tương đối gọn để trình bày đồ án, bài tập lớn hoặc nghiên cứu nhỏ
+
+Bạn không cần hiểu hết toàn bộ machine learning ngay từ đầu. Chỉ cần đi đúng thứ tự trong tài liệu và chạy notebook từ trên xuống là có thể bắt đầu.
+
+## 3. Mục tiêu của notebook
+
+Notebook này có 3 mục tiêu chính:
+
+### 3.1. Thu thập dữ liệu tin tức
+
+Notebook crawl dữ liệu từ VietNamNet theo nhiều chuyên mục khác nhau và lưu kết quả xuống thư mục `dataset`.
+
+### 3.2. Huấn luyện mô hình phân loại
+
+Notebook sử dụng PhoBERT để học cách phân biệt bài viết thuộc chuyên mục nào.
+
+### 3.3. Đánh giá và lưu kết quả
+
+Sau khi huấn luyện, notebook sẽ:
+
+- tính các chỉ số đánh giá
+- vẽ biểu đồ
+- lưu báo cáo
+- lưu mô hình để dùng lại
+
+## 4. Các chuyên mục trong bài toán
+
+Bài toán hiện sử dụng 19 chuyên mục tin tức. Tên chuyên mục trong dữ liệu có thể xuất hiện ở dạng slug không dấu để thuận tiện cho lưu tệp. Ví dụ:
+
+- `thoi-su`
+- `the-gioi`
+- `kinh-doanh`
+- `cong-nghe`
+- `giao-duc`
+- `suc-khoe`
+- `the-thao`
+- `phap-luat`
+- `du-lich`
+- `doi-song`
+- `oto-xe-may`
+- `bat-dong-san`
+- `bao-ve-nguoi-tieu-dung`
+- `thi-truong-tieu-dung`
+- `van-hoa-giai-tri`
+- `dan-toc-ton-giao`
+- `chinh-tri`
+- `ban-doc`
+- `tuan-viet-nam`
+
+Bạn không cần tự tạo nhãn bằng tay nếu notebook đã có sẵn logic xử lý dữ liệu và nhãn bên trong.
+
+## 5. Cấu trúc thư mục của dự án
+
+Sau khi chạy notebook, dự án thường có cấu trúc như sau:
 
 ```text
-VietNamNet News Classification/
-├── Dataset/
-├── Crawling Data/
-├── SVM/
-├── PhoBERT/
-├── Combined_Model_App/
-├── README.md
-└── SETUP.md
+VietNamNet_News_Classification/
+├─ dataset/
+├─ model/
+├─ result/
+├─ temp/
+├─ QUICK_START.md
+├─ README.md
+└─ VietNamNet_News_Classification.ipynb
 ```
 
-## 19 chủ đề
+Ý nghĩa của từng phần:
 
-- Bạn đọc
-- Bảo vệ người tiêu dùng
-- Bất động sản
-- Chính trị
-- Công nghệ
-- Dân tộc - Tôn giáo
-- Đời sống
-- Du lịch
-- Giáo dục
-- Kinh doanh
-- Ô tô - Xe máy
-- Pháp luật
-- Sức khỏe
-- Thế giới
-- Thể thao
-- Thị trường tiêu dùng
-- Thời sự
-- Tuần Việt Nam
-- Văn hóa - Giải trí
+### 5.1. `VietNamNet_News_Classification.ipynb`
 
-## Tóm tắt từng thư mục
+Đây là file quan trọng nhất của dự án. Bạn chỉ cần mở file này để đọc và chạy toàn bộ pipeline.
 
-### `Crawling Data/`
+### 5.2. `dataset/`
 
-Notebook `crawl_data.ipynb` dùng để:
+Thư mục này chứa dữ liệu crawl được, ví dụ:
 
-- crawl danh sách URL bài viết theo chuyên mục
-- lấy `title` và `content`
-- lưu dữ liệu về `Dataset/`
+- danh sách URL bài viết
+- dữ liệu parquet theo từng chuyên mục
+- các file ghi nhận URL lỗi hoặc dữ liệu thiếu
 
-Tài liệu:
+Nếu bạn chưa có dữ liệu, notebook sẽ tự tạo thư mục này trong quá trình chạy.
 
-- [Crawling Data/README.md](./Crawling%20Data/README.md)
-- [Crawling Data/QUICK_START.md](./Crawling%20Data/QUICK_START.md)
+### 5.3. `temp/`
 
-### `SVM/`
+Thư mục này chứa các file trung gian để tiết kiệm thời gian xử lý. Ví dụ:
 
-Nhánh SVM hiện dùng:
+- dữ liệu đã tiền xử lý
+- dữ liệu train và test đã tokenize
 
-- `TfidfVectorizer(max_features=150000, ngram_range=(1, 2), min_df=2, sublinear_tf=True)`
-- `LinearSVC(C=1.5, class_weight="balanced")`
+Nếu có cache trong thư mục này, notebook có thể bỏ qua một số bước nặng để chạy nhanh hơn.
 
-Notebook `main_SVM.ipynb` có logic cache:
+### 5.4. `model/`
 
-- nếu đã có `model/model_results.pkl`, notebook sẽ không train lại
-- nếu chỉ có `model/inference_pipeline.pkl`, notebook sẽ predict lại tập test rồi tiếp tục vẽ / đánh giá
-- chỉ train khi chưa có artifact model
+Thư mục này chứa mô hình sau khi huấn luyện, ví dụ:
 
-Tài liệu:
+- trọng số mô hình
+- tokenizer
+- cấu hình nhãn
+- lịch sử huấn luyện
+- file ngưỡng dự đoán
 
-- [SVM/README.md](./SVM/README.md)
-- [SVM/QUICK_START.md](./SVM/QUICK_START.md)
+Nếu mô hình đã tồn tại, notebook có thể dùng lại thay vì huấn luyện từ đầu.
 
-### `PhoBERT/`
+### 5.5. `result/`
 
-Nhánh PhoBERT hiện dùng:
+Thư mục này chứa kết quả đầu ra phục vụ phân tích và báo cáo, ví dụ:
 
-- `vinai/phobert-base-v2`
-- head-tail tokenization
-- weighted loss
-- threshold calibration
+- biểu đồ phân phối lớp
+- biểu đồ độ dài văn bản
+- confusion matrix
+- biểu đồ F1 theo lớp
+- đường cong huấn luyện
+- báo cáo phân loại dạng văn bản
 
-Notebook `main_PhoBERT.ipynb` có logic cache:
+## 6. Notebook gồm những phần nào?
 
-- nếu `PhoBERT/model/` đã có model export, notebook bỏ qua fine-tune
-- nếu đã có `PhoBERT/model/thresholds.json`, notebook bỏ qua calibration grid search
-- notebook vẫn load model để chạy đánh giá và vẽ biểu đồ
+Notebook được chia thành các phần lớn để bạn dễ theo dõi:
 
-Tài liệu:
+### 6.1. Phần 1 - Thu thập dữ liệu từ VietNamNet
 
-- [PhoBERT/README.md](./PhoBERT/README.md)
-- [PhoBERT/QUICK_START.md](./PhoBERT/QUICK_START.md)
+Phần này tập trung vào dữ liệu đầu vào.
 
-### `Combined_Model_App/`
+Các công việc chính:
 
-App kết hợp:
+- chuẩn bị môi trường crawl
+- crawl danh sách URL
+- crawl tiêu đề và nội dung bài viết
+- lưu dữ liệu vào `dataset`
 
-- load pipeline SVM
-- load model PhoBERT
-- chuẩn hóa điểm của từng nhánh
-- đưa ra dự đoán cuối cùng và hiển thị kết quả riêng của từng model
+### 6.2. Phần 2 - Xây dựng mô hình PhoBERT
 
-Tài liệu:
+Phần này là lõi của bài toán phân loại.
 
-- [Combined_Model_App/README.md](./Combined_Model_App/README.md)
-- [Combined_Model_App/QUICK_START.md](./Combined_Model_App/QUICK_START.md)
+Các công việc chính:
 
-## Cách bắt đầu nhanh
+- đọc dữ liệu thô
+- khám phá dữ liệu
+- tiền xử lý văn bản
+- tokenize theo chiến lược đã có trong notebook
+- chia train và test
+- huấn luyện mô hình
+- đánh giá kết quả
+- xuất mô hình
+- hiệu chỉnh ngưỡng dự đoán
+- chẩn đoán lỗi mô hình
 
-### Cách đầy đủ
+## 7. Cơ chế cache và tại sao bạn cần hiểu phần này
 
-1. Tạo dataset bằng [Crawling Data/crawl_data.ipynb](./Crawling%20Data/crawl_data.ipynb).
-2. Chạy một trong hai notebook train:
-   - [SVM/main_SVM.ipynb](./SVM/main_SVM.ipynb)
-   - [PhoBERT/main_PhoBERT.ipynb](./PhoBERT/main_PhoBERT.ipynb)
-3. Chạy app:
-   - `streamlit run SVM/app/app_SVM.py`
-   - `streamlit run PhoBERT/app/app_PhoBERT.py`
-   - `streamlit run Combined_Model_App/app_combined.py`
+Người mới thường gặp một nhầm lẫn: tại sao chạy notebook nhưng có bước chạy rất nhanh, có bước gần như bị bỏ qua?
 
-### Cách nhanh nếu đã có model
+Lý do là notebook có logic tận dụng file có sẵn. Điều này là bình thường và là chủ đích.
 
-```bash
-streamlit run SVM/app/app_SVM.py
-streamlit run PhoBERT/app/app_PhoBERT.py
-streamlit run Combined_Model_App/app_combined.py
-```
+Ví dụ:
 
-## Ghi chú
+- nếu đã có file URL thì không cần crawl lại danh sách URL
+- nếu đã có dữ liệu parquet thì không cần crawl lại nội dung
+- nếu đã có file xử lý trung gian thì không cần xử lý lại
+- nếu đã có mô hình thì có thể bỏ qua train
+- nếu đã có file ngưỡng thì có thể bỏ qua hiệu chỉnh lại
 
-- Các notebook hiện được chỉnh theo hướng `Run All` an toàn hơn với cache có sẵn.
-- Các app đều có giao diện sáng và khung preview nội dung bài báo có thể cuộn, chọn và copy.
-- Sau khi thay đổi model, preprocessing, artifact hoặc đường dẫn, cần cập nhật lại tài liệu của thư mục liên quan.
-- Hướng dẫn cài đặt và chạy tổng thể nằm ở [SETUP.md](./SETUP.md).
+Điều này giúp:
+
+- tiết kiệm thời gian
+- tránh lặp lại bước nặng
+- dễ tiếp tục công việc nếu notebook bị dừng giữa chừng
+
+## 8. Khi nào nên chạy lại từ đầu?
+
+Bạn nên chạy lại từ đầu khi:
+
+- muốn thu thập dữ liệu mới hoàn toàn
+- muốn tạo lại toàn bộ cache
+- muốn huấn luyện lại mô hình từ đầu
+- muốn kiểm tra lại toàn bộ pipeline trong môi trường sạch
+
+Trong trường hợp đó, bạn có thể xóa các thư mục sau:
+
+- `dataset`
+- `temp`
+- `model`
+- `result`
+
+Sau đó mở notebook và chạy lại từ ô đầu tiên.
+
+Nếu bạn chỉ muốn huấn luyện lại mô hình mà vẫn dùng dữ liệu cũ, bạn thường chỉ cần xóa:
+
+- `model`
+- `temp`
+- `result`
+
+Việc xóa thư mục nào là quyết định kỹ thuật quan trọng, vì nó ảnh hưởng trực tiếp đến thời gian chạy.
+
+## 9. Cần chuẩn bị gì trước khi chạy?
+
+Bạn cần có:
+
+- máy tính chạy Windows
+- Python đã cài sẵn
+- Jupyter Notebook hoặc VS Code có hỗ trợ notebook
+- các thư viện Python cần thiết
+- kết nối mạng nếu muốn crawl dữ liệu mới
+
+Nếu bạn chỉ muốn đọc notebook thì không cần cài đầy đủ mọi thứ. Nhưng nếu muốn chạy toàn bộ pipeline, bạn cần môi trường Python hoạt động bình thường.
+
+Phần hướng dẫn thiết lập cụ thể đã được gộp vào file `QUICK_START.md`.
+
+## 10. Cách đọc notebook nếu bạn là người mới hoàn toàn
+
+Đây là cách đọc dễ nhất:
+
+### Bước 1. Đọc phần tiêu đề và mô tả đầu notebook
+
+Mục tiêu là hiểu notebook làm gì, đầu ra là gì, và các thư mục nào sẽ được tạo.
+
+### Bước 2. Chạy lần lượt từ trên xuống
+
+Không nên chạy nhảy cóc nếu bạn chưa hiểu rõ phụ thuộc giữa các ô.
+
+### Bước 3. Quan sát thư mục sinh ra sau mỗi giai đoạn
+
+Ví dụ:
+
+- sau phần crawl, thư mục `dataset` sẽ thay đổi
+- sau phần tokenize, thư mục `temp` sẽ có thêm file cache
+- sau phần train, thư mục `model` sẽ có mô hình
+- sau phần evaluate, thư mục `result` sẽ có biểu đồ và báo cáo
+
+### Bước 4. Đọc log trong từng ô
+
+Log cho biết notebook đang làm gì:
+
+- đang đọc dữ liệu
+- đang bỏ qua bước nào vì đã có cache
+- đang train mô hình
+- đang đánh giá
+
+Nếu notebook dừng vì lỗi, log thường là nơi đầu tiên bạn cần xem.
+
+## 11. Kết quả bạn sẽ nhận được sau khi chạy
+
+Tùy theo trạng thái dữ liệu và cache, sau khi chạy thành công bạn thường sẽ có:
+
+- dữ liệu tin tức đã crawl trong `dataset`
+- dữ liệu trung gian trong `temp`
+- mô hình PhoBERT trong `model`
+- các biểu đồ và báo cáo trong `result`
+
+Ví dụ một số tệp đầu ra thường gặp:
+
+- `model.safetensors`
+- `label_config.json`
+- `train_history.pkl`
+- `thresholds.json`
+- `classification_report.txt`
+- các hình `.png` trong thư mục `result`
+
+## 12. Trường hợp nào notebook có thể chạy lâu?
+
+Một số bước có thể mất thời gian đáng kể:
+
+- crawl dữ liệu
+- tokenize dữ liệu lớn
+- huấn luyện PhoBERT
+- đánh giá và sinh biểu đồ
+
+Nếu máy không có GPU, bước huấn luyện có thể chậm hơn nhiều.
+
+Điều này không có nghĩa là notebook bị lỗi. Hãy quan sát ô đang chạy và log đi kèm.
+
+## 13. Những lỗi người mới hay gặp
+
+### 13.1. Thiếu thư viện
+
+Dấu hiệu:
+
+- notebook báo không import được một thư viện nào đó
+
+Cách xử lý:
+
+- cài thư viện còn thiếu theo hướng dẫn trong `QUICK_START.md`
+
+### 13.2. Sai môi trường Python
+
+Dấu hiệu:
+
+- bạn đã cài thư viện nhưng notebook vẫn báo thiếu
+
+Cách xử lý:
+
+- kiểm tra xem notebook đang dùng đúng kernel Python hay chưa
+- nếu dùng VS Code, chọn lại kernel tương ứng với môi trường đã cài thư viện
+
+### 13.3. Lỗi do cache cũ
+
+Dấu hiệu:
+
+- dữ liệu hoặc mô hình cũ làm kết quả không giống mong đợi
+
+Cách xử lý:
+
+- xóa thư mục cache phù hợp như `temp`, `model`, `result`, hoặc `dataset` nếu cần chạy lại hoàn toàn
+
+### 13.4. Lỗi tiếng Việt hiển thị sai
+
+Dấu hiệu:
+
+- chữ tiếng Việt bị vỡ dấu, sai dấu hoặc hiện ký tự lạ
+
+Cách xử lý:
+
+- mở file bằng UTF-8
+- trong VS Code, kiểm tra góc phải dưới và bảo đảm encoding là `UTF-8`
+- tránh mở và lưu lại file bằng phần mềm cũ không hỗ trợ UTF-8 đúng cách
+
+## 14. Khuyến nghị chạy cho người mới
+
+Nếu đây là lần đầu bạn chạy dự án, cách an toàn nhất là:
+
+1. Đọc hết `QUICK_START.md`
+2. Mở `VietNamNet_News_Classification.ipynb`
+3. Chọn đúng Python kernel
+4. Chạy từng ô từ trên xuống
+5. Không sửa code ngay trong lần chạy đầu tiên
+6. Chỉ bắt đầu chỉnh sửa khi bạn đã hiểu thư mục nào sinh ra file gì
+
+## 15. Nên đọc file nào trước?
+
+Thứ tự khuyến nghị:
+
+1. `README.md`
+2. `QUICK_START.md`
+3. `VietNamNet_News_Classification.ipynb`
+
+Nếu bạn chỉ muốn chạy nhanh, có thể đọc ngay `QUICK_START.md`.
+
+## 16. Tóm tắt ngắn gọn
+
+Nếu bạn chỉ cần nắm ý chính:
+
+- dự án này dùng một notebook duy nhất
+- notebook làm từ crawl dữ liệu đến train và đánh giá mô hình
+- dữ liệu, cache, mô hình và kết quả được tách thành 4 thư mục rõ ràng
+- notebook giữ lại logic dùng cache để tránh chạy lại từ đầu
+- người mới nên chạy theo thứ tự từ trên xuống và không bỏ qua phần chuẩn bị môi trường
+
+## 17. Tài liệu đi kèm
+
+Trong thư mục gốc hiện chỉ còn 2 file hướng dẫn:
+
+- `README.md`: giải thích tổng thể, dành cho người mới đọc để hiểu dự án
+- `QUICK_START.md`: hướng dẫn cài đặt và chạy thật chi tiết theo từng bước
+
+Nếu bạn cần bắt đầu ngay, hãy mở `QUICK_START.md`.
+
+
+
