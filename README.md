@@ -41,7 +41,7 @@ Nói cách khác, đây là một notebook có thể chạy toàn bộ pipeline,
 
 Nếu bạn không muốn chạy lại toàn bộ pipeline từ đầu, hoặc chỉ muốn mở project để xem ngay dữ liệu, cache, mô hình và kết quả đã sinh sẵn, bạn có thể tải bản đầy đủ của project tại đây:
 
-- `https://drive.google.com/drive/folders/14-C9U6N_7IOZmfA17Uf_1IzTO0v08bhQ?usp=drive_link`
+- `https://drive.google.com/drive/folders/15mhxu9HvnUgui8ZgpKCp9fTYfQ5A0CsT?usp=sharing`
 
 Sau khi tải về, hãy giữ nguyên cấu trúc thư mục của project để notebook nhận đúng các thư mục `dataset`, `temp`, `model` và `result`.
 ### Repo GitHub hiện đang chứa gì?
