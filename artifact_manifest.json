@@ -1,0 +1,1216 @@
+{
+  "schema_version": 3,
+  "canonical_run_id": "phobert_headtail_seed42",
+  "status": "trained",
+  "dataset_signature": "1f8da97346d2a0ff4af19ba6718050d6c6e01e6b541b6e978aa9a4cf6e6d3da2",
+  "dataset_files": [
+    {
+      "name": "ban-doc.parquet",
+      "size": 25386359
+    },
+    {
+      "name": "bat-dong-san.parquet",
+      "size": 28001517
+    },
+    {
+      "name": "chinh-tri.parquet",
+      "size": 32601136
+    },
+    {
+      "name": "cong-nghe.parquet",
+      "size": 27768542
+    },
+    {
+      "name": "cong-nghiep-ho-tro.parquet",
+      "size": 2983873
+    },
+    {
+      "name": "dan-toc-thieu-so-va-mien-nui.parquet",
+      "size": 1903544
+    },
+    {
+      "name": "dan-toc-ton-giao.parquet",
+      "size": 10417541
+    },
+    {
+      "name": "data_URLs_clean.json",
+      "size": 21187321
+    },
+    {
+      "name": "data_URLs_meta.json",
+      "size": 16162
+    },
+    {
+      "name": "data_URLs_raw.json",
+      "size": 21736957
+    },
+    {
+      "name": "data_URLs_removed.json",
+      "size": 2416780
+    },
+    {
+      "name": "doi-song.parquet",
+      "size": 28488719
+    },
+    {
+      "name": "du-lich.parquet",
+      "size": 22435203
+    },
+    {
+      "name": "giao-duc.parquet",
+      "size": 24297694
+    },
+    {
+      "name": "kinh-doanh.parquet",
+      "size": 29844209
+    },
+    {
+      "name": "noi-dung-chuyen-de.parquet",
+      "size": 29977278
+    },
+    {
+      "name": "nong-thon-moi.parquet",
+      "size": 2490035
+    },
+    {
+      "name": "oto-xe-may.parquet",
+      "size": 25713065
+    },
+    {
+      "name": "suc-khoe.parquet",
+      "size": 24607274
+    },
+    {
+      "name": "the-gioi.parquet",
+      "size": 16498873
+    },
+    {
+      "name": "the-thao.parquet",
+      "size": 16140959
+    },
+    {
+      "name": "thoi-su.parquet",
+      "size": 18815540
+    },
+    {
+      "name": "tuan-viet-nam.parquet",
+      "size": 45905583
+    },
+    {
+      "name": "van-hoa-giai-tri.parquet",
+      "size": 23418658
+    }
+  ],
+  "files": [
+    {
+      "path": "app/artifacts/active.json",
+      "size": 183,
+      "sha256": "3ba5d018485db65f70f18777770e0076348aed3533efbe9291a4ee0c43365131",
+      "role": "app/artifacts"
+    },
+    {
+      "path": "model/added_tokens.json",
+      "size": 25,
+      "sha256": "6887f87ac991379ea91aedb4dd5e1af4f6ee38693ec0ca1c2b6209559ce283d8",
+      "role": "model"
+    },
+    {
+      "path": "model/bpe.codes",
+      "size": 1135173,
+      "sha256": "9dfe53fb8abbddd3387da99641c36e00bee757a3679aad9cf0a7cdc4b30f6ef8",
+      "role": "model"
+    },
+    {
+      "path": "model/config.json",
+      "size": 2417,
+      "sha256": "44b108d647200173ded09bd09b607084f1e4d38a25419b5d308097b09e21603e",
+      "role": "model"
+    },
+    {
+      "path": "model/label_config.json",
+      "size": 2152,
+      "sha256": "719d879c5682ce0ada6d11180dc5735257b9c820aa44008f95a6e4fd8fffabc7",
+      "role": "model"
+    },
+    {
+      "path": "model/model.safetensors",
+      "size": 540078752,
+      "sha256": "607f3240935fa1a977d37555f2dc980f68645dcad1da0578ff3b036aa060deb4",
+      "role": "model"
+    },
+    {
+      "path": "model/thresholds.json",
+      "size": 1919,
+      "sha256": "ec7de7a7b394ceb1207a9270c078b8d1ec1c84262ed3a3834a5ec6cfc33d069a",
+      "role": "model"
+    },
+    {
+      "path": "model/tokenizer_config.json",
+      "size": 1261,
+      "sha256": "e16b59f51a947719a68bdb13ac0e41cde2d18bdd19578359cf1f72b5e74f50d2",
+      "role": "model"
+    },
+    {
+      "path": "model/train_history.pkl",
+      "size": 12581,
+      "sha256": "2777a12cf2ad68e94132a632e863793c5a17c564bac227593d050dfcc23ca3a7",
+      "role": "model"
+    },
+    {
+      "path": "model/training_args.bin",
+      "size": 5265,
+      "sha256": "9721d995e307368db9917fe6f1de8cac6f37190dbc1cbedbe8051e06dc0a84d5",
+      "role": "model"
+    },
+    {
+      "path": "model/vocab.txt",
+      "size": 895321,
+      "sha256": "dffd7543c401fb6567253ae7c3313004532c33d062525250049c616544bad777",
+      "role": "model"
+    },
+    {
+      "path": "report/source_latex/assets/application/admin_ops.png",
+      "size": 73991,
+      "sha256": "d639888ece5871d88345651b3abcc455d9e641c846cbb0f32d667924b36e6f03",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/application/article_review.png",
+      "size": 98807,
+      "sha256": "03eb083b1e7e13e116f50b727215ea416ba07c079b4c94aff57d801d2d78c517",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/application/dataset_lab.png",
+      "size": 71036,
+      "sha256": "7a75b04df8878e7cb2b28d94b8474f48e87943b14e71c144e5949da73d98820b",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/application/editor_dashboard.png",
+      "size": 45239,
+      "sha256": "c13f1222eb428d2b55af6395d5aa13f5e0e9df0a01ba6fba82752e71d7dd8cf6",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/application/label_review.png",
+      "size": 70392,
+      "sha256": "c0aad6cd6128e271188a7b0638f00128ed01928ef15651524ce00a1617f8874b",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/application/login.png",
+      "size": 55999,
+      "sha256": "0bcd2b0cfc8999cf2bc339c586f292bda93798ca51e2b6c610c4fd0268b933ab",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/application/model_versions.png",
+      "size": 49793,
+      "sha256": "6260c73bb1e2bf87f9ab63a1f7000e09f472937bf85cfe3b4af0d478fc2788d4",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/application/monitoring.png",
+      "size": 49412,
+      "sha256": "4c08b83ae83d093b92ba13966429709a11653aa97e98ef9d46f03f9f537b19c8",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/application/prediction_controls.png",
+      "size": 81331,
+      "sha256": "183c88a9468f9aa5dc1c536c1a50aaf77c598ef11464ec5c210f2a62493a8db3",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/application/review_queue.png",
+      "size": 69747,
+      "sha256": "466f34df6ff0c8e4294348ccb64d6fc66d0c0ae8fddfc068642a195c0a7808cf",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/dataset/class_distribution.png",
+      "size": 329599,
+      "sha256": "f604dc3b667f1437fb743521e00eb197af955356afa69bfa491012abb1e998d5",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/dataset/class_distribution_cleaning.png",
+      "size": 217853,
+      "sha256": "9245ed7f056d05a463923359ef42754da4a859a9a6c9a16f8502619f46f14fb7",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/dataset/clean_class_distribution.png",
+      "size": 209954,
+      "sha256": "cf1cbeca22b295f128b03f61731dc5e2d6202cfdf4abe58853edcb32011d123a",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/dataset/clean_length.png",
+      "size": 84312,
+      "sha256": "709a0d9d622b3c1ad74d2dcf136e2960da0a027b8805758d0b53b0a60df9dbd3",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/dataset/cleaning_decisions.png",
+      "size": 113021,
+      "sha256": "d60f0de810f24176aa30e3a15172c44a7d741ad9d6fa6ab038b2d8bcacc63382",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/dataset/cleaning_transitions.png",
+      "size": 294828,
+      "sha256": "a5cd14dcb79aeacece1c16d102a46bcb88dbe9b45ee36a329485b21c0030aafe",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/dataset/content_length.png",
+      "size": 74761,
+      "sha256": "050d6ff9b3a6d05119e853d4106acf21f0f0cfb23624c83322289e12e98599b1",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/dataset/content_word_length.png",
+      "size": 76771,
+      "sha256": "7d618ab46295ad4db32933990c37300a4c335655f5eb8f6a3fda03f6f1ba4315",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/dataset/length_by_class.png",
+      "size": 219600,
+      "sha256": "e28a6d8849c5b6f618941eaec20975fd1077ac102e6f41b7495c2e3b22274ebb",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/dataset/preprocessing_example.png",
+      "size": 520084,
+      "sha256": "24c7ddf827426f819fb5eb95bb9d7528c684977f1991f3010cb54756fb7e0388",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/dataset/split_distribution.png",
+      "size": 239155,
+      "sha256": "36e4791482a10bf51135e8b5c971eb90e07ad4a059dbd04c7fc8b1e04a4dd5ee",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/dataset/title_length.png",
+      "size": 82252,
+      "sha256": "ff879c6b6e627548977b23b11a7809c98cbf5620f7a7347b0504cea29efa8c8f",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/dataset/token_length.png",
+      "size": 77838,
+      "sha256": "00c845a75a44c53c282cb7661edff91e0126aae3cca9a079e5221c7fa09d0eaa",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/dataset/token_retention.png",
+      "size": 68709,
+      "sha256": "05021aa721595d41f2034c3caf4d5c6b92143141537227a025aac75b4301ffb1",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/dataset/train_test_overlap.png",
+      "size": 84900,
+      "sha256": "54d2b6dcdfa75b86bef7d53f6ecb8d08d9e5047080ac0f78c1b173ea325a174f",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/class_thresholds.png",
+      "size": 211026,
+      "sha256": "9ce2f42c5e4baf9c0512f2cc1dac90135b292e248385f1b0a4c34d4718c927f0",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/confidence_before.png",
+      "size": 64447,
+      "sha256": "58c022d2fa93d2d3ee53c8fb19cff56951a3a3b889e04b93bbf4e08611fd6ece",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/confidence_temperature.png",
+      "size": 61191,
+      "sha256": "91cc6222ed20abac182e121cde8071226f2317074c4c286951b2cb41835110f8",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/confusion_after.png",
+      "size": 356394,
+      "sha256": "fb0d852eedf73ff2e3d5fd687c24a4bd9f9164646eeb3ae5b4e0f64991edce68",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/confusion_after_normalized.png",
+      "size": 315289,
+      "sha256": "a47ab90ea82e6574fa6234a82218b239a5878ae6619f47634b234e1a78de809c",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/confusion_before.png",
+      "size": 360451,
+      "sha256": "0c59987a8dc4a65b9cc261e32712e6f16633814658f2cb0c11ad6f8d5abe447e",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/confusion_before_normalized.png",
+      "size": 317291,
+      "sha256": "090a4370ed97eee7cfae16043f012c61b8f633856367341dd8c2dbbc922c2aaa",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/coverage_accuracy.png",
+      "size": 91724,
+      "sha256": "b862aca1099aa6cfff5098ce7036239e24ea1ced830a0a693d769085d7131960",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/decision_margin.png",
+      "size": 71657,
+      "sha256": "d0b76c85e7d99614bb8dc313ea31206a4c10fc14858153b08a4e9340b7487bc9",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/decision_transitions.png",
+      "size": 59752,
+      "sha256": "24410594fce432d1b8514e7d7a99b2c90536163c242e0bfc9e865bd6a58f1759",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/delta_f1.png",
+      "size": 208236,
+      "sha256": "7f4f1f8b76609c821b1da14ca77d94c4af78e277a43d87eb40a674f28c940217",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/ece_comparison.png",
+      "size": 39038,
+      "sha256": "61ced497e12ba891ac8f5ece36943a83a6a91ed2f226826b23787a505edf5bb0",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/f1_before.png",
+      "size": 198017,
+      "sha256": "ba89aaac11a3628f38c337cbaa59b4c80dffa7093700be5bc241540cdf5b788a",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/nll_comparison.png",
+      "size": 45288,
+      "sha256": "3afca50551e6feee2f3dc2176342cb04715820dd0e29ea19cdf1802bc9242f13",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/per_class_f1.png",
+      "size": 204780,
+      "sha256": "40596365fbc7ec5c6a55fbb9b05a4cc282db24cc125a8b9712c84c32b17e624b",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/per_class_precision.png",
+      "size": 210175,
+      "sha256": "ced99de9e1a36bb5a04abb9f244c75679fdf588e1078dc8b535b166318543e93",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/per_class_recall.png",
+      "size": 208400,
+      "sha256": "07f1e5db4ee861972bb08343c85f487e78db35f5bf1a4d4f76291d4d9d67728e",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/precision_before.png",
+      "size": 203473,
+      "sha256": "7628886529f60f427facd441a34c2fba0b392543d5bd3b2654bd62dfb382b688",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/precision_recall/ban-doc.png",
+      "size": 82840,
+      "sha256": "03dd09a732a9a8447319e45e7d48f513c53a4d13b8233f77b92871c6e22118e2",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/precision_recall/bat-dong-san.png",
+      "size": 87383,
+      "sha256": "0bf7a3d9020eb183aa79ca59b0ce3a8c0e6a7f619a148d2a1193d497fe1464e9",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/precision_recall/chinh-tri.png",
+      "size": 90838,
+      "sha256": "8ac0bb1ba08d7159f330456e1517c5477d846519a09693da1050af0cefd6a7ec",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/precision_recall/cong-nghe.png",
+      "size": 92467,
+      "sha256": "3dc65cc1ac9b3592b04dd32c29f2358310ade07d93ea07c690108797fe964108",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/precision_recall/cong-nghiep-ho-tro.png",
+      "size": 88756,
+      "sha256": "9420a0a18292a7838a7ea42581ea261ab3e2b0f0ad2303993da87f229c7d144b",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/precision_recall/dan-toc-thieu-so-va-mien-nui.png",
+      "size": 104551,
+      "sha256": "45f60f3973ea15782c387faff3496d3d82219810527e1a32053026b8e5b00405",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/precision_recall/dan-toc-ton-giao.png",
+      "size": 107404,
+      "sha256": "6474555a940d2246a444ee39c2c5ba50dea5e7cde2e602d32b9d1e6024442a7b",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/precision_recall/doi-song.png",
+      "size": 95790,
+      "sha256": "d08428e8bb34e85a9bb68336f6cacc11263b05da909c572f2db4e13131307526",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/precision_recall/du-lich.png",
+      "size": 89172,
+      "sha256": "8089449a8fd15ef91b4691464d2effad91b62f3b90ce771bf933123d50f25b39",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/precision_recall/giao-duc.png",
+      "size": 85109,
+      "sha256": "9923583f02efae4cf51e203d9ee549b57c72eb4352bb4cae86141cba67ec0ec9",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/precision_recall/kinh-doanh.png",
+      "size": 92550,
+      "sha256": "a3164d20c62b06d2651e1b498d7528a8286915686d90f49e7d3b5afd767e2853",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/precision_recall/noi-dung-chuyen-de.png",
+      "size": 104596,
+      "sha256": "282ce6fbf984a2a9e524c33437ff6217141f907365691a7af6ea2dad29a5ee5f",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/precision_recall/nong-thon-moi.png",
+      "size": 96920,
+      "sha256": "ee5bfc247c832645daf19ef7c54129af44e66e7b75de71eb66ac0ccb0c40aef7",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/precision_recall/oto-xe-may.png",
+      "size": 82085,
+      "sha256": "bc54a8cc2a5d2185fa1dd2d6e1e7cc2c28631aae23730c1b53294c8c2a7833fe",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/precision_recall/suc-khoe.png",
+      "size": 84985,
+      "sha256": "e1d88eddb70da633ce3126960f0b9de062f51822585ae2f9fda4f397948ff117",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/precision_recall/the-gioi.png",
+      "size": 76887,
+      "sha256": "53bba5a7525e1b4748ac818bb4cd7fd8fbe0226232c96d1fe1cc23f003e82b92",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/precision_recall/the-thao.png",
+      "size": 74167,
+      "sha256": "830f6086d5fa9b943e1e97fb94cb916a766cd97238a89d0c0b9faf51517d36a0",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/precision_recall/thoi-su.png",
+      "size": 83970,
+      "sha256": "fe4f4e57fedd8d5ac8544181919fcd5b7e5cc6b728d77d85fc40fb3f8cd0c9ea",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/precision_recall/tuan-viet-nam.png",
+      "size": 92081,
+      "sha256": "b9e8681b47c1c451252045c1553014726f5dd12bbf4691a43b665b733dfb4f50",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/precision_recall/van-hoa-giai-tri.png",
+      "size": 82213,
+      "sha256": "ec6a7f7938c165b550cdacc6bc0297b5f8faed15bda867236246b56e8af3c5dd",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/recall_before.png",
+      "size": 201692,
+      "sha256": "9da979af20037ef95fcd6b73981b3931645e748562501ddd81682aa019d6014d",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/reliability_before.png",
+      "size": 143083,
+      "sha256": "a5847ba0aa7076f832c851dac4a5fe32fe6fe4143c7f94fb90a63eaeb83039a8",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/reliability_temperature.png",
+      "size": 142307,
+      "sha256": "b9619c1f0bab2de365015fb408d75342b65866d963997c85f3f9bcad28d325c4",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/support_vs_f1.png",
+      "size": 86653,
+      "sha256": "1f0712e9d31c51b15cf88a6b35d6a6872663acba70dfd40d0f576f83e6668e63",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/top_confusions_after.png",
+      "size": 85172,
+      "sha256": "1a75007f1ee4298cd1b009a61bce5dfe51a68adf2d50218a6af59660ea5808cd",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/evaluation/top_confusions_before.png",
+      "size": 85797,
+      "sha256": "3bc22c684fc37f7d5710968e4945926a9309d2e4775a2c4eea1b3685b3e75945",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/logos/Im0.png",
+      "size": 8392,
+      "sha256": "2496ebda4eae45ac7928c261838130e83dc8b8b0656d9fc5ed897b5086b9d52b",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/training/class_weights.png",
+      "size": 61103,
+      "sha256": "80262948dcab9908c10853b85015ba45bb44843523a2d57a92e2f4e0a8326d79",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/training/epoch_duration.png",
+      "size": 61637,
+      "sha256": "4fc7c7db956a989fae1535dff521a6985c26a50049dad96cb745769a580501b5",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/training/eval_accuracy.png",
+      "size": 94840,
+      "sha256": "6f9c575db1f620ba04bddcede2653b7245c96eb47a294f646980cc5269509034",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/training/eval_loss.png",
+      "size": 112041,
+      "sha256": "6c7267e4914f9176c127188d3d71ffc7137dbe3cd167093138bca798cfdf3d47",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/training/eval_macro_f1.png",
+      "size": 104757,
+      "sha256": "f0a3783afe799980d982efee68f46f2659ff8e84452ccd6b6e2cea2d790544ee",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/training/eval_weighted_f1.png",
+      "size": 93210,
+      "sha256": "4adb0e164337f89ea0966eb40349f25afc80d4f1a6111b1e1569a192edd09720",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/training/gradient_norm.png",
+      "size": 134721,
+      "sha256": "894ddd9b5852872542ced53e584871e53f49a3d07b1164f2d6e1e85a0436db7c",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/training/learning_rate.png",
+      "size": 121547,
+      "sha256": "95e6898d4d7565c37e75cdb9e64d8e50fa0a484423e46ddf29c79d3d02d407ed",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/training/train_loss.png",
+      "size": 111283,
+      "sha256": "145cc947a20c5d52c2edfbae0d98eb75acdc8c445933341fd5992d729de68c56",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "report/source_latex/assets/training/train_validation_loss.png",
+      "size": 127245,
+      "sha256": "dc7e0ace002ff49b84e41be1abc8279f2de6e82de1041f8faf146588c62d6c8b",
+      "role": "report/source_latex/assets"
+    },
+    {
+      "path": "result/classification_report.txt",
+      "size": 1889,
+      "sha256": "5fd20dd94059f92a4750b3c249897708ecd73db1615075bc40ff3bb513eaa427",
+      "role": "result"
+    },
+    {
+      "path": "result/evaluation/article_metadata.parquet",
+      "size": 36511171,
+      "sha256": "9d1e06b124dae073c59998611162c23945a43c304433f015bd1765f612054b93",
+      "role": "result"
+    },
+    {
+      "path": "result/evaluation/class_balance.json",
+      "size": 3803,
+      "sha256": "25faa498fdc511e68cb9c1f591babd9e9395645064e7c2f4f882de3699101817",
+      "role": "result"
+    },
+    {
+      "path": "result/evaluation/classification_report_after.json",
+      "size": 3620,
+      "sha256": "0c672e655bc90209112d125d8241ce0516333c56c1b8e9eb09a1bb7d502e8957",
+      "role": "result"
+    },
+    {
+      "path": "result/evaluation/classification_report_before.json",
+      "size": 3623,
+      "sha256": "1ee92df3fb73d0a7621789e8c41a015cb0f181c329ca918db323c95d97c8899e",
+      "role": "result"
+    },
+    {
+      "path": "result/evaluation/confusion_matrix_after.json",
+      "size": 4981,
+      "sha256": "394389a327ba948aee802ae0317079d193d907b5f9b2c2497b2cbba093544ba9",
+      "role": "result"
+    },
+    {
+      "path": "result/evaluation/confusion_matrix_before.json",
+      "size": 4986,
+      "sha256": "e7ec140303ffc99a0a216876e573db39045b4758d09340b5029dda0bf704f7c3",
+      "role": "result"
+    },
+    {
+      "path": "result/evaluation/dataset_audit.json",
+      "size": 18941,
+      "sha256": "97e826c03942a612021550e635230b8d4d1735d5e93757b2efe69606c8314c7a",
+      "role": "result"
+    },
+    {
+      "path": "result/evaluation/dataset_lengths.npz",
+      "size": 1657683,
+      "sha256": "ff727b505ebac67f48885be56c6363e86a2d03abce1c3ab79bbf8b235b9de465",
+      "role": "result"
+    },
+    {
+      "path": "result/evaluation/decision_transitions.json",
+      "size": 106,
+      "sha256": "8662587b2bad345589b617548e36d9e5b62a05d07e143749cba8b1107c78c939",
+      "role": "result"
+    },
+    {
+      "path": "result/evaluation/error_examples.json",
+      "size": 289315,
+      "sha256": "8323c36966db2836f484618fc0e78789da1b1bfdbbde33ca79f34e1c5aca272f",
+      "role": "result"
+    },
+    {
+      "path": "result/evaluation/evaluation_manifest.json",
+      "size": 1850,
+      "sha256": "ad5adeac0aaf0f18dab6bf2b363fa10885fe951675cdc36574f3897187ac911e",
+      "role": "result"
+    },
+    {
+      "path": "result/evaluation/gpu_execution.json",
+      "size": 238,
+      "sha256": "c908f1f32d8f0a2e6e57796921e201bb8903c7cd1cf05f0785543316e81904d3",
+      "role": "result"
+    },
+    {
+      "path": "result/evaluation/logits.npz",
+      "size": 1107897,
+      "sha256": "6399345e66201b323b85dcb1a2ee879e3229d07a8b80d155d76d70e209185bc7",
+      "role": "result"
+    },
+    {
+      "path": "result/evaluation/metrics.json",
+      "size": 1305,
+      "sha256": "235a67beaf8e13dba395173fe55d1dc5670058bbbfa03e113883a20e1698cd79",
+      "role": "result"
+    },
+    {
+      "path": "result/evaluation/predictions.parquet",
+      "size": 1326464,
+      "sha256": "ea00b8269af62babf7731f744a1764f92721a79b77d0905d305688b06d5aff33",
+      "role": "result"
+    },
+    {
+      "path": "result/evaluation/preprocessing_examples.json",
+      "size": 2883,
+      "sha256": "486b6312e245e572c79bda03bb0466ebbb1670c05563f3183c767317f75a2e0c",
+      "role": "result"
+    },
+    {
+      "path": "result/evaluation/routing_simulation.json",
+      "size": 742,
+      "sha256": "3a56579f4cc41f8e34254415054ee5f0dc8a7b37478cd592e0caf7d85575413a",
+      "role": "result"
+    },
+    {
+      "path": "result/evaluation/split_manifest.json",
+      "size": 2889103,
+      "sha256": "c080445cfb14dc66e11902ed1566d5720b2f91fb12d5a55dec753176e234d763",
+      "role": "result"
+    },
+    {
+      "path": "result/evaluation/test_metrics.json",
+      "size": 1305,
+      "sha256": "235a67beaf8e13dba395173fe55d1dc5670058bbbfa03e113883a20e1698cd79",
+      "role": "result"
+    },
+    {
+      "path": "result/evaluation/training_history.json",
+      "size": 40249,
+      "sha256": "e6ded1a704abaa95edccb1f3236e01dfd73abeece9f5177dfa17cb6e091d4627",
+      "role": "result"
+    },
+    {
+      "path": "result/evaluation/validation_logits.npz",
+      "size": 1107591,
+      "sha256": "f72c7074ef200317373d96653b751bdadb414c257bf2d618ca9d9152eecfb762",
+      "role": "result"
+    },
+    {
+      "path": "result/evaluation/validation_metrics.json",
+      "size": 410,
+      "sha256": "54c58d68eb62261cd6ffbd239e671782496ee6e0e376959b9f98a8128242155c",
+      "role": "result"
+    },
+    {
+      "path": "result/evaluation/validation_predictions.parquet",
+      "size": 258030,
+      "sha256": "2b06a56345ef2839a5f3adbe1805d8bd590e27b382160ad8882497744386f947",
+      "role": "result"
+    },
+    {
+      "path": "result/figure_manifest.json",
+      "size": 16691,
+      "sha256": "d8fa8855aae8327bf57789ac97d388c0bf2cf141da65850103c86743ae161f2b",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/dataset/class_distribution.png",
+      "size": 329599,
+      "sha256": "f604dc3b667f1437fb743521e00eb197af955356afa69bfa491012abb1e998d5",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/dataset/class_distribution_cleaning.png",
+      "size": 217853,
+      "sha256": "9245ed7f056d05a463923359ef42754da4a859a9a6c9a16f8502619f46f14fb7",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/dataset/clean_class_distribution.png",
+      "size": 209954,
+      "sha256": "cf1cbeca22b295f128b03f61731dc5e2d6202cfdf4abe58853edcb32011d123a",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/dataset/clean_length.png",
+      "size": 84312,
+      "sha256": "709a0d9d622b3c1ad74d2dcf136e2960da0a027b8805758d0b53b0a60df9dbd3",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/dataset/cleaning_decisions.png",
+      "size": 113021,
+      "sha256": "d60f0de810f24176aa30e3a15172c44a7d741ad9d6fa6ab038b2d8bcacc63382",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/dataset/cleaning_transitions.png",
+      "size": 294828,
+      "sha256": "a5cd14dcb79aeacece1c16d102a46bcb88dbe9b45ee36a329485b21c0030aafe",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/dataset/content_length.png",
+      "size": 74761,
+      "sha256": "050d6ff9b3a6d05119e853d4106acf21f0f0cfb23624c83322289e12e98599b1",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/dataset/content_word_length.png",
+      "size": 76771,
+      "sha256": "7d618ab46295ad4db32933990c37300a4c335655f5eb8f6a3fda03f6f1ba4315",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/dataset/length_by_class.png",
+      "size": 219600,
+      "sha256": "e28a6d8849c5b6f618941eaec20975fd1077ac102e6f41b7495c2e3b22274ebb",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/dataset/preprocessing_example.png",
+      "size": 520084,
+      "sha256": "24c7ddf827426f819fb5eb95bb9d7528c684977f1991f3010cb54756fb7e0388",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/dataset/split_distribution.png",
+      "size": 239155,
+      "sha256": "36e4791482a10bf51135e8b5c971eb90e07ad4a059dbd04c7fc8b1e04a4dd5ee",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/dataset/title_length.png",
+      "size": 82252,
+      "sha256": "ff879c6b6e627548977b23b11a7809c98cbf5620f7a7347b0504cea29efa8c8f",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/dataset/token_length.png",
+      "size": 77838,
+      "sha256": "00c845a75a44c53c282cb7661edff91e0126aae3cca9a079e5221c7fa09d0eaa",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/dataset/token_retention.png",
+      "size": 68709,
+      "sha256": "05021aa721595d41f2034c3caf4d5c6b92143141537227a025aac75b4301ffb1",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/dataset/train_test_overlap.png",
+      "size": 84900,
+      "sha256": "54d2b6dcdfa75b86bef7d53f6ecb8d08d9e5047080ac0f78c1b173ea325a174f",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/class_thresholds.png",
+      "size": 211026,
+      "sha256": "9ce2f42c5e4baf9c0512f2cc1dac90135b292e248385f1b0a4c34d4718c927f0",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/confidence_before.png",
+      "size": 64447,
+      "sha256": "58c022d2fa93d2d3ee53c8fb19cff56951a3a3b889e04b93bbf4e08611fd6ece",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/confidence_temperature.png",
+      "size": 61191,
+      "sha256": "91cc6222ed20abac182e121cde8071226f2317074c4c286951b2cb41835110f8",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/confusion_after.png",
+      "size": 356394,
+      "sha256": "fb0d852eedf73ff2e3d5fd687c24a4bd9f9164646eeb3ae5b4e0f64991edce68",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/confusion_after_normalized.png",
+      "size": 315289,
+      "sha256": "a47ab90ea82e6574fa6234a82218b239a5878ae6619f47634b234e1a78de809c",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/confusion_before.png",
+      "size": 360451,
+      "sha256": "0c59987a8dc4a65b9cc261e32712e6f16633814658f2cb0c11ad6f8d5abe447e",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/confusion_before_normalized.png",
+      "size": 317291,
+      "sha256": "090a4370ed97eee7cfae16043f012c61b8f633856367341dd8c2dbbc922c2aaa",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/coverage_accuracy.png",
+      "size": 91724,
+      "sha256": "b862aca1099aa6cfff5098ce7036239e24ea1ced830a0a693d769085d7131960",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/decision_margin.png",
+      "size": 71657,
+      "sha256": "d0b76c85e7d99614bb8dc313ea31206a4c10fc14858153b08a4e9340b7487bc9",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/decision_transitions.png",
+      "size": 59752,
+      "sha256": "24410594fce432d1b8514e7d7a99b2c90536163c242e0bfc9e865bd6a58f1759",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/delta_f1.png",
+      "size": 208236,
+      "sha256": "7f4f1f8b76609c821b1da14ca77d94c4af78e277a43d87eb40a674f28c940217",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/ece_comparison.png",
+      "size": 39038,
+      "sha256": "61ced497e12ba891ac8f5ece36943a83a6a91ed2f226826b23787a505edf5bb0",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/f1_before.png",
+      "size": 198017,
+      "sha256": "ba89aaac11a3628f38c337cbaa59b4c80dffa7093700be5bc241540cdf5b788a",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/nll_comparison.png",
+      "size": 45288,
+      "sha256": "3afca50551e6feee2f3dc2176342cb04715820dd0e29ea19cdf1802bc9242f13",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/per_class_f1.png",
+      "size": 204780,
+      "sha256": "40596365fbc7ec5c6a55fbb9b05a4cc282db24cc125a8b9712c84c32b17e624b",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/per_class_precision.png",
+      "size": 210175,
+      "sha256": "ced99de9e1a36bb5a04abb9f244c75679fdf588e1078dc8b535b166318543e93",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/per_class_recall.png",
+      "size": 208400,
+      "sha256": "07f1e5db4ee861972bb08343c85f487e78db35f5bf1a4d4f76291d4d9d67728e",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/precision_before.png",
+      "size": 203473,
+      "sha256": "7628886529f60f427facd441a34c2fba0b392543d5bd3b2654bd62dfb382b688",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/precision_recall/ban-doc.png",
+      "size": 82840,
+      "sha256": "03dd09a732a9a8447319e45e7d48f513c53a4d13b8233f77b92871c6e22118e2",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/precision_recall/bat-dong-san.png",
+      "size": 87383,
+      "sha256": "0bf7a3d9020eb183aa79ca59b0ce3a8c0e6a7f619a148d2a1193d497fe1464e9",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/precision_recall/chinh-tri.png",
+      "size": 90838,
+      "sha256": "8ac0bb1ba08d7159f330456e1517c5477d846519a09693da1050af0cefd6a7ec",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/precision_recall/cong-nghe.png",
+      "size": 92467,
+      "sha256": "3dc65cc1ac9b3592b04dd32c29f2358310ade07d93ea07c690108797fe964108",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/precision_recall/cong-nghiep-ho-tro.png",
+      "size": 88756,
+      "sha256": "9420a0a18292a7838a7ea42581ea261ab3e2b0f0ad2303993da87f229c7d144b",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/precision_recall/dan-toc-thieu-so-va-mien-nui.png",
+      "size": 104551,
+      "sha256": "45f60f3973ea15782c387faff3496d3d82219810527e1a32053026b8e5b00405",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/precision_recall/dan-toc-ton-giao.png",
+      "size": 107404,
+      "sha256": "6474555a940d2246a444ee39c2c5ba50dea5e7cde2e602d32b9d1e6024442a7b",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/precision_recall/doi-song.png",
+      "size": 95790,
+      "sha256": "d08428e8bb34e85a9bb68336f6cacc11263b05da909c572f2db4e13131307526",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/precision_recall/du-lich.png",
+      "size": 89172,
+      "sha256": "8089449a8fd15ef91b4691464d2effad91b62f3b90ce771bf933123d50f25b39",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/precision_recall/giao-duc.png",
+      "size": 85109,
+      "sha256": "9923583f02efae4cf51e203d9ee549b57c72eb4352bb4cae86141cba67ec0ec9",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/precision_recall/kinh-doanh.png",
+      "size": 92550,
+      "sha256": "a3164d20c62b06d2651e1b498d7528a8286915686d90f49e7d3b5afd767e2853",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/precision_recall/noi-dung-chuyen-de.png",
+      "size": 104596,
+      "sha256": "282ce6fbf984a2a9e524c33437ff6217141f907365691a7af6ea2dad29a5ee5f",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/precision_recall/nong-thon-moi.png",
+      "size": 96920,
+      "sha256": "ee5bfc247c832645daf19ef7c54129af44e66e7b75de71eb66ac0ccb0c40aef7",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/precision_recall/oto-xe-may.png",
+      "size": 82085,
+      "sha256": "bc54a8cc2a5d2185fa1dd2d6e1e7cc2c28631aae23730c1b53294c8c2a7833fe",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/precision_recall/suc-khoe.png",
+      "size": 84985,
+      "sha256": "e1d88eddb70da633ce3126960f0b9de062f51822585ae2f9fda4f397948ff117",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/precision_recall/the-gioi.png",
+      "size": 76887,
+      "sha256": "53bba5a7525e1b4748ac818bb4cd7fd8fbe0226232c96d1fe1cc23f003e82b92",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/precision_recall/the-thao.png",
+      "size": 74167,
+      "sha256": "830f6086d5fa9b943e1e97fb94cb916a766cd97238a89d0c0b9faf51517d36a0",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/precision_recall/thoi-su.png",
+      "size": 83970,
+      "sha256": "fe4f4e57fedd8d5ac8544181919fcd5b7e5cc6b728d77d85fc40fb3f8cd0c9ea",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/precision_recall/tuan-viet-nam.png",
+      "size": 92081,
+      "sha256": "b9e8681b47c1c451252045c1553014726f5dd12bbf4691a43b665b733dfb4f50",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/precision_recall/van-hoa-giai-tri.png",
+      "size": 82213,
+      "sha256": "ec6a7f7938c165b550cdacc6bc0297b5f8faed15bda867236246b56e8af3c5dd",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/recall_before.png",
+      "size": 201692,
+      "sha256": "9da979af20037ef95fcd6b73981b3931645e748562501ddd81682aa019d6014d",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/reliability_before.png",
+      "size": 143083,
+      "sha256": "a5847ba0aa7076f832c851dac4a5fe32fe6fe4143c7f94fb90a63eaeb83039a8",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/reliability_temperature.png",
+      "size": 142307,
+      "sha256": "b9619c1f0bab2de365015fb408d75342b65866d963997c85f3f9bcad28d325c4",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/support_vs_f1.png",
+      "size": 86653,
+      "sha256": "1f0712e9d31c51b15cf88a6b35d6a6872663acba70dfd40d0f576f83e6668e63",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/top_confusions_after.png",
+      "size": 85172,
+      "sha256": "1a75007f1ee4298cd1b009a61bce5dfe51a68adf2d50218a6af59660ea5808cd",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/evaluation/top_confusions_before.png",
+      "size": 85797,
+      "sha256": "3bc22c684fc37f7d5710968e4945926a9309d2e4775a2c4eea1b3685b3e75945",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/training/class_weights.png",
+      "size": 61103,
+      "sha256": "80262948dcab9908c10853b85015ba45bb44843523a2d57a92e2f4e0a8326d79",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/training/epoch_duration.png",
+      "size": 61637,
+      "sha256": "4fc7c7db956a989fae1535dff521a6985c26a50049dad96cb745769a580501b5",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/training/eval_accuracy.png",
+      "size": 94840,
+      "sha256": "6f9c575db1f620ba04bddcede2653b7245c96eb47a294f646980cc5269509034",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/training/eval_loss.png",
+      "size": 112041,
+      "sha256": "6c7267e4914f9176c127188d3d71ffc7137dbe3cd167093138bca798cfdf3d47",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/training/eval_macro_f1.png",
+      "size": 104757,
+      "sha256": "f0a3783afe799980d982efee68f46f2659ff8e84452ccd6b6e2cea2d790544ee",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/training/eval_weighted_f1.png",
+      "size": 93210,
+      "sha256": "4adb0e164337f89ea0966eb40349f25afc80d4f1a6111b1e1569a192edd09720",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/training/gradient_norm.png",
+      "size": 134721,
+      "sha256": "894ddd9b5852872542ced53e584871e53f49a3d07b1164f2d6e1e85a0436db7c",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/training/learning_rate.png",
+      "size": 121547,
+      "sha256": "95e6898d4d7565c37e75cdb9e64d8e50fa0a484423e46ddf29c79d3d02d407ed",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/training/train_loss.png",
+      "size": 111283,
+      "sha256": "145cc947a20c5d52c2edfbae0d98eb75acdc8c445933341fd5992d729de68c56",
+      "role": "result"
+    },
+    {
+      "path": "result/figures/training/train_validation_loss.png",
+      "size": 127245,
+      "sha256": "dc7e0ace002ff49b84e41be1abc8279f2de6e82de1041f8faf146588c62d6c8b",
+      "role": "result"
+    }
+  ]
+}

@@ -1,0 +1,115 @@
+import { RoleType, Tone } from "./types";
+
+export const toneClassMap: Record<Tone, string> = {
+  navy: "tone-navy",
+  teal: "tone-teal",
+  coral: "tone-coral",
+  green: "tone-green",
+  violet: "tone-violet",
+  gold: "tone-gold",
+  pink: "tone-pink",
+  muted: "tone-muted",
+};
+
+export function cn(...parts: Array<string | false | null | undefined>): string {
+  return parts.filter(Boolean).join(" ");
+}
+
+export function formatPercent(value: number): string {
+  return `${Math.round(value * 100)}%`;
+}
+
+export function formatScore(value: number): string {
+  return value.toFixed(2);
+}
+
+const taxonomyLabelMap: Record<string, string> = {
+  "Bạn đọc": "Readers",
+  "Bất động sản": "Real Estate",
+  "Chính trị": "Politics",
+  "Công nghệ": "Technology",
+  "Công nghiệp hỗ trợ": "Supporting Industry",
+  "Nông thôn mới": "New Rural Development",
+  "Nội dung chuyên đề": "Special Topics",
+  "Dân tộc thiểu số và miền núi": "Ethnic Minorities & Mountainous Areas",
+  "Dân tộc - Tôn giáo": "Ethnic & Religion",
+  "Đời sống": "Lifestyle",
+  "Du lịch": "Travel",
+  "Giáo dục": "Education",
+  "Kinh doanh": "Business",
+  "Ô tô - Xe máy": "Cars & Bikes",
+  "Sức khỏe": "Health",
+  "Thế giới": "World",
+  "Thể thao": "Sports",
+  "Thời sự": "News",
+  "Tuần Việt Nam": "Tuan Viet Nam",
+  "Văn hóa - Giải trí": "Culture & Entertainment",
+};
+
+export function translateLabel(label: string): string {
+  return taxonomyLabelMap[label] ?? label;
+}
+
+export function toneForLabel(label: string): Tone {
+  const normalized = label.toLowerCase();
+  if (normalized.includes("chính trị") || normalized.includes("thời sự")) {
+    return "navy";
+  }
+  if (normalized.includes("công nghệ") || normalized.includes("ai")) {
+    return "teal";
+  }
+  if (normalized.includes("giáo dục")) {
+    return "gold";
+  }
+  if (normalized.includes("kinh doanh") || normalized.includes("thị trường")) {
+    return "coral";
+  }
+  if (normalized.includes("văn hóa") || normalized.includes("giải trí")) {
+    return "violet";
+  }
+  return "muted";
+}
+
+const sidebarHrefMap: Record<string, string> = {
+  dashboard: "/editor/dashboard",
+  review: "/editor/review",
+  classifier: "/editor/classifier",
+  admin: "/admin/ops",
+  monitoring: "/scientist/monitoring",
+  versions: "/scientist/versions",
+  dataset: "/scientist/dataset",
+};
+
+const roleSidebarItems: Record<RoleType, Set<string>> = {
+  editor: new Set(["dashboard", "review", "classifier"]),
+  admin: new Set(["admin"]),
+  "data-scientist": new Set(["monitoring", "versions", "dataset"]),
+};
+
+const rolePathPrefixes: Record<RoleType, string[]> = {
+  editor: ["/editor/dashboard", "/editor/review", "/editor/classifier"],
+  admin: ["/admin/ops"],
+  "data-scientist": ["/scientist/monitoring", "/scientist/versions", "/scientist/dataset"],
+};
+
+export function defaultPathForRole(role: RoleType): string {
+  if (role === "admin") {
+    return "/admin/ops";
+  }
+  return role === "editor" ? "/editor/dashboard" : "/scientist/monitoring";
+}
+
+export function isPathAllowedForRole(pathname: string, role: RoleType): boolean {
+  return rolePathPrefixes[role].some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));
+}
+
+export function isSidebarItemAllowedForRole(itemId: string, role: RoleType): boolean {
+  return roleSidebarItems[role].has(itemId);
+}
+
+export function hrefForSidebarItem(itemId: string, role?: RoleType): string | null {
+  if (role && !isSidebarItemAllowedForRole(itemId, role)) {
+    return null;
+  }
+  return sidebarHrefMap[itemId] ?? null;
+}

@@ -1,0 +1,52 @@
+\documentclass[12pt,a4paper,oneside]{report}
+\input{preamble}
+\begin{document}
+\begin{titlepage}
+\centering
+{\large\bfseries ĐẠI HỌC QUỐC GIA TP. HỒ CHÍ MINH\\[3 pt]
+TRƯỜNG ĐẠI HỌC BÁCH KHOA\\[3 pt]
+KHOA KHOA HỌC VÀ KỸ THUẬT MÁY TÍNH\par}
+\vspace{13 mm}
+\includegraphics[width=31 mm]{assets/logos/Im0.png}\par
+\vspace{14 mm}
+{\Large\bfseries BÁO CÁO BÀI TẬP\par}
+\vspace{6 mm}
+{\large\bfseries Môn: Cách tiếp cận hiện đại trong xử lý ngôn ngữ tự nhiên\par}
+\vspace{8 mm}
+{\LARGE\bfseries Phân loại chủ đề tin tức tiếng Việt\\[3 pt]
+bằng PhoBERT và ứng dụng hỗ trợ biên tập\par}
+\vspace{6 mm}
+{\Large\bfseries Dữ liệu -- Mô hình -- Ứng dụng\par}
+\vspace{6 mm}
+{\large CO5087 -- Học kỳ 261 (2026--2027)\par}
+\vspace{12 mm}
+{\large Giảng viên: Lê Thành Sách, Nguyễn Quốc Minh\par}
+\vspace{10 mm}
+{\large\bfseries Thực hiện\par}
+\vspace{5 mm}
+{\large Đặng Nguyễn Tấn Tài \qquad 2570357\par}
+\vspace{4 mm}
+{\large Lớp: CH01\par}
+\vfill
+{\large\bfseries Thành phố Hồ Chí Minh, 10/2026\par}
+\end{titlepage}
+\pagenumbering{roman}
+\input{frontmatter}
+\tableofcontents
+\listoffigures
+\listoftables
+\clearpage
+\pagenumbering{arabic}
+\input{chapters/c1_problem}
+\input{chapters/c2_data}
+\input{chapters/c3_model}
+\input{chapters/c4_training}
+\input{chapters/c5_results}
+\input{chapters/c6_application}
+\input{chapters/c7_verification}
+\input{chapters/c8_conclusion}
+\bibliographystyle{plainnat}
+\bibliography{references}
+\appendix
+\input{chapters/appendix}
+\end{document}

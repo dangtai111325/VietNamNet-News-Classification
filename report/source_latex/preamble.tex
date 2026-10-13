@@ -1,0 +1,58 @@
+\usepackage[a4paper,top=25mm,bottom=24mm,left=27mm,right=23mm,headheight=15pt]{geometry}
+\usepackage{fontspec}
+\setmainfont{Times New Roman}
+\setsansfont{Times New Roman}
+\setmonofont{Times New Roman}
+\usepackage{amsmath,amssymb,graphicx,booktabs,array,longtable,float,tabularx}
+\usepackage{unicode-math}
+\setmathfont{Cambria Math}
+\usepackage{indentfirst}
+\usepackage[table]{xcolor}
+\usepackage{enumitem,fancyhdr,titlesec,caption,subcaption,tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit,backgrounds}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=black,citecolor=black,urlcolor=black,
+ pdftitle={CO5087: Vietnamese news classification},pdfauthor={Dang Nguyen Tan Tai}}
+\setlength{\parindent}{1cm}
+\setlength{\parskip}{4pt}
+\linespread{1.1}
+\emergencystretch=4em
+\raggedbottom
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small CO5087: Phân loại tin tức}
+\fancyhead[R]{\small Xử lý ngôn ngữ tự nhiên}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\thepage}\renewcommand{\headrulewidth}{0pt}}
+\titleformat{\chapter}[hang]{\normalfont\LARGE\bfseries}{\thechapter.}{0.6em}{}
+\titlespacing{\chapter}{0pt}{-8pt}{18pt}
+\captionsetup{font=small,labelfont=bf}
+\renewcommand{\contentsname}{Mục lục}
+\renewcommand{\listfigurename}{Danh sách hình vẽ}
+\renewcommand{\listtablename}{Danh sách bảng}
+\renewcommand{\figurename}{Hình}
+\renewcommand{\tablename}{Bảng}
+\renewcommand{\bibname}{Tài liệu tham khảo}
+\renewcommand{\appendixname}{Phụ lục}
+\setlist[itemize]{topsep=3pt,itemsep=2pt,leftmargin=1.6em}
+\tikzset{box/.style={draw=black,align=center,
+ minimum height=12mm,text width=29mm,font=\small,fill=white},
+ fc/.style={box},output/.style={box},
+ flow/.style={-{Latex[length=2mm]},thick},
+ note/.style={align=center,font=\footnotesize,text width=35mm}}
+\newcommand{\ReportFigure}[3][.97]{\begin{figure}[H]\centering
+\includegraphics[width=#1\linewidth,keepaspectratio]{#2}\caption{#3}\end{figure}}
+\newcommand{\DataTable}[2]{\begin{table}[H]\centering\caption{#2}
+\small\setlength{\tabcolsep}{4pt}\input{#1}\end{table}}
+\newcommand{\Evidence}[1]{\begin{tcolorbox}[colback=white,colframe=black,
+ boxrule=.5pt,arc=1mm]#1\end{tcolorbox}}
+\input{architectures}
+
+\newcommand{\PortraitFigure}[2]{\begin{figure}[H]\centering
+\makebox[\linewidth][c]{\includegraphics[width=1.13\linewidth,height=.82\textheight,keepaspectratio]{#1}}
+\caption{#2}\end{figure}}
+
+\newcommand{\PortraitFigureIntro}[3]{#1\PortraitFigure{#2}{#3}}

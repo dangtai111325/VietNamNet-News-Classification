@@ -1,0 +1,149 @@
+{
+  "strategy": "balanced_train_frequency",
+  "formula": "N_train / (N_classes * n_class)",
+  "fit_split": "train",
+  "random_sampling": true,
+  "imbalance_ratio": 13.053097345132743,
+  "classes": [
+    {
+      "id": 0,
+      "label": "Bạn đọc",
+      "train_count": 8483,
+      "train_share": 0.06060367922843365,
+      "loss_weight": 0.82503241777673
+    },
+    {
+      "id": 1,
+      "label": "Bất động sản",
+      "train_count": 8616,
+      "train_share": 0.06155384890158957,
+      "loss_weight": 0.8122968895078923
+    },
+    {
+      "id": 2,
+      "label": "Chính trị",
+      "train_count": 8569,
+      "train_share": 0.06121807465618861,
+      "loss_weight": 0.8167522464698331
+    },
+    {
+      "id": 3,
+      "label": "Công nghiệp hỗ trợ",
+      "train_count": 905,
+      "train_share": 0.0064654402571887835,
+      "loss_weight": 7.733425414364641
+    },
+    {
+      "id": 4,
+      "label": "Công nghệ",
+      "train_count": 7743,
+      "train_share": 0.05531702089658868,
+      "loss_weight": 0.9038809247061862
+    },
+    {
+      "id": 5,
+      "label": "Du lịch",
+      "train_count": 7685,
+      "train_share": 0.054902661189498124,
+      "loss_weight": 0.9107026675341574
+    },
+    {
+      "id": 6,
+      "label": "Dân tộc - Tôn giáo",
+      "train_count": 2590,
+      "train_share": 0.018503304161457405,
+      "loss_weight": 2.702220077220077
+    },
+    {
+      "id": 7,
+      "label": "Dân tộc thiểu số và miền núi",
+      "train_count": 762,
+      "train_share": 0.005443829255224147,
+      "loss_weight": 9.18471128608924
+    },
+    {
+      "id": 8,
+      "label": "Giáo dục",
+      "train_count": 8581,
+      "train_share": 0.06130380425075906,
+      "loss_weight": 0.8156100687565552
+    },
+    {
+      "id": 9,
+      "label": "Kinh doanh",
+      "train_count": 8850,
+      "train_share": 0.06322557599571352,
+      "loss_weight": 0.790819209039548
+    },
+    {
+      "id": 10,
+      "label": "Nông thôn mới",
+      "train_count": 678,
+      "train_share": 0.004843722093230934,
+      "loss_weight": 10.3226401179941
+    },
+    {
+      "id": 11,
+      "label": "Nội dung chuyên đề",
+      "train_count": 8798,
+      "train_share": 0.0628540810859082,
+      "loss_weight": 0.7954932939304388
+    },
+    {
+      "id": 12,
+      "label": "Sức khỏe",
+      "train_count": 8670,
+      "train_share": 0.06193963207715664,
+      "loss_weight": 0.807237600922722
+    },
+    {
+      "id": 13,
+      "label": "Thế giới",
+      "train_count": 8322,
+      "train_share": 0.05945347383461332,
+      "loss_weight": 0.8409937515020428
+    },
+    {
+      "id": 14,
+      "label": "Thể thao",
+      "train_count": 8587,
+      "train_share": 0.06134666904804429,
+      "loss_weight": 0.815040177011762
+    },
+    {
+      "id": 15,
+      "label": "Thời sự",
+      "train_count": 8694,
+      "train_share": 0.062111091266297554,
+      "loss_weight": 0.8050092017483322
+    },
+    {
+      "id": 16,
+      "label": "Tuần Việt Nam",
+      "train_count": 7893,
+      "train_share": 0.056388640828719416,
+      "loss_weight": 0.8867034080831117
+    },
+    {
+      "id": 17,
+      "label": "Văn hóa - Giải trí",
+      "train_count": 8622,
+      "train_share": 0.061596713698874796,
+      "loss_weight": 0.8117316167942473
+    },
+    {
+      "id": 18,
+      "label": "Ô tô - Xe máy",
+      "train_count": 8609,
+      "train_share": 0.06150383997142347,
+      "loss_weight": 0.8129573701939831
+    },
+    {
+      "id": 19,
+      "label": "Đời sống",
+      "train_count": 8318,
+      "train_share": 0.059424897303089835,
+      "loss_weight": 0.8413981726376533
+    }
+  ]
+}

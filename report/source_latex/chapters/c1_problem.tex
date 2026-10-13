@@ -1,0 +1,42 @@
+\chapter{Bài toán và thiết kế thực nghiệm}
+\label{chap:problem}
+\section{Bối cảnh và vấn đề cần giải quyết}
+Một tòa soạn tổ chức bài viết theo chuyên mục để tìm kiếm, điều phối biên tập và phân phối nội dung. Tin tức thường giao thoa: một bài về phát triển du lịch ở vùng dân tộc có thể chứa đồng thời kinh tế, văn hóa và chính sách xã hội. Người biên tập cần xác định trọng tâm cùng quy ước tổ chức của nguồn tin. Một hệ thống chỉ dựa vào vài từ khóa dễ nhầm giữa các chuyên mục có vốn từ chung.
+
+Bài tập lớn xây dựng bộ phân loại 20 chuyên mục VietNamNet. Đầu vào là tiêu đề và nội dung; đầu ra gồm một nhãn chính, các nhãn cạnh tranh và điểm số hỗ trợ rà soát. Mục tiêu là giảm công việc phân loại lặp lại, ưu tiên bài mơ hồ cho người xử lý và lưu phản hồi có truy vết. Hệ thống không coi confidence cao là bảo đảm bài được phân loại đúng.
+
+Khó khăn gồm ranh giới chuyên mục không đồng nhất, lớp ít mẫu, tiếng Việt cần phân đoạn từ và bài báo dài vượt ngữ cảnh mô hình. Một bài xuất hiện ở trang chuyên mục không nhất thiết mang nhãn của trang đó. Chất lượng corpus vì vậy là một phần của bài toán NLP, trước cả lựa chọn kiến trúc neural.
+
+\section{Phát biểu bài toán}
+Với $x_i=(t_i,b_i)$ gồm tiêu đề và nội dung, $y_i\in\mathcal C$, $|\mathcal C|=20$, corpus giám sát là
+\begin{equation}\mathcal D=\{(x_i,y_i)\}_{i=1}^{199\,965}.\end{equation}
+Pipeline $g$ chuẩn hóa văn bản, phân đoạn từ, BPE và Head--Tail. Mô hình sinh $z_i=f_\theta(g(x_i))\in\mathbb R^{20}$. Nhãn cuối là $\hat y_i=\arg\max_c\{\operatorname{softmax}(z_i/T)_c/\tau_c\}$. URL và breadcrumb xác định nguồn cùng nhãn tham chiếu; chúng không được đưa vào tensor đầu vào mô hình.
+
+Đây là phân loại đa lớp đơn nhãn. Top-$k$ là các phương án cạnh tranh, không phải một tập nhãn cùng đúng. Nhãn tham chiếu phản ánh taxonomy của tòa soạn; đánh giá đo sự phù hợp với taxonomy này, không đo tính đúng sai của thông tin trong bài hoặc mức độ phù hợp với mọi cách phân chia chủ đề.
+
+\section{Mục tiêu và câu hỏi nghiên cứu}
+Báo cáo trả lời ba vấn đề: hệ thống giải quyết khó khăn gì, giải quyết bằng quy trình nào và kết quả hỗ trợ được kết luận gì. Cụ thể, cần xác định nhãn ở cấp bài thay vì trang danh sách; kiểm toán dữ liệu trùng trước chia tập; đánh giá cách giới hạn đầu vào; giải thích trọng số lớp, optimizer và chọn checkpoint; tách hiệu chỉnh xác suất khỏi điều chỉnh nhãn; phân tích sai số theo chuyên mục và kiểm tra tính nhất quán khi phục vụ.
+
+Lựa chọn thiết kế và kết quả thực nghiệm có vai trò khác nhau. Weighted cross-entropy nhằm tăng đóng góp của lớp ít mẫu, nhưng lợi ích riêng của nó chỉ được xác nhận bằng đối chứng. Head--Tail giữ hai vùng của bài, nhưng chưa có phép so sánh chứng minh tốt hơn head-only trên corpus này. Báo cáo phân biệt quan sát từ output với giả thuyết cần khảo sát.
+
+\section{Phạm vi và sản phẩm}
+Hai notebook đảm nhiệm hai đầu ra độc lập: notebook dữ liệu tạo corpus sạch; notebook PhoBERT huấn luyện, hiệu chỉnh, đánh giá và xuất gói model. Project chứa dataset, cache, model, kết quả trực quan, ứng dụng hỗ trợ biên tập và nguồn báo cáo. README ở thư mục gốc mô tả toàn bộ quy trình vận hành.
+
+Tác vụ không bao gồm sinh bài, tóm tắt, nhận dạng thực thể hoặc kiểm chứng thông tin. Mô hình chưa có bộ phát hiện ngoài taxonomy. Phản hồi biên tập được lưu để rà soát và chuẩn bị dữ liệu; ứng dụng không tự train lại. Giao diện top-$k$ và các khối mô tả dự đoán không phải attribution của Transformer.
+
+\PipelineDiagram
+\section{Giao thức train, validation và test}
+Sau khử trùng văn bản, phép chia phân tầng seed 42 tạo train 139.975 bài, validation 29.995 bài và test 29.995 bài. Train cập nhật trọng số và tính class weights. Validation đánh giá cuối epoch, chọn checkpoint, tìm temperature cùng hệ số lớp. Test được giữ ngoài các bước fit này và dùng tính chỉ số cuối.
+
+\SplitDiagram
+\Evidence{Không có giao nhau chính xác theo URL, văn bản thô hoặc văn bản sạch giữa ba tập. Test không tham gia chọn checkpoint hay tìm hiệu chỉnh. Tính độc lập này không loại trừ bài gần trùng về ngữ nghĩa, sự kiện chung hoặc khả năng corpus tiền huấn luyện chứa bài từ cùng nguồn.}
+
+Validation được dùng cho cả lựa chọn checkpoint và hiệu chỉnh. Điều đó tạo phụ thuộc giữa hai quyết định thiết kế, nhưng không đưa nhãn test vào tối ưu. Một phép chia calibration riêng hoặc cross-validation có thể khảo sát độ ổn định tham số khi đủ tài nguyên. Dataset đến từ một nguồn; phép chia ngẫu nhiên chưa mô phỏng yêu cầu dự đoán tin ở thời điểm tương lai.
+
+\section{Tiêu chí đánh giá và bằng chứng}
+Macro-F1 là tiêu chí chọn checkpoint để mỗi lớp đóng góp ngang nhau. Accuracy và Weighted-F1 bổ sung góc nhìn theo số lượng bài. Precision, recall, confusion matrix và các ví dụ truy vết được chỉ ra nơi sai số tập trung. NLL, ECE và reliability diagram xem xét xác suất; coverage--accuracy đo đánh đổi khối lượng tự động và sai số.
+
+Tính đúng của ứng dụng được kiểm tra riêng qua artifact, pipeline suy luận, phân quyền, nhập bài, lưu dự đoán, phản hồi, worker và registry. Các ví dụ giao diện được chọn từ corpus để minh họa chức năng, không được cộng vào test hay dùng chứng minh tổng quát hóa. Chỉ số monitoring phụ thuộc nhóm đã được phản hồi và không thay thế đánh giá offline trên 20 lớp.
+
+\section{Tổ chức báo cáo}
+Chương 2 trình bày thu thập, chuẩn hóa nhãn và tiền xử lý. Chương 3 giải thích PhoBERT và biểu diễn đầu vào. Chương 4 trình bày tối ưu cùng hiệu chỉnh. Chương 5 phân tích kết quả, độ tin cậy và giới hạn. Chương 6 mô tả chức năng ứng dụng bằng màn hình thực tế. Chương 7 cung cấp kiểm chứng và tái hiện; chương 8 xác định kết luận cùng hướng cải thiện. Phụ lục có hướng dẫn đọc cell, ví dụ lỗi và từng đường Precision--Recall riêng.

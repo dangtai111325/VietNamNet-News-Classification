@@ -1,0 +1,11 @@
+.venv
+.work
+**/node_modules
+**/__pycache__
+.pytest_cache
+dataset
+temp
+model
+result
+report
+*.ipynb

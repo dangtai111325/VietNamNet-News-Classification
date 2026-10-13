@@ -1,0 +1,59 @@
+{
+  "temperature": 1.4551145705791242,
+  "method": "macro_f1_coordinate_search",
+  "search_range": [
+    0.3,
+    3.5
+  ],
+  "n_grid": 200,
+  "n_passes": 3,
+  "usage": "predict = argmax(softmax(logits / temperature) / thresholds)",
+  "fit_split": "validation",
+  "fit_samples": 29995,
+  "split_signature": "0b664f9a8ddd02ff9707fef569cb6948a970e986e714bcaa6e668de8f52a2161",
+  "evaluation_split": "test",
+  "thresholds": {
+    "Bạn đọc": 0.6055276381909548,
+    "Bất động sản": 0.6376884422110554,
+    "Chính trị": 0.9914572864321609,
+    "Công nghiệp hỗ trợ": 0.9914572864321609,
+    "Công nghệ": 0.9432160804020102,
+    "Du lịch": 1.0879396984924623,
+    "Dân tộc - Tôn giáo": 1.8758793969849248,
+    "Dân tộc thiểu số và miền núi": 0.5733668341708542,
+    "Giáo dục": 0.9753768844221107,
+    "Kinh doanh": 0.7984924623115579,
+    "Nông thôn mới": 0.8467336683417086,
+    "Nội dung chuyên đề": 1.0,
+    "Sức khỏe": 2.036683417085427,
+    "Thế giới": 1.2487437185929648,
+    "Thể thao": 1.0,
+    "Thời sự": 1.3452261306532665,
+    "Tuần Việt Nam": 0.3321608040201005,
+    "Văn hóa - Giải trí": 0.9432160804020102,
+    "Ô tô - Xe máy": 0.5733668341708542,
+    "Đời sống": 1.0557788944723618
+  },
+  "validation_metrics": {
+    "before": {
+      "accuracy": 0.9125520920153359,
+      "f1_weighted": 0.9130330550227257,
+      "f1_macro": 0.8722978524386932
+    },
+    "after": {
+      "accuracy": 0.9154525754292382,
+      "f1_weighted": 0.9157797883850423,
+      "f1_macro": 0.8762234080441932
+    }
+  },
+  "metrics_before": {
+    "accuracy": 0.9108184697449575,
+    "f1_weighted": 0.9111760817545855,
+    "f1_macro": 0.872191423262646
+  },
+  "metrics_after": {
+    "accuracy": 0.9112518753125521,
+    "f1_weighted": 0.9114495095526464,
+    "f1_macro": 0.8725287951344637
+  }
+}

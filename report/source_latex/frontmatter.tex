@@ -1,0 +1,34 @@
+\chapter*{Tóm tắt}
+\addcontentsline{toc}{chapter}{Tóm tắt}
+Phân loại chuyên mục giúp tổ chức bài báo tiếng Việt và hỗ trợ điều phối biên tập. Báo cáo trình bày một quy trình gồm thu thập VietNamNet, xác minh chuyên mục trên từng bài, làm sạch corpus, biểu diễn tiếng Việt, fine-tuning PhoBERT và triển khai đề xuất nhãn có người rà soát. Bài toán sử dụng 20 lớp; nhãn mục con được quy về lớp cha trong taxonomy.
+
+Thu thập tạo 205.463 lượt URL, tương ứng 204.280 URL duy nhất. Sau xác minh, dataset có 200.337 bài; khử trùng văn bản và loại xung đột nhãn tạo corpus 199.965 bài. Phép chia phân tầng seed 42 tạo 139.975 mẫu train, 29.995 mẫu validation và 29.995 mẫu test. Các tập không giao nhau theo URL, văn bản thô và văn bản sau tiền xử lý. Validation chọn checkpoint và fit hiệu chỉnh; test phục vụ đánh giá cuối.
+
+PhoBERT-base-v2 được fine-tune toàn bộ encoder và đầu phân loại bằng weighted cross-entropy, trọng số tính từ train. Head--Tail giữ 127 token đầu và 127 token cuối, cộng hai token đặc biệt thành 256 vị trí. Huấn luyện chạy đủ bảy epoch trên RTX A3000 Laptop 12 GB, trong 207,17 phút; checkpoint epoch 7 đạt Macro-F1 validation 0,8723. Trên test, Accuracy đạt 91,08\% và Macro-F1 đạt 87,22\%; sau hiệu chỉnh đạt 91,13\% và 87,25\%. Temperature scaling giảm NLL từ 0,3839 xuống 0,3220 và ECE từ 0,0603 xuống 0,0251.
+
+Chất lượng khác biệt đáng kể theo lớp. Nông thôn mới đạt F1 0,4639, trong khi Thể thao đạt 0,9880. Báo cáo phân tích mất cân bằng, giao thoa chuyên mục, giới hạn văn bản dài, chuyển đổi đúng/sai và các ví dụ truy vết được về dữ liệu. Mức tăng sau hiệu chỉnh chỉ là 13 bài đúng ròng; không đủ cơ sở kết luận vượt trội thống kê. Chưa có baseline cùng giao thức, thực nghiệm nhiều seed hay kiểm tra theo thời gian và ngoài miền.
+
+Ứng dụng sáu dịch vụ dùng cùng trọng số, tokenizer, mapping và hiệu chỉnh của notebook. Các chức năng nhập bài, dự đoán, rà soát, quản lý ngưỡng, registry và monitoring được kiểm tra với dữ liệu minh họa từ corpus. Chỉ số offline, mô phỏng định tuyến và monitoring từ phản hồi được trình bày theo đúng phạm vi, tránh coi bộ ví dụ giao diện là một tập kiểm tra độc lập.
+
+\chapter*{Danh mục thuật ngữ}
+\addcontentsline{toc}{chapter}{Danh mục thuật ngữ}
+\begin{longtable}{p{32mm}p{118mm}}
+\toprule Thuật ngữ & Ý nghĩa trong báo cáo\\\midrule
+Corpus & Tập bài báo, nhãn chuyên mục và metadata nguồn.\\
+Phân đoạn từ & Xác định từ tiếng Việt gồm một hoặc nhiều âm tiết.\\
+BPE & Mã hóa từ thành các đơn vị subword của tokenizer.\\
+Head--Tail & Giữ đầu và cuối chuỗi token khi vượt giới hạn đầu vào.\\
+Fine-tuning & Cập nhật mô hình tiền huấn luyện cho tác vụ chuyên mục.\\
+Validation & Chọn checkpoint và xác định tham số hiệu chỉnh.\\
+Test độc lập & Tập đánh giá cuối không tham gia chọn hoặc fit tham số.\\
+Macro-F1 & Trung bình F1 của 20 lớp, mỗi lớp đóng góp bằng nhau.\\
+Weighted-F1 & Trung bình F1 theo số mẫu của từng lớp.\\
+NLL & Mất mát log xác suất nhãn tham chiếu, không trọng số lớp.\\
+ECE & Sai lệch confidence và tỷ lệ đúng theo 15 khoảng xác suất.\\
+Temperature & Tham số dương $T$ chia logits trước softmax.\\
+Hệ số lớp & $\tau_c$ trong điểm quyết định $p_c(T)/\tau_c$.\\
+Confidence & Xác suất của nhãn được chọn bởi quy tắc quyết định.\\
+Routing & Phân luồng auto-approve, review hoặc escalate.\\
+Artifact & Trọng số, tokenizer, mapping và cấu hình suy luận.\\
+Prediction ID & Khóa lần suy luận để gắn phản hồi đúng kết quả.\\
+\bottomrule\end{longtable}

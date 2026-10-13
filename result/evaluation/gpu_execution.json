@@ -1,0 +1,13 @@
+{
+  "parallelism": "single_gpu",
+  "device_ids": [
+    0
+  ],
+  "per_device_batch_size": 32,
+  "global_batch_size": 32,
+  "effective_batch_size": 64,
+  "peak_allocated_gib": [
+    5.387535095214844
+  ],
+  "precision": "BF16"
+}

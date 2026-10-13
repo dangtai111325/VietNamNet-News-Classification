@@ -1,0 +1,49 @@
+{
+  "evaluation_split": "test",
+  "calibration_fit_split": "validation",
+  "test_samples": 29995,
+  "validation_samples": 29995,
+  "split_signature": "0b664f9a8ddd02ff9707fef569cb6948a970e986e714bcaa6e668de8f52a2161",
+  "before": {
+    "accuracy": 0.9108184697449575,
+    "f1_weighted": 0.9111760817545855,
+    "f1_macro": 0.872191423262646
+  },
+  "after": {
+    "accuracy": 0.9112518753125521,
+    "f1_weighted": 0.9114495095526464,
+    "f1_macro": 0.8725287951344637
+  },
+  "calibration": {
+    "temperature": 1.4551145705791242,
+    "nll_before": 0.3838922148021978,
+    "nll_after_temperature": 0.3220301856882164,
+    "ece_before": 0.060290514635984005,
+    "ece_after_temperature": 0.02507141933863651,
+    "ece_bins": 15
+  },
+  "notebook_reference": {
+    "before": {
+      "accuracy": 0.9108184697449575,
+      "f1_weighted": 0.9111760817545855,
+      "f1_macro": 0.872191423262646
+    },
+    "after": {
+      "accuracy": 0.9112518753125521,
+      "f1_weighted": 0.9114495095526464,
+      "f1_macro": 0.8725287951344637
+    }
+  },
+  "delta_from_notebook": {
+    "before": {
+      "accuracy": 0.0,
+      "f1_weighted": 0.0,
+      "f1_macro": 0.0
+    },
+    "after": {
+      "accuracy": 0.0,
+      "f1_weighted": 0.0,
+      "f1_macro": 0.0
+    }
+  }
+}

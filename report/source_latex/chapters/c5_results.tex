@@ -1,0 +1,103 @@
+\chapter{Kết quả và phân tích lỗi}
+\label{chap:results}
+\section{Nguồn bằng chứng và giao thức đo}
+Notebook xuất logits, dự đoán, ma trận, history và metadata cho validation/test. Các số trong chương này dùng 29.995 mẫu test độc lập sau khi tham số chọn trên validation đã cố định. Sáu chỉ số trước/sau trong metrics khớp output notebook; nhãn dự đoán, support và ma trận được tái tính từ logits. Không chạy fine-tuning bổ sung để tạo số cho báo cáo.
+
+Hàng ma trận là nhãn tham chiếu, cột là nhãn dự đoán; tổng hàng bằng support lớp và tổng ma trận bằng 29.995. Metadata liên kết test position với article index và URL của bài. Đây là điều kiện để phân tích lỗi từ bài thật, thay vì xây ví dụ rồi tự gán xác suất.
+
+\section{Định nghĩa chỉ số}
+Với lớp $c$, $TP_c,FP_c,FN_c$ là đúng dương, sai dương và sai âm:
+\begin{equation}P_c=\frac{TP_c}{TP_c+FP_c},\quad R_c=\frac{TP_c}{TP_c+FN_c},\quad F1_c=\frac{2TP_c}{2TP_c+FP_c+FN_c}.\end{equation}
+Mẫu số bằng không nhận giá trị 0. Accuracy là tỷ lệ đúng toàn bộ mẫu; Macro-F1 là $\frac1{20}\sum_cF1_c$ và Weighted-F1 là $\sum_c(n_c/N)F1_c$. Trong phân loại đơn nhãn với đầy đủ lớp, micro-F1 bằng Accuracy; báo cáo ưu tiên các chỉ số cung cấp thêm thông tin về mất cân bằng.
+
+\section{Kết quả tổng thể}
+\DataTable{tables/aggregate_metrics.tex}{Chỉ số test trước và sau hiệu chỉnh fit trên validation. Chênh lệch là giá trị sau trừ trước.}
+Accuracy từ 91,0818\% lên 91,1252\%, tăng 0,0433 điểm phần trăm. Macro-F1 từ 0,872191 lên 0,872529, tăng 0,0337 điểm phần trăm; Weighted-F1 từ 0,911176 lên 0,911450. Đây là mức tăng nhỏ, không thể diễn đạt như cải thiện mạnh chất lượng phân loại. Macro-F1 thấp hơn Weighted-F1 khoảng 3,89 điểm phần trăm sau hiệu chỉnh, cho thấy cần xem kỹ các lớp nhỏ hoặc khó.
+
+Có 27.333 bài đúng trước hiệu chỉnh và 27.346 bài đúng sau hiệu chỉnh; số lỗi giảm từ 2.662 xuống 2.649. Hiệu chỉnh sửa đúng 112 bài nhưng đổi thành sai 99 bài, giảm ròng 13 lỗi. Nhóm cả hai sai gồm 2.563 bài, có thể giữ nhãn sai hoặc đổi giữa hai nhãn sai.
+\DataTable{tables/decision_transitions.tex}{Chuyển đổi đúng/sai trên cùng 29.995 mẫu.}
+\ReportFigure{assets/evaluation/decision_transitions.png}{Các nhóm quyết định giữ đúng, sửa đúng, đổi sai và cả hai sai.}
+
+\section{Chất lượng theo từng chuyên mục}
+\DataTable{tables/per_class_before.tex}{Precision, recall, F1 và support trước hiệu chỉnh.}
+\DataTable{tables/per_class_after.tex}{Precision, recall, F1 và support sau hiệu chỉnh.}
+\PortraitFigure{assets/evaluation/per_class_precision.png}{Precision trước/sau cho 20 lớp, trong một hình riêng.}
+\PortraitFigure{assets/evaluation/per_class_recall.png}{Recall trước/sau, tách khỏi precision để đọc rõ.}
+\PortraitFigure{assets/evaluation/per_class_f1.png}{F1 theo lớp, cho thấy khác biệt mà chỉ số tổng hợp che khuất.}
+
+\subsection{Nông thôn mới}
+Lớp có 146 mẫu test, precision 0,4277, recall 0,5068 và F1 0,4639. Chỉ 74 bài được nhận đúng; 64 bài bị chuyển thành Nội dung chuyên đề, tương đương 43,84\% support. Chiều ngược có 95 bài Nội dung chuyên đề bị chọn thành Nông thôn mới. Số bài lớp khác bị hút vào còn lớn hơn số bài lớp này nhận đúng; đây là hạn chế đáng kể nếu tự động điều phối lớp này.
+
+Trọng số train 10,3226 giúp ưu tiên lỗi nhưng không giải quyết ranh giới giữa các bài về giảm nghèo, chính sách địa phương và phát triển nông thôn. Thông tin chuyên mục có thể nằm trong cấu trúc xuất bản hơn là một nhóm từ khóa riêng. Cần rà soát ranh giới nhãn và bổ sung mẫu phân biệt, thay vì chỉ tăng trọng số.
+
+\subsection{Dân tộc và các lớp gần nhau}
+Dân tộc -- Tôn giáo có F1 0,6759, precision 0,6952 và recall 0,6577 trên 555 mẫu. Dân tộc thiểu số và miền núi có F1 0,6877, precision 0,6009 và recall 0,8037 trên 163 mẫu. Lớp thứ hai thu hồi được nhiều mẫu nhưng sai dương cao. Hiệu chỉnh làm F1 lớp này giảm 0,0061, dù Macro-F1 toàn cục tăng.
+
+Tin về sinh kế, lễ hội và chính sách vùng dân tộc có thể giao thoa Nội dung chuyên đề, Văn hóa -- Giải trí và Du lịch. Việc quy đúng class cha giúp sửa sai ở bước thu thập, nhưng không khiến ngữ nghĩa của các class hoàn toàn tách biệt. Những nhầm lẫn cần đọc cùng breadcrumb và nội dung; không mặc định mọi lỗi là do số mẫu ít.
+
+\subsection{Lớp có dấu hiệu chủ đề tập trung}
+Thể thao đạt F1 0,9880, Thế giới 0,9830 và Ô tô -- Xe máy 0,9768. Công nghiệp hỗ trợ đạt 0,9127 dù chỉ có 194 mẫu test. Kết quả cho thấy số lượng không quyết định đơn độc độ khó. Từ vựng chuyên biệt, nội dung tập trung và quy ước gán nhãn có thể góp phần, nhưng cần ablation hoặc phân tích dữ liệu mới để khẳng định quan hệ nhân quả.
+\ReportFigure{assets/evaluation/support_vs_f1.png}{Support test và F1 từng lớp: tương quan quan sát không phải quan hệ nhân quả.}
+
+\subsection{Ảnh hưởng không đồng đều của hiệu chỉnh}
+Nông thôn mới tăng F1 0,0083; Nội dung chuyên đề tăng 0,0049; Dân tộc -- Tôn giáo tăng 0,0046. Dân tộc thiểu số và miền núi, Công nghiệp hỗ trợ, Công nghệ và một số lớp khác giảm. Tối ưu Macro-F1 validation không bảo đảm mọi lớp tăng trên test.
+\DataTable{tables/class_deltas.tex}{Chênh lệch precision, recall và F1 theo lớp.}
+\PortraitFigure{assets/evaluation/delta_f1.png}{Mức tăng và giảm F1 của từng lớp, không cộng thành cam kết triển khai.}
+\DataTable{tables/thresholds.tex}{Hai mươi hệ số chia xác suất dùng cố định khi suy luận.}
+\PortraitFigure{assets/evaluation/class_thresholds.png}{Hệ số lớp; đường 1 là mức không điều chỉnh ưu tiên tương đối.}
+
+\section{Ma trận nhầm lẫn và hướng lỗi}
+ID 0--19 đối chiếu bảng taxonomy. Ô đường chéo là số đúng; ô ngoài đường chéo là hướng nhầm. Ma trận chuẩn hóa theo hàng cho biết tỷ lệ dự đoán của bài thuộc class tham chiếu, không phải precision của nhãn dự đoán.
+\PortraitFigure{assets/evaluation/confusion_before.png}{Ma trận số lượng trước hiệu chỉnh, tổng 29.995 bài.}
+\PortraitFigure{assets/evaluation/confusion_after.png}{Ma trận số lượng sau hiệu chỉnh trên cùng test độc lập.}
+\PortraitFigure{assets/evaluation/confusion_before_normalized.png}{Ma trận trước hiệu chỉnh chuẩn hóa theo hàng.}
+\PortraitFigure{assets/evaluation/confusion_after_normalized.png}{Ma trận sau hiệu chỉnh chuẩn hóa theo hàng.}
+\DataTable{tables/confusions_before.tex}{Mười lăm hướng nhầm nhiều nhất trước hiệu chỉnh.}
+\DataTable{tables/confusions_after.tex}{Mười lăm hướng nhầm nhiều nhất sau hiệu chỉnh; tỷ lệ dùng support hàng.}
+\ReportFigure{assets/evaluation/top_confusions_before.png}{Các hướng lỗi nổi bật trước hiệu chỉnh.}
+\ReportFigure{assets/evaluation/top_confusions_after.png}{Các hướng lỗi nổi bật sau hiệu chỉnh.}
+
+Ngoài Nông thôn mới và Nội dung chuyên đề, Đời sống tới Du lịch có 86 bài; Dân tộc -- Tôn giáo tới Nội dung chuyên đề có 74; Kinh doanh tới Bất động sản có 65. Hai chiều nhầm không nhất thiết đối xứng. Bài về doanh nghiệp và dự án nhà ở dùng cùng bối cảnh kinh tế; bài về trải nghiệm cá nhân ở điểm đến dùng cả ngôn ngữ đời sống và du lịch. Ma trận gợi ý vùng giao thoa, chưa chứng minh mất phần giữa là nguyên nhân chính.
+
+\section{NLL, ECE và độ tin cậy xác suất}
+\DataTable{tables/calibration_metrics.tex}{Đo trên test với argmax chuẩn của xác suất; chưa áp dụng hệ số lớp.}
+NLL giảm từ 0,383892 xuống 0,322030, tương đối khoảng 16,12\%. ECE giảm từ 0,060291 xuống 0,025071, tương đối khoảng 58,41\%. Nhãn argmax không đổi khi chỉ thay temperature; mức tăng Accuracy cuối thuộc điều chỉnh $\tau_c$, không thuộc riêng temperature scaling.
+
+ECE dùng 15 khoảng đều $[b/15,(b+1)/15)$, confidence cực đại và correctness của argmax. Các khoảng không rỗng đóng góp theo số mẫu; xác suất đúng bằng 1 không nằm trong cận trên mở. Định nghĩa này được giữ thống nhất khi đối chiếu. ECE phụ thuộc cách chia bin và không chứng nhận xác suất của từng mẫu.
+\ReportFigure{assets/evaluation/reliability_before.png}{Reliability diagram của softmax chưa hiệu chỉnh.}
+\ReportFigure{assets/evaluation/reliability_temperature.png}{Reliability diagram sau temperature fit trên validation.}
+\ReportFigure{assets/evaluation/confidence_before.png}{Phân bố confidence cực đại theo nhóm đúng/sai trước temperature.}
+\ReportFigure{assets/evaluation/confidence_temperature.png}{Phân bố sau temperature; lỗi vẫn có thể mang confidence cao.}
+\ReportFigure{assets/evaluation/nll_comparison.png}{So sánh NLL trước/sau temperature trên test.}
+\ReportFigure{assets/evaluation/ece_comparison.png}{So sánh ECE với cùng quy ước 15 bins.}
+
+Các biểu đồ reliability áp dụng cho argmax của $p(T)$. App có thể chọn nhãn khác sau chia hệ số; confidence khi đó là xác suất của nhãn được chọn. Muốn chứng nhận hiệu chỉnh cho luồng auto cuối, cần đo calibration trực tiếp theo quyết định cuối, từng lớp và các thời điểm triển khai. ECE của softmax không tự thay thế phép đo này.
+
+\section{Coverage, ngưỡng định tuyến và margin}
+\DataTable{tables/routing_groups.tex}{Mô phỏng ngưỡng trên test, giữ bài có xác suất nhãn cuối đạt ngưỡng.}
+\ReportFigure{assets/evaluation/coverage_accuracy.png}{Đánh đổi mức bao phủ và Accuracy của nhóm giữ lại.}
+Ở ngưỡng 0,75, 27.644 bài được giữ, coverage 92,16\% và Accuracy nhóm 94,55\%. Vẫn còn khoảng 5,45\% lỗi trong nhóm này. Ngưỡng 0,95 giữ 22.322 bài, coverage 74,42\%, Accuracy nhóm 98,36\%. Ngưỡng 0,99 không có mẫu đạt, Accuracy không xác định; không ghi bằng 0 hoặc 100\%.
+
+Các ngưỡng là phân tích mô tả, không là SLA và không được dùng chọn lại model theo test. Định tuyến có thể giảm tải biên tập nhưng tăng chi phí lỗi tự động. Coverage cao không đồng nghĩa chất lượng tốt ở mọi lớp; cần đánh giá chính sách theo tác động nghiệp vụ.
+\ReportFigure{assets/evaluation/decision_margin.png}{Phân bố margin theo nhóm đúng/sai của quyết định cuối.}
+Margin biểu diễn cạnh tranh tương đối giữa các điểm đã điều chỉnh; vùng nhỏ thường cần xem lại. Nó không đo tính đúng của bài, không phát hiện chắc chắn ngoài miền và không có ngưỡng an toàn tuyệt đối được xác nhận.
+
+\section{Ví dụ lỗi truy vết được}
+Bài ``Vệ tinh AI Trung Quốc giúp Iran săn lùng căn cứ Mỹ tại Trung Đông?'' có nhãn Công nghệ, dự đoán Thế giới. Cả kỹ thuật và địa chính trị đều nổi bật. Bài ``Giá thuê nhà tại Los Angeles tăng chóng mặt sau thảm họa cháy rừng'' thuộc Bất động sản nhưng bị chọn Thế giới; địa danh và thảm họa có thể cạnh tranh với chủ đề thuê nhà. Đây là diễn giải từ văn bản, không phải attribution đo được của model.
+
+Bài ``Một tài xế dùng biển giả bị phạt 17,6 triệu đồng, tước bằng lái 3 tháng'' có nhãn Thời sự và dự đoán Ô tô -- Xe máy, minh họa ranh giới giữa lĩnh vực phương tiện và bản tin xử lý vi phạm. Bài ``Ám ảnh khoa cử, Trung Quốc giảm tải, cấm dạy thêm vì lợi nhuận'' thuộc Tuần Việt Nam, dự đoán Giáo dục, cho thấy một chuyên mục bình luận có thể cạnh tranh với lĩnh vực được bàn luận.
+
+Phụ lục giữ title, URL, nhãn, confidence và trích đoạn của ví dụ để đối chiếu. Ví dụ được chọn có chủ đích; tần suất trong danh sách không đại diện tỷ lệ lỗi toàn corpus. Không tự đổi nhãn test chỉ vì dự đoán có vẻ hợp lý rồi báo điểm mới.
+
+\section{Precision--Recall một-chống-phần-còn-lại}
+Notebook tạo một đường PR riêng cho mỗi lớp. Các đường dùng xác suất sau temperature, nhãn nhị phân của class và average precision; đường tham chiếu là prevalence. AP đo chất lượng xếp hạng khi thay ngưỡng, khác F1 đa lớp ở một quyết định argmax. Với lớp ít mẫu, đường PR đặc biệt hữu ích để xem recall tăng phải trả giá precision thế nào. Hai mươi hình được đưa riêng vào phụ lục.
+
+\section{Phản biện và độ vững của kết luận}
+\subsection{Hợp lệ nội tại}
+Test tách khỏi lựa chọn và hiệu chỉnh; exact duplicates được loại trước chia. Tuy vậy, near-duplicates, bài cùng sự kiện và sai nhãn ngữ nghĩa chưa được kiểm toán toàn bộ. Các bước lowercase, bỏ số, PyVi, Head--Tail và balanced weights chưa có đối chứng riêng.
+\subsection{Hợp lệ thống kê}
+Một seed không cho độ lệch chuẩn do huấn luyện. Chỉ tăng 13 bài đúng ròng sau hiệu chỉnh không đủ chứng minh lợi ích ổn định. Chưa thực hiện kiểm định cặp hay bootstrap cho khoảng tin cậy; không gán mức ý nghĩa thống kê cho sự chênh lệch này.
+\subsection{Hợp lệ bên ngoài}
+Corpus một tòa soạn, phép chia ngẫu nhiên và taxonomy cố định không đo chất lượng ở nguồn khác, tin tương lai hoặc bài ngoài miền. Không thể cam kết hiệu năng của test áp dụng cho mọi tin đưa vào app. Nhãn chính sách và chuyên đề cần đặc biệt lưu ý khi website đổi cấu trúc.
+\subsection{Baseline và ablation còn thiếu}
+Chưa có TF--IDF + SVM/logistic regression trên cùng split, so sánh model đóng băng encoder, head-only hoặc xử lý nhiều đoạn. Vì vậy, kết quả chứng minh pipeline hoạt động và đạt các chỉ số đã đo, chưa chứng minh PhoBERT hoặc từng thiết kế vượt trội mọi phương án. Những phép đối chứng này là phần ưu tiên khi cần nâng mức thuyết phục học thuật.

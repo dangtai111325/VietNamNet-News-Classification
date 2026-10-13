@@ -1,0 +1,347 @@
+{
+  "dataset/clean_class_distribution": {
+    "source": "Dataset_VietNamNet.ipynb",
+    "png": "result/figures/dataset/clean_class_distribution.png",
+    "report_asset": "report/source_latex/assets/dataset/clean_class_distribution.png"
+  },
+  "dataset/class_distribution_cleaning": {
+    "source": "Dataset_VietNamNet.ipynb",
+    "png": "result/figures/dataset/class_distribution_cleaning.png",
+    "report_asset": "report/source_latex/assets/dataset/class_distribution_cleaning.png"
+  },
+  "dataset/cleaning_decisions": {
+    "source": "Dataset_VietNamNet.ipynb",
+    "png": "result/figures/dataset/cleaning_decisions.png",
+    "report_asset": "report/source_latex/assets/dataset/cleaning_decisions.png"
+  },
+  "dataset/cleaning_transitions": {
+    "source": "Dataset_VietNamNet.ipynb",
+    "png": "result/figures/dataset/cleaning_transitions.png",
+    "report_asset": "report/source_latex/assets/dataset/cleaning_transitions.png"
+  },
+  "dataset/class_distribution": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/dataset/class_distribution.png",
+    "report_asset": "report/source_latex/assets/dataset/class_distribution.png"
+  },
+  "dataset/title_length": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/dataset/title_length.png",
+    "report_asset": "report/source_latex/assets/dataset/title_length.png"
+  },
+  "dataset/content_word_length": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/dataset/content_word_length.png",
+    "report_asset": "report/source_latex/assets/dataset/content_word_length.png"
+  },
+  "dataset/length_by_class": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/dataset/length_by_class.png",
+    "report_asset": "report/source_latex/assets/dataset/length_by_class.png"
+  },
+  "dataset/content_length": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/dataset/content_length.png",
+    "report_asset": "report/source_latex/assets/dataset/content_length.png"
+  },
+  "dataset/clean_length": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/dataset/clean_length.png",
+    "report_asset": "report/source_latex/assets/dataset/clean_length.png"
+  },
+  "dataset/token_length": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/dataset/token_length.png",
+    "report_asset": "report/source_latex/assets/dataset/token_length.png"
+  },
+  "dataset/token_retention": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/dataset/token_retention.png",
+    "report_asset": "report/source_latex/assets/dataset/token_retention.png"
+  },
+  "training/class_weights": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/training/class_weights.png",
+    "report_asset": "report/source_latex/assets/training/class_weights.png"
+  },
+  "dataset/split_distribution": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/dataset/split_distribution.png",
+    "report_asset": "report/source_latex/assets/dataset/split_distribution.png"
+  },
+  "evaluation/confusion_before": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/confusion_before.png",
+    "report_asset": "report/source_latex/assets/evaluation/confusion_before.png"
+  },
+  "evaluation/confusion_before_normalized": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/confusion_before_normalized.png",
+    "report_asset": "report/source_latex/assets/evaluation/confusion_before_normalized.png"
+  },
+  "evaluation/precision_before": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/precision_before.png",
+    "report_asset": "report/source_latex/assets/evaluation/precision_before.png"
+  },
+  "evaluation/recall_before": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/recall_before.png",
+    "report_asset": "report/source_latex/assets/evaluation/recall_before.png"
+  },
+  "evaluation/f1_before": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/f1_before.png",
+    "report_asset": "report/source_latex/assets/evaluation/f1_before.png"
+  },
+  "training/train_loss": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/training/train_loss.png",
+    "report_asset": "report/source_latex/assets/training/train_loss.png"
+  },
+  "training/eval_loss": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/training/eval_loss.png",
+    "report_asset": "report/source_latex/assets/training/eval_loss.png"
+  },
+  "training/eval_accuracy": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/training/eval_accuracy.png",
+    "report_asset": "report/source_latex/assets/training/eval_accuracy.png"
+  },
+  "training/eval_macro_f1": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/training/eval_macro_f1.png",
+    "report_asset": "report/source_latex/assets/training/eval_macro_f1.png"
+  },
+  "training/learning_rate": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/training/learning_rate.png",
+    "report_asset": "report/source_latex/assets/training/learning_rate.png"
+  },
+  "training/gradient_norm": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/training/gradient_norm.png",
+    "report_asset": "report/source_latex/assets/training/gradient_norm.png"
+  },
+  "evaluation/delta_f1": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/delta_f1.png",
+    "report_asset": "report/source_latex/assets/evaluation/delta_f1.png"
+  },
+  "evaluation/class_thresholds": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/class_thresholds.png",
+    "report_asset": "report/source_latex/assets/evaluation/class_thresholds.png"
+  },
+  "dataset/preprocessing_example": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/dataset/preprocessing_example.png",
+    "report_asset": "report/source_latex/assets/dataset/preprocessing_example.png"
+  },
+  "evaluation/confusion_after": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/confusion_after.png",
+    "report_asset": "report/source_latex/assets/evaluation/confusion_after.png"
+  },
+  "evaluation/confusion_after_normalized": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/confusion_after_normalized.png",
+    "report_asset": "report/source_latex/assets/evaluation/confusion_after_normalized.png"
+  },
+  "evaluation/per_class_precision": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/per_class_precision.png",
+    "report_asset": "report/source_latex/assets/evaluation/per_class_precision.png"
+  },
+  "evaluation/per_class_recall": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/per_class_recall.png",
+    "report_asset": "report/source_latex/assets/evaluation/per_class_recall.png"
+  },
+  "evaluation/per_class_f1": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/per_class_f1.png",
+    "report_asset": "report/source_latex/assets/evaluation/per_class_f1.png"
+  },
+  "evaluation/reliability_before": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/reliability_before.png",
+    "report_asset": "report/source_latex/assets/evaluation/reliability_before.png"
+  },
+  "evaluation/confidence_before": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/confidence_before.png",
+    "report_asset": "report/source_latex/assets/evaluation/confidence_before.png"
+  },
+  "evaluation/reliability_temperature": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/reliability_temperature.png",
+    "report_asset": "report/source_latex/assets/evaluation/reliability_temperature.png"
+  },
+  "evaluation/confidence_temperature": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/confidence_temperature.png",
+    "report_asset": "report/source_latex/assets/evaluation/confidence_temperature.png"
+  },
+  "evaluation/nll_comparison": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/nll_comparison.png",
+    "report_asset": "report/source_latex/assets/evaluation/nll_comparison.png"
+  },
+  "evaluation/ece_comparison": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/ece_comparison.png",
+    "report_asset": "report/source_latex/assets/evaluation/ece_comparison.png"
+  },
+  "evaluation/coverage_accuracy": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/coverage_accuracy.png",
+    "report_asset": "report/source_latex/assets/evaluation/coverage_accuracy.png"
+  },
+  "evaluation/decision_transitions": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/decision_transitions.png",
+    "report_asset": "report/source_latex/assets/evaluation/decision_transitions.png"
+  },
+  "evaluation/support_vs_f1": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/support_vs_f1.png",
+    "report_asset": "report/source_latex/assets/evaluation/support_vs_f1.png"
+  },
+  "dataset/train_test_overlap": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/dataset/train_test_overlap.png",
+    "report_asset": "report/source_latex/assets/dataset/train_test_overlap.png"
+  },
+  "evaluation/top_confusions_before": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/top_confusions_before.png",
+    "report_asset": "report/source_latex/assets/evaluation/top_confusions_before.png"
+  },
+  "evaluation/top_confusions_after": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/top_confusions_after.png",
+    "report_asset": "report/source_latex/assets/evaluation/top_confusions_after.png"
+  },
+  "training/eval_weighted_f1": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/training/eval_weighted_f1.png",
+    "report_asset": "report/source_latex/assets/training/eval_weighted_f1.png"
+  },
+  "training/train_validation_loss": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/training/train_validation_loss.png",
+    "report_asset": "report/source_latex/assets/training/train_validation_loss.png"
+  },
+  "training/epoch_duration": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/training/epoch_duration.png",
+    "report_asset": "report/source_latex/assets/training/epoch_duration.png"
+  },
+  "evaluation/precision_recall/ban-doc": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/precision_recall/ban-doc.png",
+    "report_asset": "report/source_latex/assets/evaluation/precision_recall/ban-doc.png"
+  },
+  "evaluation/precision_recall/bat-dong-san": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/precision_recall/bat-dong-san.png",
+    "report_asset": "report/source_latex/assets/evaluation/precision_recall/bat-dong-san.png"
+  },
+  "evaluation/precision_recall/chinh-tri": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/precision_recall/chinh-tri.png",
+    "report_asset": "report/source_latex/assets/evaluation/precision_recall/chinh-tri.png"
+  },
+  "evaluation/precision_recall/cong-nghiep-ho-tro": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/precision_recall/cong-nghiep-ho-tro.png",
+    "report_asset": "report/source_latex/assets/evaluation/precision_recall/cong-nghiep-ho-tro.png"
+  },
+  "evaluation/precision_recall/cong-nghe": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/precision_recall/cong-nghe.png",
+    "report_asset": "report/source_latex/assets/evaluation/precision_recall/cong-nghe.png"
+  },
+  "evaluation/precision_recall/du-lich": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/precision_recall/du-lich.png",
+    "report_asset": "report/source_latex/assets/evaluation/precision_recall/du-lich.png"
+  },
+  "evaluation/precision_recall/dan-toc-ton-giao": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/precision_recall/dan-toc-ton-giao.png",
+    "report_asset": "report/source_latex/assets/evaluation/precision_recall/dan-toc-ton-giao.png"
+  },
+  "evaluation/precision_recall/dan-toc-thieu-so-va-mien-nui": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/precision_recall/dan-toc-thieu-so-va-mien-nui.png",
+    "report_asset": "report/source_latex/assets/evaluation/precision_recall/dan-toc-thieu-so-va-mien-nui.png"
+  },
+  "evaluation/precision_recall/giao-duc": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/precision_recall/giao-duc.png",
+    "report_asset": "report/source_latex/assets/evaluation/precision_recall/giao-duc.png"
+  },
+  "evaluation/precision_recall/kinh-doanh": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/precision_recall/kinh-doanh.png",
+    "report_asset": "report/source_latex/assets/evaluation/precision_recall/kinh-doanh.png"
+  },
+  "evaluation/precision_recall/nong-thon-moi": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/precision_recall/nong-thon-moi.png",
+    "report_asset": "report/source_latex/assets/evaluation/precision_recall/nong-thon-moi.png"
+  },
+  "evaluation/precision_recall/noi-dung-chuyen-de": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/precision_recall/noi-dung-chuyen-de.png",
+    "report_asset": "report/source_latex/assets/evaluation/precision_recall/noi-dung-chuyen-de.png"
+  },
+  "evaluation/precision_recall/suc-khoe": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/precision_recall/suc-khoe.png",
+    "report_asset": "report/source_latex/assets/evaluation/precision_recall/suc-khoe.png"
+  },
+  "evaluation/precision_recall/the-gioi": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/precision_recall/the-gioi.png",
+    "report_asset": "report/source_latex/assets/evaluation/precision_recall/the-gioi.png"
+  },
+  "evaluation/precision_recall/the-thao": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/precision_recall/the-thao.png",
+    "report_asset": "report/source_latex/assets/evaluation/precision_recall/the-thao.png"
+  },
+  "evaluation/precision_recall/thoi-su": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/precision_recall/thoi-su.png",
+    "report_asset": "report/source_latex/assets/evaluation/precision_recall/thoi-su.png"
+  },
+  "evaluation/precision_recall/tuan-viet-nam": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/precision_recall/tuan-viet-nam.png",
+    "report_asset": "report/source_latex/assets/evaluation/precision_recall/tuan-viet-nam.png"
+  },
+  "evaluation/precision_recall/van-hoa-giai-tri": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/precision_recall/van-hoa-giai-tri.png",
+    "report_asset": "report/source_latex/assets/evaluation/precision_recall/van-hoa-giai-tri.png"
+  },
+  "evaluation/precision_recall/oto-xe-may": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/precision_recall/oto-xe-may.png",
+    "report_asset": "report/source_latex/assets/evaluation/precision_recall/oto-xe-may.png"
+  },
+  "evaluation/precision_recall/doi-song": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/precision_recall/doi-song.png",
+    "report_asset": "report/source_latex/assets/evaluation/precision_recall/doi-song.png"
+  },
+  "evaluation/decision_margin": {
+    "source": "PhoBERT_Classification.ipynb",
+    "png": "result/figures/evaluation/decision_margin.png",
+    "report_asset": "report/source_latex/assets/evaluation/decision_margin.png"
+  }
+}

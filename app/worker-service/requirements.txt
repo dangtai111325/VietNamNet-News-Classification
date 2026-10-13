@@ -1,0 +1,8 @@
+dramatiq[redis]==1.17.1
+apscheduler==3.10.4
+grpcio==1.84.0
+pydantic==2.10.5
+pydantic-settings==2.7.1
+protobuf==7.36.2
+psycopg[binary]==3.2.6
+

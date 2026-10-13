@@ -1,0 +1,85 @@
+\chapter{Huấn luyện và hiệu chỉnh dự đoán}
+\label{chap:training}
+\section{Chuẩn bị ba tập và tensor}
+Phân tầng được thực hiện sau khử trùng, seed 42, theo tỷ lệ 70/15/15. Các tensor input IDs, attention mask và nhãn bảo toàn thứ tự bài. Cache train, validation và test có chiều lần lượt $139\,975\times256$, $29\,995\times256$ và $29\,995\times256$. Padding không tham gia attention như token văn bản. Dataloader train xáo trộn mẫu; validation và test giữ phân bố lớp thực tế.
+
+Seed giúp tái tạo các lựa chọn ngẫu nhiên có kiểm soát, nhưng không bảo đảm mọi phép tính GPU giống bit giữa các phiên bản và thiết bị. Thực nghiệm sử dụng một seed; độ biến thiên do khởi tạo và thứ tự batch chưa được đo.
+
+\section{Fine-tuning toàn bộ mô hình}
+Mô hình được khởi tạo từ \texttt{vinai/phobert-base-v2}; đầu phân loại có 20 nhãn. Toàn bộ encoder và head được cập nhật qua backward, không đóng băng backbone và không chỉ huấn luyện lớp tuyến tính cuối. Đây là học chuyển giao có giám sát; corpus dự án không được dùng tiền huấn luyện mô hình ngôn ngữ từ đầu.
+
+\section{Weighted cross-entropy}
+Với $n_c$ là số mẫu class $c$ trong train, trọng số là
+\begin{equation}w_c=\frac{N_{train}}{20n_c}.\end{equation}
+Không có boost thủ công. Lớp Kinh doanh có trọng số 0,7908, Nông thôn mới 10,3226, Dân tộc thiểu số và miền núi 9,1847. Trọng số phản ánh train, không lấy support test để xác định ưu tiên tối ưu.
+Hàm mất mát trên mini-batch $\mathcal B$ của PyTorch dùng reduction mean có trọng số:
+\begin{equation}\mathcal L_{\mathcal B}=\frac{-\sum_{i\in\mathcal B}w_{y_i}\log p_{i,y_i}}{\sum_{i\in\mathcal B}w_{y_i}}.\end{equation}
+Trọng số thay đổi đóng góp lỗi, không làm tăng số bài hay khử nhiễu. Nếu lớp nhỏ có nhãn mơ hồ, ưu tiên lỗi lớn có thể tăng tác động của nhiễu. Sampler vẫn ngẫu nhiên theo phân bố corpus; validation và test không oversample.
+
+Evaluation loss của WeightedTrainer dùng hàm mất mát có trọng số; NLL ở calibration là trung bình log xác suất không trọng số. Hai đại lượng có đơn vị log-loss nhưng khác cách tính, nên không trực tiếp đồng nhất trị số.
+
+\DataTable{tables/class_weights.tex}{Trọng số balanced tính từ số mẫu train.}
+\ReportFigure{assets/training/class_weights.png}{Trọng số loss của 20 lớp; ID được đối chiếu với bảng taxonomy.}
+\PortraitFigure{assets/dataset/split_distribution.png}{Số mẫu train, validation và test theo từng lớp sau khử trùng.}
+
+\section{Optimizer và siêu tham số}
+\begin{table}[H]\centering\caption{Cấu hình thực thi fine-tuning trên máy local.}\small
+\begin{tabular}{lr}\toprule Thuộc tính & Giá trị\\\midrule
+GPU & RTX A3000 Laptop, 12 GB\\
+Backbone / đầu vào & PhoBERT-base-v2 / Head--Tail 256\\
+Train batch / tích lũy & 32 / 2\\
+Effective batch / eval batch & 64 / 64\\
+Epoch tối đa & 7\\
+Learning rate cực đại & $2\times10^{-5}$\\
+Weight decay / warmup & 0,01 / 200 bước\\
+Optimizer & AdamW fused\\
+Mixed precision / TF32 & BF16 / bật\\
+Evaluation và checkpoint & Cuối mỗi epoch\\
+Tiêu chí best checkpoint & Macro-F1 validation\\
+Early stopping & Patience 2; ngưỡng 0,001\\
+Logging / dataloader workers & 100 bước / 0\\
+Gradient checkpointing / compile & Tắt / tắt\\\bottomrule\end{tabular}\end{table}
+AdamW tách weight decay khỏi cập nhật thích nghi \citep{adamw}. Scheduler tăng learning rate trong 200 bước warmup và giảm theo tiến độ. Số mini-batch mỗi epoch là $\lceil139\,975/32\rceil=4\,375$; tích lũy hai batch tạo 2.188 bước cập nhật. Bảy epoch có 15.316 bước. Batch cuối không nhất thiết đủ 64 mẫu.
+
+\TrainDiagram
+BF16 và TF32 là cấu hình tính toán; checkpoint không phải toàn bộ được lưu dưới dạng BF16. Bộ nhớ GPU allocated cực đại trong metadata là 5,39 GiB, reserved khoảng 5,72 GiB. Phân đoạn 200.337 bài dùng bốn tiến trình trong 362 giây; mã hóa ba tập mất khoảng 191, 40 và 41 giây. Các số này thuộc lần thực thi cụ thể, không là cam kết thời gian trên mọi máy.
+
+\section{Checkpoint và early stopping}
+Trainer đánh giá, lưu và chọn theo Macro-F1 validation; \texttt{load\_best\_model\_at\_end} nạp trọng số tốt nhất. Early stopping có patience 2 và cải thiện tối thiểu 0,001. Lần thực nghiệm chạy đủ bảy epoch; không được mô tả như đã dừng sớm trước giới hạn.
+
+Macro-F1 validation cao nhất là 0,87229785 ở epoch 7. Loss validation thấp nhất ở epoch 3 là 0,3548, sau đó tăng đến 0,4980 ở epoch 7. F1 cao hơn nhưng loss tăng là tín hiệu cần xem xét sự tự tin ở các mẫu sai; hai tiêu chí có thể chọn epoch khác nhau. Tiêu chí được xác định trước là Macro-F1, không đổi sang loss sau khi xem test.
+\DataTable{tables/epochs.tex}{Bảy lần đánh giá cuối epoch trên validation.}
+\ReportFigure{assets/training/train_loss.png}{Loss train được ghi theo bước cập nhật.}
+\ReportFigure{assets/training/eval_loss.png}{Loss validation theo epoch; thấp nhất tại epoch 3.}
+\ReportFigure{assets/training/eval_accuracy.png}{Accuracy validation qua bảy epoch.}
+\ReportFigure{assets/training/eval_macro_f1.png}{Macro-F1 validation dùng chọn checkpoint.}
+\ReportFigure{assets/training/eval_weighted_f1.png}{Weighted-F1 validation, bổ sung góc nhìn theo support.}
+\ReportFigure{assets/training/train_validation_loss.png}{Loss train và validation trong một biểu đồ độc lập; cách tổng hợp cần được phân biệt.}
+\ReportFigure{assets/training/learning_rate.png}{Learning rate của optimizer, gồm warmup và giai đoạn giảm.}
+\ReportFigure{assets/training/gradient_norm.png}{Gradient norm tại những bước có log; không trực tiếp giải thích nhãn của một bài.}
+\ReportFigure{assets/training/epoch_duration.png}{Thời gian mỗi epoch bao gồm huấn luyện và kiểm định.}
+
+Tổng thời gian fine-tuning là 12.429,91 giây, khoảng 207,17 phút. Dự đoán test theo batch 64 mất 106,32 giây, khoảng 282,11 mẫu/giây, không bao gồm nạp model. Throughput GPU theo batch không đồng nghĩa độ trễ một yêu cầu HTTP/gRPC chạy CPU trong Docker.
+
+\section{Chế độ thực thi và lịch sử}
+\texttt{fresh} là mặc định, khởi tạo từ backbone và optimizer/scheduler mới. \texttt{continue} nạp trọng số khi dữ liệu, mapping, tiền xử lý và fingerprint ba tập tương thích; optimizer/scheduler khởi tạo mới, không khôi phục bước đang chạy dở. Model đầu vào được giữ nếu lượt fine-tuning không cải thiện Macro-F1 validation. \texttt{evaluate} chỉ đánh giá gói tương thích.
+
+Lịch sử continue nối các record với offset epoch và bước, nên bảy epoch nối thêm bảy epoch có thể tạo đường học 14 epoch nếu không dừng trước. Lượt fresh tạo lịch sử của lượt mới. Điều này khác resume checkpoint ở giữa một epoch. Lần thực nghiệm trong báo cáo là một lượt fresh bảy epoch; không cộng điểm của các lượt khác.
+
+\section{Temperature scaling trên validation}
+Với nhiệt độ $T>0$,
+\begin{equation}p_c(T)=\frac{\exp(z_c/T)}{\sum_j\exp(z_j/T)}.\end{equation}
+Temperature scaling hiệu chỉnh độ tập trung của xác suất \citep{calibration}. Một nhiệt độ chung không đổi argmax. Notebook tìm $T$ trong $[0,5;5,0]$ bằng tối thiểu hóa NLL validation, giữ $T=1$ nếu nghiệm không giảm NLL validation:
+\begin{equation}\mathrm{NLL}(T)=-\frac1N\sum_i\log(p_{i,y_i}(T)+10^{-10}).\end{equation}
+Nhiệt độ cố định dùng trên test là 1,45511457. Test không được dùng fit lại giá trị này. Khi $T>1$, phân bố mềm hơn; nhãn argmax chuẩn không thay đổi.
+
+\section{Điều chỉnh quyết định theo lớp}
+Quy tắc quyết định là $r_c=p_c(T)/\tau_c$, $\hat y=\arg\max_c r_c$. Hệ số lớn giảm ưu tiên tương đối, hệ số nhỏ tăng ưu tiên. Đây không phải kiểm tra nhiều ngưỡng để xuất nhiều nhãn, và $r_c$ không phải xác suất.
+
+Tìm kiếm tọa độ khởi tạo 20 hệ số bằng 1, duyệt ba lượt; mỗi lớp thử 200 giá trị đều từ 0,3 đến 3,5. Giữ các hệ số khác, thử nhãn của toàn bộ validation và đánh giá \textbf{Macro-F1 của toàn bộ 20 lớp}; cập nhật nếu tăng hơn $10^{-5}$. Tie được xử lý theo ID nhỏ hơn. Tìm kiếm này là tham lam theo từng tọa độ, không bảo đảm nghiệm tối ưu toàn cục và có thể phụ thuộc thứ tự lớp.
+\CalibrationDiagram
+
+\section{Xác suất, điểm quyết định và định tuyến}
+Top-$k$ xếp theo $r_c$, nhưng thanh xác suất hiển thị $p_c(T)$. Confidence là $p_{\hat y}(T)$ của nhãn cuối, có thể nhỏ hơn xác suất cực đại. Margin là chênh lệch hai điểm lớn nhất trong $q_c=r_c/\sum_jr_j$; $q$ không được chứng minh là xác suất đúng. Top-$k$ không đổi nhãn hoặc margin vì chúng tính trên toàn bộ 20 lớp.
+
+Ngưỡng nghiệp vụ mặc định auto-approve 0,75 và review floor 0,68 dùng confidence: đạt 0,75 chuyển auto; từ 0,68 đến dưới 0,75 chuyển review; dưới 0,68 chuyển escalate. Hai ngưỡng này khác 20 hệ số $\tau_c$ và không sửa trọng số model. ECE trong notebook dùng confidence cực đại cùng argmax chuẩn của $p(T)$; không phải ECE của $q$ hay của quyết định cuối sau hệ số.

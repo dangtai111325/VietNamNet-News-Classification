@@ -1,0 +1,732 @@
+{
+  "total": 199965,
+  "train_count": 139975,
+  "validation_count": 29995,
+  "validation_size": 0.15,
+  "train_size": 0.7,
+  "selection_split": "validation",
+  "calibration_fit_split": "validation",
+  "evaluation_split": "test",
+  "test_count": 29995,
+  "split_seed": 42,
+  "test_size": 0.15,
+  "classes": [
+    {
+      "label_id": 0,
+      "label": "Bạn đọc",
+      "total": 12119,
+      "train": 8483,
+      "validation": 1818,
+      "test": 1818,
+      "balanced_weight": 0.82503241777673,
+      "weighting_strategy": "balanced_train_frequency",
+      "final_weight": 0.82503241777673,
+      "content_chars": {
+        "count": 12119,
+        "min": 21,
+        "max": 70172,
+        "mean": 3202.1688258107106,
+        "median": 3063.0,
+        "p90": 4754.200000000001,
+        "p95": 5423.200000000001,
+        "p99": 13488.91999999994
+      },
+      "clean_words": {
+        "count": 12119,
+        "min": 5,
+        "max": 11882,
+        "mean": 550.714745441043,
+        "median": 524.0,
+        "p90": 823.0,
+        "p95": 938.1000000000004,
+        "p99": 2262.1199999999953
+      }
+    },
+    {
+      "label_id": 1,
+      "label": "Bất động sản",
+      "total": 12309,
+      "train": 8616,
+      "validation": 1847,
+      "test": 1846,
+      "balanced_weight": 0.8122968895078923,
+      "weighting_strategy": "balanced_train_frequency",
+      "final_weight": 0.8122968895078923,
+      "content_chars": {
+        "count": 12309,
+        "min": 28,
+        "max": 12629,
+        "mean": 3375.4040945649526,
+        "median": 3488.0,
+        "p90": 4910.0,
+        "p95": 5370.0,
+        "p99": 6857.960000000001
+      },
+      "clean_words": {
+        "count": 12309,
+        "min": 13,
+        "max": 2082,
+        "mean": 549.6977008692826,
+        "median": 565.0,
+        "p90": 797.0,
+        "p95": 878.0,
+        "p99": 1122.8400000000001
+      }
+    },
+    {
+      "label_id": 2,
+      "label": "Chính trị",
+      "total": 12242,
+      "train": 8569,
+      "validation": 1837,
+      "test": 1836,
+      "balanced_weight": 0.8167522464698331,
+      "weighting_strategy": "balanced_train_frequency",
+      "final_weight": 0.8167522464698331,
+      "content_chars": {
+        "count": 12242,
+        "min": 21,
+        "max": 131081,
+        "mean": 4305.414801503022,
+        "median": 3738.0,
+        "p90": 7125.799999999999,
+        "p95": 9341.649999999992,
+        "p99": 16924.59
+      },
+      "clean_words": {
+        "count": 12242,
+        "min": 10,
+        "max": 20547,
+        "mean": 637.4525404345695,
+        "median": 550.0,
+        "p90": 1066.8999999999996,
+        "p95": 1396.949999999999,
+        "p99": 2426.1800000000003
+      }
+    },
+    {
+      "label_id": 3,
+      "label": "Công nghiệp hỗ trợ",
+      "total": 1292,
+      "train": 905,
+      "validation": 193,
+      "test": 194,
+      "balanced_weight": 7.733425414364641,
+      "weighting_strategy": "balanced_train_frequency",
+      "final_weight": 7.733425414364641,
+      "content_chars": {
+        "count": 1292,
+        "min": 7,
+        "max": 17048,
+        "mean": 3638.174922600619,
+        "median": 3319.0,
+        "p90": 6171.800000000004,
+        "p95": 7074.5,
+        "p99": 9438.819999999992
+      },
+      "clean_words": {
+        "count": 1292,
+        "min": 10,
+        "max": 2732,
+        "mean": 552.0116099071207,
+        "median": 498.5,
+        "p90": 939.9000000000001,
+        "p95": 1073.45,
+        "p99": 1458.5399999999995
+      }
+    },
+    {
+      "label_id": 4,
+      "label": "Công nghệ",
+      "total": 11061,
+      "train": 7743,
+      "validation": 1659,
+      "test": 1659,
+      "balanced_weight": 0.9038809247061862,
+      "weighting_strategy": "balanced_train_frequency",
+      "final_weight": 0.9038809247061862,
+      "content_chars": {
+        "count": 11061,
+        "min": 26,
+        "max": 37439,
+        "mean": 3682.746135069162,
+        "median": 3610.0,
+        "p90": 5496.0,
+        "p95": 6312.0,
+        "p99": 8998.999999999989
+      },
+      "clean_words": {
+        "count": 11061,
+        "min": 13,
+        "max": 5869,
+        "mean": 582.0561432058585,
+        "median": 568.0,
+        "p90": 869.0,
+        "p95": 998.0,
+        "p99": 1376.5999999999985
+      }
+    },
+    {
+      "label_id": 5,
+      "label": "Du lịch",
+      "total": 10979,
+      "train": 7685,
+      "validation": 1647,
+      "test": 1647,
+      "balanced_weight": 0.9107026675341574,
+      "weighting_strategy": "balanced_train_frequency",
+      "final_weight": 0.9107026675341574,
+      "content_chars": {
+        "count": 10979,
+        "min": 21,
+        "max": 34285,
+        "mean": 2745.6740140267784,
+        "median": 2461.0,
+        "p90": 4881.0,
+        "p95": 5793.1,
+        "p99": 9614.439999999999
+      },
+      "clean_words": {
+        "count": 10979,
+        "min": 8,
+        "max": 5176,
+        "mean": 479.3973039438929,
+        "median": 430.0,
+        "p90": 845.2000000000007,
+        "p95": 1008.0,
+        "p99": 1696.2199999999993
+      }
+    },
+    {
+      "label_id": 6,
+      "label": "Dân tộc - Tôn giáo",
+      "total": 3700,
+      "train": 2590,
+      "validation": 555,
+      "test": 555,
+      "balanced_weight": 2.702220077220077,
+      "weighting_strategy": "balanced_train_frequency",
+      "final_weight": 2.702220077220077,
+      "content_chars": {
+        "count": 3700,
+        "min": 23,
+        "max": 87245,
+        "mean": 4242.812702702703,
+        "median": 3788.5,
+        "p90": 6996.299999999999,
+        "p95": 8511.249999999993,
+        "p99": 12592.269999999993
+      },
+      "clean_words": {
+        "count": 3700,
+        "min": 10,
+        "max": 13066,
+        "mean": 663.5024324324324,
+        "median": 597.0,
+        "p90": 1079.1,
+        "p95": 1301.0499999999997,
+        "p99": 1861.079999999998
+      }
+    },
+    {
+      "label_id": 7,
+      "label": "Dân tộc thiểu số và miền núi",
+      "total": 1088,
+      "train": 762,
+      "validation": 163,
+      "test": 163,
+      "balanced_weight": 9.18471128608924,
+      "weighting_strategy": "balanced_train_frequency",
+      "final_weight": 9.18471128608924,
+      "content_chars": {
+        "count": 1088,
+        "min": 31,
+        "max": 11094,
+        "mean": 2659.532169117647,
+        "median": 2471.5,
+        "p90": 4437.6,
+        "p95": 5333.299999999992,
+        "p99": 8538.719999999972
+      },
+      "clean_words": {
+        "count": 1088,
+        "min": 13,
+        "max": 1663,
+        "mean": 403.89889705882354,
+        "median": 373.0,
+        "p90": 670.3000000000001,
+        "p95": 796.2999999999997,
+        "p99": 1256.6899999999985
+      }
+    },
+    {
+      "label_id": 8,
+      "label": "Giáo dục",
+      "total": 12259,
+      "train": 8581,
+      "validation": 1839,
+      "test": 1839,
+      "balanced_weight": 0.8156100687565552,
+      "weighting_strategy": "balanced_train_frequency",
+      "final_weight": 0.8156100687565552,
+      "content_chars": {
+        "count": 12259,
+        "min": 24,
+        "max": 23822,
+        "mean": 2963.3189493433397,
+        "median": 2726.0,
+        "p90": 4936.200000000001,
+        "p95": 5571.200000000001,
+        "p99": 7530.200000000001
+      },
+      "clean_words": {
+        "count": 12259,
+        "min": 10,
+        "max": 4009,
+        "mean": 480.4828289420018,
+        "median": 442.0,
+        "p90": 804.2000000000007,
+        "p95": 909.1000000000004,
+        "p99": 1231.42
+      }
+    },
+    {
+      "label_id": 9,
+      "label": "Kinh doanh",
+      "total": 12643,
+      "train": 8850,
+      "validation": 1896,
+      "test": 1897,
+      "balanced_weight": 0.790819209039548,
+      "weighting_strategy": "balanced_train_frequency",
+      "final_weight": 0.790819209039548,
+      "content_chars": {
+        "count": 12643,
+        "min": 21,
+        "max": 19703,
+        "mean": 3679.460808352448,
+        "median": 3643.0,
+        "p90": 5463.600000000002,
+        "p95": 6152.0,
+        "p99": 7700.339999999998
+      },
+      "clean_words": {
+        "count": 12643,
+        "min": 12,
+        "max": 2919,
+        "mean": 578.8831764612829,
+        "median": 569.0,
+        "p90": 870.0,
+        "p95": 987.0,
+        "p99": 1249.58
+      }
+    },
+    {
+      "label_id": 10,
+      "label": "Nông thôn mới",
+      "total": 969,
+      "train": 678,
+      "validation": 145,
+      "test": 146,
+      "balanced_weight": 10.3226401179941,
+      "weighting_strategy": "balanced_train_frequency",
+      "final_weight": 10.3226401179941,
+      "content_chars": {
+        "count": 969,
+        "min": 224,
+        "max": 47661,
+        "mean": 4228.990712074304,
+        "median": 3700.0,
+        "p90": 6626.600000000003,
+        "p95": 8062.399999999992,
+        "p99": 10745.239999999993
+      },
+      "clean_words": {
+        "count": 969,
+        "min": 44,
+        "max": 7559,
+        "mean": 625.4901960784314,
+        "median": 555.0,
+        "p90": 992.0,
+        "p95": 1151.1999999999998,
+        "p99": 1516.919999999998
+      }
+    },
+    {
+      "label_id": 11,
+      "label": "Nội dung chuyên đề",
+      "total": 12568,
+      "train": 8798,
+      "validation": 1885,
+      "test": 1885,
+      "balanced_weight": 0.7954932939304388,
+      "weighting_strategy": "balanced_train_frequency",
+      "final_weight": 0.7954932939304388,
+      "content_chars": {
+        "count": 12568,
+        "min": 30,
+        "max": 61328,
+        "mean": 3697.3588478676,
+        "median": 3609.0,
+        "p90": 5324.600000000002,
+        "p95": 6209.299999999999,
+        "p99": 9058.33
+      },
+      "clean_words": {
+        "count": 12568,
+        "min": 11,
+        "max": 9886,
+        "mean": 554.2021801400382,
+        "median": 539.0,
+        "p90": 804.3000000000011,
+        "p95": 941.2999999999993,
+        "p99": 1356.0
+      }
+    },
+    {
+      "label_id": 12,
+      "label": "Sức khỏe",
+      "total": 12385,
+      "train": 8670,
+      "validation": 1858,
+      "test": 1857,
+      "balanced_weight": 0.807237600922722,
+      "weighting_strategy": "balanced_train_frequency",
+      "final_weight": 0.807237600922722,
+      "content_chars": {
+        "count": 12385,
+        "min": 24,
+        "max": 14951,
+        "mean": 2751.9269277351636,
+        "median": 2609.0,
+        "p90": 4085.0,
+        "p95": 4609.0,
+        "p99": 6246.279999999999
+      },
+      "clean_words": {
+        "count": 12385,
+        "min": 14,
+        "max": 2586,
+        "mean": 453.39652805813483,
+        "median": 434.0,
+        "p90": 659.0,
+        "p95": 750.0,
+        "p99": 1040.1599999999999
+      }
+    },
+    {
+      "label_id": 13,
+      "label": "Thế giới",
+      "total": 11889,
+      "train": 8322,
+      "validation": 1783,
+      "test": 1784,
+      "balanced_weight": 0.8409937515020428,
+      "weighting_strategy": "balanced_train_frequency",
+      "final_weight": 0.8409937515020428,
+      "content_chars": {
+        "count": 11889,
+        "min": 109,
+        "max": 32776,
+        "mean": 1851.4700142989318,
+        "median": 1638.0,
+        "p90": 2636.2000000000007,
+        "p95": 3494.4000000000015,
+        "p99": 5391.680000000011
+      },
+      "clean_words": {
+        "count": 11889,
+        "min": 20,
+        "max": 5328,
+        "mean": 309.4455378921692,
+        "median": 274.0,
+        "p90": 437.2000000000007,
+        "p95": 575.0,
+        "p99": 886.0
+      }
+    },
+    {
+      "label_id": 14,
+      "label": "Thể thao",
+      "total": 12267,
+      "train": 8587,
+      "validation": 1840,
+      "test": 1840,
+      "balanced_weight": 0.815040177011762,
+      "weighting_strategy": "balanced_train_frequency",
+      "final_weight": 0.815040177011762,
+      "content_chars": {
+        "count": 12267,
+        "min": 21,
+        "max": 13799,
+        "mean": 1822.2524659655987,
+        "median": 1530.0,
+        "p90": 3536.7999999999993,
+        "p95": 4205.399999999998,
+        "p99": 6515.860000000004
+      },
+      "clean_words": {
+        "count": 12267,
+        "min": 9,
+        "max": 2316,
+        "mean": 308.04051520339124,
+        "median": 262.0,
+        "p90": 597.0,
+        "p95": 711.0,
+        "p99": 1106.3600000000006
+      }
+    },
+    {
+      "label_id": 15,
+      "label": "Thời sự",
+      "total": 12420,
+      "train": 8694,
+      "validation": 1863,
+      "test": 1863,
+      "balanced_weight": 0.8050092017483322,
+      "weighting_strategy": "balanced_train_frequency",
+      "final_weight": 0.8050092017483322,
+      "content_chars": {
+        "count": 12420,
+        "min": 129,
+        "max": 53297,
+        "mean": 2184.0489533011273,
+        "median": 1798.0,
+        "p90": 3819.1000000000004,
+        "p95": 4420.0,
+        "p99": 6968.099999999995
+      },
+      "clean_words": {
+        "count": 12420,
+        "min": 30,
+        "max": 9225,
+        "mean": 364.3512077294686,
+        "median": 300.0,
+        "p90": 634.0,
+        "p95": 738.0,
+        "p99": 1124.8099999999995
+      }
+    },
+    {
+      "label_id": 16,
+      "label": "Tuần Việt Nam",
+      "total": 11276,
+      "train": 7893,
+      "validation": 1692,
+      "test": 1691,
+      "balanced_weight": 0.8867034080831117,
+      "weighting_strategy": "balanced_train_frequency",
+      "final_weight": 0.8867034080831117,
+      "content_chars": {
+        "count": 11276,
+        "min": 48,
+        "max": 100492,
+        "mean": 5909.720113515431,
+        "median": 5960.5,
+        "p90": 9991.5,
+        "p95": 11815.25,
+        "p99": 16563.5
+      },
+      "clean_words": {
+        "count": 11276,
+        "min": 13,
+        "max": 15584,
+        "mean": 992.7881340901029,
+        "median": 998.0,
+        "p90": 1684.0,
+        "p95": 1997.25,
+        "p99": 2791.75
+      }
+    },
+    {
+      "label_id": 17,
+      "label": "Văn hóa - Giải trí",
+      "total": 12317,
+      "train": 8622,
+      "validation": 1848,
+      "test": 1847,
+      "balanced_weight": 0.8117316167942473,
+      "weighting_strategy": "balanced_train_frequency",
+      "final_weight": 0.8117316167942473,
+      "content_chars": {
+        "count": 12317,
+        "min": 21,
+        "max": 26739,
+        "mean": 2496.5330031663552,
+        "median": 2186.0,
+        "p90": 4686.0,
+        "p95": 5677.0,
+        "p99": 7687.84
+      },
+      "clean_words": {
+        "count": 12317,
+        "min": 10,
+        "max": 4166,
+        "mean": 425.4511650564261,
+        "median": 368.0,
+        "p90": 794.0,
+        "p95": 976.1999999999989,
+        "p99": 1329.880000000001
+      }
+    },
+    {
+      "label_id": 18,
+      "label": "Ô tô - Xe máy",
+      "total": 12299,
+      "train": 8609,
+      "validation": 1845,
+      "test": 1845,
+      "balanced_weight": 0.8129573701939831,
+      "weighting_strategy": "balanced_train_frequency",
+      "final_weight": 0.8129573701939831,
+      "content_chars": {
+        "count": 12299,
+        "min": 21,
+        "max": 23873,
+        "mean": 3069.8307179445483,
+        "median": 2855.0,
+        "p90": 5141.200000000001,
+        "p95": 5848.0,
+        "p99": 7305.300000000007
+      },
+      "clean_words": {
+        "count": 12299,
+        "min": 13,
+        "max": 2986,
+        "mean": 531.0740710626881,
+        "median": 496.0,
+        "p90": 881.2000000000007,
+        "p95": 1003.0,
+        "p99": 1240.0200000000004
+      }
+    },
+    {
+      "label_id": 19,
+      "label": "Đời sống",
+      "total": 11883,
+      "train": 8318,
+      "validation": 1782,
+      "test": 1783,
+      "balanced_weight": 0.8413981726376533,
+      "weighting_strategy": "balanced_train_frequency",
+      "final_weight": 0.8413981726376533,
+      "content_chars": {
+        "count": 11883,
+        "min": 23,
+        "max": 23210,
+        "mean": 3222.4991163847512,
+        "median": 3106.0,
+        "p90": 4962.0,
+        "p95": 5698.0,
+        "p99": 7833.18
+      },
+      "clean_words": {
+        "count": 11883,
+        "min": 9,
+        "max": 3802,
+        "mean": 581.9713035428764,
+        "median": 562.0,
+        "p90": 896.0,
+        "p95": 1035.8999999999996,
+        "p99": 1410.0
+      }
+    }
+  ],
+  "empty_fields": {
+    "title": 0,
+    "content": 0
+  },
+  "title_chars": {
+    "count": 199965,
+    "min": 3,
+    "max": 219,
+    "mean": 63.480374065461454,
+    "median": 65.0,
+    "p90": 79.0,
+    "p95": 80.0,
+    "p99": 88.0
+  },
+  "content_chars": {
+    "count": 199965,
+    "min": 7,
+    "max": 131081,
+    "mean": 3198.8487285274923,
+    "median": 2840.0,
+    "p90": 5420.0,
+    "p95": 6645.0,
+    "p99": 10500.079999999958
+  },
+  "clean_words": {
+    "count": 199965,
+    "min": 5,
+    "max": 20547,
+    "mean": 524.1613682394419,
+    "median": 465.0,
+    "p90": 887.0,
+    "p95": 1090.0,
+    "p99": 1721.359999999986
+  },
+  "token_sample": {
+    "sample_count": 1000,
+    "seed": 42,
+    "includes_special_tokens": true,
+    "count": 1000,
+    "min": 23,
+    "max": 2590,
+    "mean": 572.973,
+    "median": 510.5,
+    "p90": 976.1,
+    "p95": 1169.3499999999997,
+    "p99": 1765.2299999999998,
+    "over_256_fraction": 0.854,
+    "mean_retained_fraction": 0.5631968933965863
+  },
+  "url_duplicates": {
+    "unique": 199965,
+    "repeated_groups": 0,
+    "extra_rows": 0,
+    "cross_category_groups": 0,
+    "train_test_overlap_groups": 0,
+    "test_rows_in_overlap_groups": 0,
+    "train_rows_in_overlap_groups": 0
+  },
+  "raw_text_duplicates": {
+    "unique": 199965,
+    "repeated_groups": 0,
+    "extra_rows": 0,
+    "cross_category_groups": 0,
+    "train_test_overlap_groups": 0,
+    "test_rows_in_overlap_groups": 0,
+    "train_rows_in_overlap_groups": 0
+  },
+  "clean_text_duplicates": {
+    "unique": 199965,
+    "repeated_groups": 0,
+    "extra_rows": 0,
+    "cross_category_groups": 0,
+    "train_test_overlap_groups": 0,
+    "test_rows_in_overlap_groups": 0,
+    "train_rows_in_overlap_groups": 0
+  },
+  "split_overlap": {
+    "train/validation": {
+      "url": 0,
+      "raw_text": 0,
+      "clean_text": 0
+    },
+    "train/test": {
+      "url": 0,
+      "raw_text": 0,
+      "clean_text": 0
+    },
+    "validation/test": {
+      "url": 0,
+      "raw_text": 0,
+      "clean_text": 0
+    }
+  },
+  "pre_split_deduplication": {
+    "conflicting_rows_removed": 8,
+    "duplicate_rows_removed": 364
+  }
+}

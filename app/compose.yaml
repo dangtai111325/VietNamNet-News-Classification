@@ -1,0 +1,97 @@
+name: co5087-vietnamnet
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: vnn_ml
+      POSTGRES_USER: vnn
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-vnn}
+    ports: ["${POSTGRES_PORT:-5432}:5432"]
+    volumes: ["postgres_data:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vnn -d vnn_ml"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+  redis:
+    image: redis:7-alpine
+    ports: ["${REDIS_PORT:-6379}:6379"]
+    volumes: ["redis_data:/data"]
+    command: ["redis-server", "--appendonly", "yes"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+  model-service:
+    build:
+      context: ..
+      dockerfile: app/model-service/Dockerfile
+    environment:
+      VNN_PROJECT_ROOT: /project
+      VNN_AI_ACTIVE_ARTIFACT_DIR: /project/app/artifacts
+      OMP_NUM_THREADS: "2"
+      TOKENIZERS_PARALLELISM: "false"
+    ports: ["${MODEL_PORT:-50051}:50051"]
+    volumes:
+      - ../model:/project/model:ro
+      - ./artifacts:/project/app/artifacts
+    healthcheck:
+      test: ["CMD", "python", "healthcheck.py"]
+      interval: 15s
+      timeout: 30s
+      start_period: 90s
+      retries: 10
+  api-service:
+    build:
+      context: ..
+      dockerfile: app/api-service/Dockerfile
+    environment: &api_environment
+      VNN_PROJECT_ROOT: /project
+      VNN_AI_SERVICE_HOST: model-service
+      VNN_DB_HOST: postgres
+      VNN_DB_SCHEMA: vnn
+      VNN_DB_PASSWORD: ${POSTGRES_PASSWORD:-vnn}
+      VNN_ARTIFACTS_DIR: /project/app/artifacts
+      VNN_REDIS_URL: redis://redis:6379/0
+      VNN_CORS_ORIGINS: '["http://localhost:${UI_PORT:-5173}","http://127.0.0.1:${UI_PORT:-5173}"]'
+    ports: ["${API_PORT:-8000}:8000"]
+    volumes: &api_volumes
+      - ../model:/project/model:ro
+      - ../result/evaluation:/project/result/evaluation:ro
+      - ./artifacts:/project/app/artifacts
+    depends_on:
+      postgres: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      model-service: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import json,urllib.request; assert json.load(urllib.request.urlopen('http://localhost:8000/api/health',timeout=30))['status']=='ok'"]
+      interval: 15s
+      timeout: 35s
+      retries: 10
+  worker-service:
+    build:
+      context: ..
+      dockerfile: app/worker-service/Dockerfile
+    environment:
+      <<: *api_environment
+      VNN_ENABLE_WORKER_SCHEDULER: "true"
+      VNN_DRIFT_MONITORING_CRON: "*/30 * * * *"
+    volumes: *api_volumes
+    depends_on:
+      postgres: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      model-service: {condition: service_healthy}
+  ui:
+    build:
+      context: ./ui
+      args:
+        VITE_API_BASE_URL: http://localhost:${API_PORT:-8000}/api
+    environment:
+      VITE_API_BASE_URL: http://localhost:${API_PORT:-8000}/api
+    ports: ["${UI_PORT:-5173}:5173"]
+    depends_on:
+      api-service: {condition: service_healthy}
+volumes:
+  postgres_data:
+  redis_data:

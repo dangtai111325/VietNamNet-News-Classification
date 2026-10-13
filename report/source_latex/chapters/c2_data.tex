@@ -1,0 +1,69 @@
+\chapter{Dữ liệu và tiền xử lý tiếng Việt}
+\label{chap:data}
+\section{Nguồn và đơn vị thu thập}
+Corpus gồm tin VietNamNet trong 20 chuyên mục. Notebook lấy URL trên tối đa 500 trang cho mỗi chuyên mục, rồi tải HTML bằng 32 worker. Giới hạn 500 áp dụng cho số trang danh sách, không phải số bài; một trang có nhiều URL và một URL có thể hiện ở nhiều chuyên mục. Chuyên mục ngắn kết thúc khi hết dữ liệu hợp lệ. Phạm vi này không đồng nghĩa thu thập toàn bộ kho tin của website.
+
+Danh sách trang được dùng để phát hiện bài, còn nhãn phải được xác minh trên chính bài đó. Tiêu đề, nội dung, URL canonical và bằng chứng chuyên mục được lấy trong cùng lượt tải HTML, giúp tránh một lượt tải riêng chỉ để phân loại URL. Lỗi tải, thiếu nội dung hoặc bằng chứng chưa đủ được thử lại tối đa ba lượt; trường hợp không đạt bị ghi vào danh sách loại.
+
+\section{Taxonomy và nhãn cha--con}
+Mỗi class có một mã ổn định dùng làm tên Parquet. Đường dẫn Công nghiệp hỗ trợ là \texttt{hop-tac/cong-nghiep-ho-tro}, nhưng class và tên file là \texttt{cong-nghiep-ho-tro}. Prefix đường dẫn không trở thành một nhãn bổ sung. Sắc màu Việt Nam là mục con của Dân tộc -- Tôn giáo và được quy về lớp cha này.
+
+Quy tắc xác minh sử dụng đường dẫn chuyên mục và breadcrumb ở cấp bài. Nếu bài thuộc class nguồn, giữ lại. Nếu bằng chứng chỉ tới một class khác trong taxonomy, chuyển cả URL và nội dung về class đó. Nếu chuyên mục xác định nằm ngoài taxonomy, loại khỏi corpus huấn luyện. Không dùng mô hình phân loại đang huấn luyện để tự gán nhãn cho dữ liệu của chính nó, vì cách đó tạo vòng lặp củng cố sai số.
+
+Chính trị xuất hiện trong trang Dân tộc -- Tôn giáo là một tình huống có thật: metadata ghi 225 quan hệ nguồn Dân tộc -- Tôn giáo tới đích Chính trị. Tương tự, Tuần Việt Nam tới Nội dung chuyên đề có 204 quan hệ. Các quan hệ này cho thấy cần xác minh từng bài, đồng thời không đủ để coi toàn bộ trang nguồn là sai nhãn.
+
+\section{Kết quả thu thập và chuẩn hóa}
+\DataTable{tables/cleaning_counts.tex}{Các đơn vị đếm trong quy trình: lượt URL, URL duy nhất và số dòng văn bản có ý nghĩa khác nhau.}
+205.463 lượt URL tạo 204.280 URL duy nhất; 1.183 lượt lặp được gộp trước xử lý nội dung. Dataset giữ 199.463 bài ở chuyên mục nguồn, chuyển 874 bài về class phù hợp, loại 3.866 bài ngoài taxonomy, loại 76 URL không đạt sau ba lượt và gộp một request trùng canonical. Đối chiếu bảo toàn số lượng:
+\begin{equation}204\,280=200\,337+3\,866+76+1.\end{equation}
+874 bài chuyển được tính theo URL duy nhất. Ma trận quan hệ nguồn--đích có 201.444 quan hệ cho 200.337 bài giữ lại và 1.981 quan hệ ngoài đường chéo, do một bài có thể mang nhiều chuyên mục nguồn. Không cộng số ô ngoài đường chéo rồi gọi đó là số bài được chuyển.
+
+\PortraitFigure{assets/dataset/clean_class_distribution.png}{Phân bố 200.337 bài sạch theo chuyên mục sau xác minh URL và nội dung.}
+\PortraitFigure{assets/dataset/class_distribution_cleaning.png}{Phân bố URL theo chuyên mục nguồn và bài theo class sau chuẩn hóa.}
+\ReportFigure{assets/dataset/cleaning_decisions.png}{Các quyết định làm sạch từ output notebook dữ liệu.}
+\PortraitFigure{assets/dataset/cleaning_transitions.png}{Quan hệ chuyên mục nguồn--đích; cùng một bài có thể đóng góp nhiều quan hệ nguồn.}
+
+\section{Bốn tệp URL và hợp đồng dataset}
+\texttt{data\_URLs\_raw.json} lưu snapshot theo chuyên mục phát hiện. \texttt{data\_URLs\_removed.json} giữ lý do loại hoặc gộp để truy vết. \texttt{data\_URLs\_meta.json} chứa cấu hình, hash và số lượng. \texttt{data\_URLs\_clean.json} lưu URL canonical theo nhãn cuối. Bảng trước chuẩn hóa dùng raw; bảng sau chuẩn hóa dùng clean. Không dùng hai đơn vị đếm thay thế nhau.
+
+Mỗi Parquet giữ URL, tiêu đề, nội dung, class và bằng chứng xác minh. Notebook huấn luyện chỉ tiếp nhận corpus vượt qua kiểm tra số lượng, mapping, hash, URL sạch, Parquet và bằng chứng chuyên mục từng bản ghi. Đối chiếu thành công xác nhận tính nhất quán của artifact theo chính sách xác minh, không chứng minh mọi nhãn đều đúng theo ngữ nghĩa hay được chuyên gia gán nhãn thủ công.
+
+\section{Phân bố lớp và mất cân bằng}
+\DataTable{tables/class_distribution.tex}{Số dòng Parquet, corpus sau khử trùng và số mẫu ba tập. ID 0--19 thống nhất giữa notebook và app.}
+\PortraitFigure{assets/dataset/class_distribution.png}{Phân bố 20 lớp trong đầu vào huấn luyện, trước khử trùng văn bản.}
+Kinh doanh có 12.649 bài, Nông thôn mới có 969 bài, chênh lệch khoảng 13,05 lần. Dân tộc thiểu số và miền núi có 1.088 bài; Công nghiệp hỗ trợ có 1.297 bài. Accuracy chịu ảnh hưởng mạnh của lớp lớn, vì vậy chỉ số theo lớp và Macro-F1 là cần thiết. Nhiều lớp lớn có số lượng gần nhau do phạm vi phân trang; đây không phải mẫu ngẫu nhiên đại diện phân bố tin của tòa soạn.
+
+Không phải mọi lớp ít mẫu đều yếu: Công nghiệp hỗ trợ có ít dữ liệu nhưng F1 cao. Khó khăn còn phụ thuộc mức tập trung chủ đề, quy ước chuyên mục, nhiễu nhãn và giao thoa nội dung. Tăng trọng số lớp không tự bổ sung ngữ cảnh hoặc tạo một ranh giới taxonomy rõ hơn.
+
+\section{Độ dài ở ba mức biểu diễn}
+Trước khử trùng, tiêu đề có trung bình 14,26 đơn vị tách bằng khoảng trắng, trung vị 15; nội dung có trung bình 693,28 và trung vị 617. Đây chưa phải từ sau PyVi hoặc token BPE. Trên corpus 199.965 bài dùng chia tập, nội dung có trung vị 2.840 ký tự, trung bình 3.198,85 và lớn nhất 131.081; văn bản sạch có trung vị 465 đơn vị, trung bình 524,16 và lớn nhất 20.547.
+
+\ReportFigure{assets/dataset/title_length.png}{Độ dài tiêu đề theo các đơn vị tách bằng khoảng trắng.}
+\ReportFigure{assets/dataset/content_word_length.png}{Độ dài nội dung trước phân đoạn từ, không đồng nghĩa độ dài BPE.}
+\PortraitFigure{assets/dataset/length_by_class.png}{Độ dài nội dung theo chuyên mục, dùng để xem khác biệt phân bố.}
+\ReportFigure{assets/dataset/content_length.png}{Độ dài nội dung theo ký tự; histogram giới hạn vùng hiển thị để đọc được phần phân bố chính.}
+\ReportFigure{assets/dataset/clean_length.png}{Độ dài văn bản sau phân đoạn từ tiếng Việt.}
+
+Khảo sát BPE trên 1.000 mẫu seed 42, tính cả token đặc biệt, có trung bình 572,973 token, trung vị 510,5, lớn nhất 2.590; 85,4\% vượt 256 token. Tỷ lệ giữ token trung bình là 56,32\%. Các tỷ lệ này thuộc mẫu khảo sát, không phải số đếm trên toàn corpus hay tỷ lệ thông tin ngữ nghĩa bảo toàn. Bài dài là trường hợp phổ biến; phần bị cắt cần được xem như một giới hạn phương pháp.
+\ReportFigure{assets/dataset/token_length.png}{Khảo sát độ dài BPE trên 1.000 bài.}
+\ReportFigure{assets/dataset/token_retention.png}{Tỷ lệ token giữ trong giới hạn 256; không đo lượng thông tin ngữ nghĩa còn lại.}
+
+\section{Ghép và chuẩn hóa văn bản}
+Đầu vào là tiêu đề, một khoảng trắng và nội dung. Tiêu đề xuất hiện một lần, nằm ở đầu nên thường được giữ trong head. Pipeline chuyển chữ thường, thay dấu câu và chữ số bằng khoảng trắng, gọi PyVi, chuẩn hóa khoảng trắng và giữ stopwords. Dấu tiếng Việt trong văn bản Unicode thông thường được giữ; dấu gạch dưới thể hiện từ nhiều âm tiết.
+\PreprocessDiagram
+\DataTable{tables/preprocessing_example.tex}{Trích đoạn thực tế của bài UNIQLO trong output notebook, qua từng bước xử lý.}
+
+Phân đoạn từ và BPE có hai nhiệm vụ khác nhau. Tiếng Việt có khoảng trắng giữa âm tiết; PyVi nối các tổ hợp thành đơn vị từ \citep{pyvi}. Tokenizer PhoBERT tiếp tục biểu diễn chúng bằng subword. PhoBERT được tiền huấn luyện với phân đoạn của VnCoreNLP và khuyến nghị công cụ tương ứng \citep{phobertcard}; dùng PyVi tạo khác biệt với tiền huấn luyện, dù train và app nhất quán với nhau.
+
+Chuyển chữ thường làm mất tín hiệu tên riêng; bỏ chữ số làm mất năm, giá, số hiệu và tỷ số; bỏ dấu câu làm mất một phần ranh giới câu. Không có ablation xác nhận mỗi bước đều tăng F1. Pipeline cũng không có bước NFC riêng, nên không thể cam kết bảo toàn mọi dạng dấu Unicode tổ hợp. Đây là các lựa chọn cần khảo sát trước khi thay đổi cách xử lý của model đã train.
+
+\section{Khử trùng trước chia tập}
+Văn bản đã chuẩn hóa được dùng nhận diện nhóm trùng. Có tám dòng thuộc nhóm trùng nhưng xung đột nhãn bị loại và 364 dòng trùng cùng nhãn dư bị gộp, tạo 199.965 bài. Không chọn một nhãn tùy ý cho đầu vào giống nhau nhưng nhãn khác nhau. Việc khử trùng theo văn bản diễn ra trước chia tập để tránh đưa cùng đầu vào vào train và test.
+
+Audit xác nhận số nhóm lặp theo URL, văn bản thô và văn bản sạch đều bằng không trong corpus dùng chia tập. Chín phép đối chiếu, gồm ba loại khóa trên ba cặp tập, đều không giao nhau. Kiểm tra exact hash chưa phát hiện gần trùng, viết lại hoặc nhiều bài về cùng một sự kiện. Một thiết kế theo thời gian, nhóm sự kiện hoặc near-duplicate sẽ đánh giá tổng quát hóa nghiêm ngặt hơn.
+\ReportFigure{assets/dataset/train_test_overlap.png}{Kiểm tra giao nhau giữa ba tập trên URL, văn bản thô và văn bản sạch.}
+
+\section{Cache, truy vết và giới hạn dữ liệu}
+Cache trong \texttt{temp/} giữ văn bản xử lý và ba tập tensor Head--Tail. Fingerprint gắn dữ liệu, mapping, phép chia, tokenizer và chiều dài. Số dòng giống nhau không đủ chứng minh cache đúng; điều kiện tái sử dụng cần signature khớp. Cache phục vụ tốc độ tái thực thi, không tham gia dịch vụ suy luận.
+
+Corpus là snapshot một nguồn với nhãn từ tòa soạn. Một số bài có đoạn quảng bá, thông tin liên quan hoặc khoảng trắng trích xuất chưa tự nhiên; độ dài cực lớn cần rà soát. Không có kiểm toán ngữ nghĩa thủ công toàn bộ corpus. Vì vậy, dataset sạch được hiểu là đạt quy tắc và kiểm tra cấu trúc đã công bố, không phải không còn mọi dạng nhiễu.

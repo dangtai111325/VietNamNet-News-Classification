@@ -1,0 +1,16 @@
+\chapter{Kết luận và hướng phát triển}
+\section{Bài toán được giải quyết}
+Hệ thống phân loại một chuyên mục cho bài tiếng Việt, hỗ trợ rà soát và lưu phản hồi. Thu thập được đặt trong cùng quy trình NLP: mỗi bài được xác minh class, quy mục con về cha, chuyển nhãn trong taxonomy và loại bài ngoài phạm vi. Nhờ đó, dataset không chỉ là danh sách URL gắn nhãn theo nơi phát hiện.
+
+\section{Phương pháp và kết quả}
+Corpus 200.337 bài sạch theo URL trở thành 199.965 bài sau khử trùng văn bản. Chia 70/15/15, weighted cross-entropy theo train, fine-tuning toàn bộ PhoBERT, Head--Tail 256 và chọn checkpoint bằng validation tạo một quy trình có thể truy vết. Calibration fit trên validation; test được tách khỏi các bước lựa chọn.
+
+Test 29.995 mẫu đạt Accuracy 91,13\% và Macro-F1 87,25\% sau hiệu chỉnh. Temperature giảm NLL và ECE đáng kể hơn mức tăng nhãn đúng; hiệu chỉnh class chỉ giảm ròng 13 lỗi. Lớp Nông thôn mới F1 46,39\% là hạn chế chính, cùng các ranh giới giữa chuyên đề, dân tộc, du lịch và đời sống. Không diễn giải điểm tổng thể thành chất lượng đồng đều.
+
+Ứng dụng dùng đúng gói model, tiền xử lý và calibration, có phân quyền, worker, registry, lưu prediction và review. Chức năng minh họa thể hiện việc dùng mô hình trong một quy trình có người ra quyết định. Chỉ số monitoring và bộ ví dụ giao diện có phạm vi riêng, không được cộng vào kết quả test.
+
+\section{Các giới hạn quyết định mức thuyết phục}
+Một nguồn dữ liệu, một seed, không có baseline cùng giao thức và chưa có ablation làm hạn chế kết luận về ưu thế phương pháp. Exact dedup không giải quyết toàn bộ near-duplicates; nhãn chuyên mục không phải gán nhãn ngữ nghĩa độc lập. Head--Tail bỏ phần giữa, pipeline bỏ chữ số/dấu câu và PyVi khác bộ phân đoạn tiền huấn luyện. Không có phép kiểm tra ngoài miền hoặc theo thời gian.
+
+\section{Ưu tiên phát triển}
+Ưu tiên kiểm toán nhãn nhóm Nông thôn mới--Nội dung chuyên đề và phát hiện gần trùng. Đối chứng cần có TF--IDF tuyến tính cùng split, nhiều seed, khoảng tin cậy và ablation Head--Tail, phân đoạn, chữ số. Validation phục vụ lựa chọn; test theo thời gian xác nhận tổng quát hóa.

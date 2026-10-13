@@ -1,0 +1,294 @@
+\chapter{Bằng chứng và chỉ dẫn đối chiếu}
+\section{Môi trường thực nghiệm}
+Python 3.14.7; PyTorch 2.11.0+cu128; CUDA 12.8; Transformers 5.17.0; NumPy 2.5.2; pandas 3.0.6; scikit-learn 1.9.1; PyArrow 26.0.0; PyVi 0.1.1. GPU RTX A3000 Laptop 12 GB; một GPU, BF16/TF32, batch train 32, tích lũy 2 và eval 64. Model checkpoint và tokenizer được giữ cùng cấu hình. Metadata đánh giá ghi thời gian test 106,322 giây không gồm nạp model.
+
+\section{Chỉ dẫn đọc từng cell notebook PhoBERT}
+Mã cell dưới đây là vị trí bắt đầu từ 1 trong file, bao gồm markdown. Số thực thi là execution count trong output; số hình là PNG hiển thị của cell đó. Nội dung được đọc theo nhóm chức năng do notebook quy định.
+\begin{table}[H]\centering\small\caption{Chỉ dẫn cell PhoBERT 1--29.}
+\begin{tabular}{r r p{87mm} r}\toprule Cell & Lần chạy & Nội dung & Hình\\\midrule
+1 & -- & Huấn luyện và đánh giá PhoBERT (mô tả) & 0\\
+2 & -- & Môi trường thực thi (mô tả) & 0\\
+3 & 1 & Môi trường thực thi & 0\\
+4 & -- & Kiểm tra thư viện (mô tả) & 0\\
+5 & 2 & Kiểm tra thư viện & 0\\
+6 & 3 & Kiểm tra thư viện & 0\\
+7 & -- & Kiểm tra dataset đầu vào (mô tả) & 0\\
+8 & 4 & Kiểm tra dataset đầu vào & 0\\
+9 & 5 & Kiểm tra dataset đầu vào & 0\\
+10 & -- & Thiết lập môi trường (mô tả) & 0\\
+11 & 6 & Thiết lập môi trường & 0\\
+12 & 7 & Thiết lập môi trường & 0\\
+13 & 8 & Thiết lập môi trường & 0\\
+14 & 9 & Thiết lập môi trường & 0\\
+15 & -- & Đọc dữ liệu thô (mô tả) & 0\\
+16 & 10 & Đọc dữ liệu thô & 0\\
+17 & -- & Khám phá dữ liệu (mô tả) & 0\\
+18 & 11 & Khám phá dữ liệu & 1\\
+19 & 12 & Khám phá dữ liệu & 1\\
+20 & 13 & Khám phá dữ liệu & 1\\
+21 & 14 & Khám phá dữ liệu & 1\\
+22 & 15 & Khám phá dữ liệu & 1\\
+23 & 16 & Khám phá dữ liệu & 0\\
+24 & -- & Tiền xử lý văn bản (mô tả) & 0\\
+25 & 17 & Tiền xử lý văn bản & 0\\
+26 & 18 & Tiền xử lý văn bản & 0\\
+27 & 19 & Tiền xử lý văn bản & 1\\
+28 & -- & Tokenize Head-Tail và chia train, validation và test (mô tả) & 0\\
+29 & 20 & Tokenize Head-Tail và chia train, validation và test & 0\\
+\bottomrule\end{tabular}\end{table}
+\begin{table}[H]\centering\small\caption{Chỉ dẫn cell PhoBERT 30--58.}
+\begin{tabular}{r r p{87mm} r}\toprule Cell & Lần chạy & Nội dung & Hình\\\midrule
+30 & 21 & Tokenize Head-Tail và chia train, validation và test & 0\\
+31 & 22 & Tokenize Head-Tail và chia train, validation và test & 1\\
+32 & 23 & Tokenize Head-Tail và chia train, validation và test & 1\\
+33 & 24 & Tokenize Head-Tail và chia train, validation và test & 1\\
+34 & 25 & Tokenize Head-Tail và chia train, validation và test & 1\\
+35 & -- & Huấn luyện mô hình (mô tả) & 0\\
+36 & 26 & Huấn luyện mô hình & 0\\
+37 & 27 & Huấn luyện mô hình & 0\\
+38 & -- & Đánh giá mô hình (mô tả) & 0\\
+39 & 28 & Đánh giá mô hình & 0\\
+40 & 29 & Đánh giá mô hình & 1\\
+41 & 30 & Đánh giá mô hình & 1\\
+42 & 31 & Đánh giá mô hình & 1\\
+43 & 32 & Đánh giá mô hình & 1\\
+44 & 33 & Đánh giá mô hình & 1\\
+45 & 34 & Đánh giá mô hình & 1\\
+46 & 35 & Đánh giá mô hình & 1\\
+47 & 36 & Đánh giá mô hình & 1\\
+48 & 37 & Đánh giá mô hình & 1\\
+49 & 38 & Đánh giá mô hình & 1\\
+50 & 39 & Đánh giá mô hình & 1\\
+51 & 40 & Đánh giá mô hình & 0\\
+52 & -- & Xuất cấu hình mô hình (mô tả) & 0\\
+53 & 41 & Xuất cấu hình mô hình & 0\\
+54 & -- & Đánh giá hiệu chỉnh trên test (mô tả) & 0\\
+55 & 42 & Đánh giá hiệu chỉnh trên test & 0\\
+56 & 43 & Đánh giá hiệu chỉnh trên test & 0\\
+57 & 44 & Đánh giá hiệu chỉnh trên test & 1\\
+58 & 45 & Đánh giá hiệu chỉnh trên test & 1\\
+\bottomrule\end{tabular}\end{table}
+\begin{table}[H]\centering\small\caption{Chỉ dẫn cell PhoBERT 59--87.}
+\begin{tabular}{r r p{87mm} r}\toprule Cell & Lần chạy & Nội dung & Hình\\\midrule
+59 & 46 & Đánh giá hiệu chỉnh trên test & 0\\
+60 & -- & Chẩn đoán mô hình (mô tả) & 0\\
+61 & 47 & Chẩn đoán mô hình & 0\\
+62 & -- & Xuất kết quả và phân tích trực quan (mô tả) & 0\\
+63 & 48 & Xuất kết quả và phân tích trực quan & 0\\
+64 & 49 & Xuất kết quả và phân tích trực quan & 1\\
+65 & 50 & Xuất kết quả và phân tích trực quan & 1\\
+66 & 51 & Xuất kết quả và phân tích trực quan & 1\\
+67 & 52 & Xuất kết quả và phân tích trực quan & 1\\
+68 & 53 & Xuất kết quả và phân tích trực quan & 1\\
+69 & 54 & Xuất kết quả và phân tích trực quan & 1\\
+70 & 55 & Xuất kết quả và phân tích trực quan & 1\\
+71 & 56 & Xuất kết quả và phân tích trực quan & 1\\
+72 & 57 & Xuất kết quả và phân tích trực quan & 1\\
+73 & 58 & Xuất kết quả và phân tích trực quan & 1\\
+74 & 59 & Xuất kết quả và phân tích trực quan & 1\\
+75 & 60 & Xuất kết quả và phân tích trực quan & 1\\
+76 & 61 & Xuất kết quả và phân tích trực quan & 1\\
+77 & 62 & Xuất kết quả và phân tích trực quan & 1\\
+78 & 63 & Xuất kết quả và phân tích trực quan & 1\\
+79 & 64 & Xuất kết quả và phân tích trực quan & 1\\
+80 & 65 & Xuất kết quả và phân tích trực quan & 1\\
+81 & 66 & Xuất kết quả và phân tích trực quan & 1\\
+82 & 67 & Xuất kết quả và phân tích trực quan & 1\\
+83 & 68 & Xuất kết quả và phân tích trực quan & 1\\
+84 & 69 & Xuất kết quả và phân tích trực quan & 1\\
+85 & 70 & Xuất kết quả và phân tích trực quan & 20\\
+86 & 71 & Xuất kết quả và phân tích trực quan & 1\\
+87 & 72 & Xuất kết quả và phân tích trực quan & 0\\
+\bottomrule\end{tabular}\end{table}
+\section{Các kiểm tra ứng dụng được thực thi}
+\begin{table}[H]\centering\small\caption{Kiểm tra hợp đồng model và ứng dụng 1--23.}
+\begin{tabular}{r p{135mm}}\toprule ID & Kiểm tra đạt\\\midrule
+1 & Model SHA-256 và taxonomy 20 lớp\\
+2 & Toàn bộ 29.995 quyết định sau hiệu chỉnh khớp app\\
+3 & Từ chối nhiệt độ không hợp lệ 0\\
+4 & Từ chối nhiệt độ không hợp lệ -1\\
+5 & Từ chối nhiệt độ không hợp lệ inf\\
+6 & Từ chối nhiệt độ không hợp lệ nan\\
+7 & Tie-breaking theo ID\\
+8 & Health model\\
+9 & Thiếu phiên trả 401\\
+10 & Sai mật khẩu trả 401\\
+11 & Đăng nhập editor\\
+12 & Đăng nhập admin\\
+13 & Đăng nhập data-scientist\\
+14 & Phân quyền editor /admin/ops\\
+15 & Phân quyền editor /scientist/monitoring\\
+16 & Phân quyền admin /editor/dashboard\\
+17 & Phân quyền data-scientist /admin/ops\\
+18 & Bài rỗng trả 422\\
+19 & Văn bản chỉ chữ số và ký hiệu trả 422\\
+20 & Nhãn ngoài taxonomy trả 422\\
+21 & Ngưỡng định tuyến đảo ngược trả 422\\
+22 & Worker import Redis–Dramatiq\\
+23 & Giao diện/API /editor/dashboard\\
+\bottomrule\end{tabular}\end{table}
+\begin{table}[H]\centering\small\caption{Kiểm tra hợp đồng model và ứng dụng 24--46.}
+\begin{tabular}{r p{135mm}}\toprule ID & Kiểm tra đạt\\\midrule
+24 & Giao diện/API /editor/review\\
+25 & Giao diện/API /editor/classifier\\
+26 & Giao diện/API /admin/ops\\
+27 & Giao diện/API /scientist/monitoring\\
+28 & Giao diện/API /scientist/model-versions\\
+29 & Giao diện/API /scientist/dataset-lab\\
+30 & Monitoring được tính lại\\
+31 & Article không tồn tại trả 404\\
+32 & Đăng xuất hủy phiên editor\\
+33 & Đăng xuất hủy phiên admin\\
+34 & Đăng xuất hủy phiên data-scientist\\
+35 & Head–Tail ranh giới 0\\
+36 & Head–Tail ranh giới 1\\
+37 & Head–Tail ranh giới 253\\
+38 & Head–Tail ranh giới 254\\
+39 & Head–Tail ranh giới 255\\
+40 & Head–Tail ranh giới 256\\
+41 & Head–Tail ranh giới 1000\\
+42 & Tiền xử lý ví dụ UNIQLO khớp output notebook\\
+43 & Tensor checkpoint có đúng 135.013.652 tham số\\
+44 & Registry đọc đúng gói 20 lớp và 29.995 mẫu test\\
+45 & 32 dự đoán CPU thực tế khớp nhãn offline\\
+46 & Khôi phục backup riêng: 32 bài, 32 dự đoán, 10 phản hồi, không phiên đăng nhập\\
+\bottomrule\end{tabular}\end{table}
+\def\UrlBreaks{\do\/\do-\do.}
+\section{Ví dụ truy vết của lỗi test}
+\subsection{Ví dụ 1}
+Vệ tinh AI Trung Quốc giúp Iran săn lùng căn cứ Mỹ tại Trung Đông?
+
+\noindent Nhãn tham chiếu: Công nghệ; dự đoán: Thế giới; confidence 0,9882; margin 0,9787.
+
+\noindent URL: \url{https://vietnamnet.vn/ve-tinh-ai-trung-quoc-giup-iran-san-lung-can-cu-my-tai-trung-dong-2504640.html}.
+
+Theo hãng tinABC News,ngày 5/4, các quan chức từ Cơ quan Tình báo Quốc phòng Mỹ (DIA) nhận định Lực lượng Vệ binh Cách mạng Hồi giáo Iran (IRGC) đang sử dụng các bộ dữ liệu do công ty trí tuệ nhân tạo không gian địa lý Trung Quốc MizarVision công bố để hỗ trợ lên kế hoạch tấn công bằng tên lửa và máy bay không người lái. Nhận định cho biết hình ảnh này bao gồm tính năng tự động nhận dạng và gắn thẻ đối tượng, cho phép người điều khiển xác định các tài sản và cơ sở hạ tầng quân sự nhanh hơn nhiều so với phân tích truyền thống. TheoABC News, MizarVision đã công bố hình ảnh vệ tinh độ phân giải c\ldots
+
+\subsection{Ví dụ 2}
+Báo chí quốc tế đưa tin Tổng Bí thư Nguyễn Phú Trọng từ trần
+
+\noindent Nhãn tham chiếu: Chính trị; dự đoán: Thế giới; confidence 0,9871; margin 0,9752.
+
+\noindent URL: \url{https://vietnamnet.vn/bao-chi-quoc-te-dua-tin-tong-bi-thu-nguyen-phu-trong-tu-tran-2304216.html}.
+
+Hãng thông tấn Trung Quốc Xinhua đưa tin Tổng Bí thư Đảng Cộng sản Việt Nam Nguyễn Phú Trọng từ trần ở tuổi 80 và đăng chùm ảnh về những hoạt động của Tổng Bí thư tại các sự kiện quan trọng. Báo Granma của Cuba đưa tin, Tổng Bí thư Nguyễn Phú Trọng, một người bạn thuỷ chung của Cuba, từ trần vì tuổi cao, bệnh nặng, dù được bác sĩ tận tình cứu chữa, gia đình hết lòng chăm sóc. Hãng thông tấn Cuba (ACN) ngày 19/7 cho biết, được tin Tổng Bí thư Đảng Cộng sản Việt Nam Nguyễn Phú Trọng từ trần, các đại biểu Quốc hội Cuba đã dành một phút mặc niệm tưởng nhớ đồng chí tại hội trường chính của Trung tâ\ldots
+
+\subsection{Ví dụ 3}
+Giá thuê nhà tại Los Angeles tăng chóng mặt sau thảm họa cháy rừng
+
+\noindent Nhãn tham chiếu: Bất động sản; dự đoán: Thế giới; confidence 0,9869; margin 0,9772.
+
+\noindent URL: \url{https://vietnamnet.vn/gia-thue-nha-tai-los-angeles-tang-chong-mat-sau-tham-hoa-chay-rung-2364710.html}.
+
+Theo NBC News, nhiều người dân tại thành phố Los Angeles đã đổ xô đi tìm nhà ở trong khi các vụcháy rừngvẫn đang diễn ra. Điều này dẫn đến một số chủ nhà và người môi giới tăng tiền thuê nhà lên quá cao. Vụ cháy rừng đã khiến ông Joe Thompson phải đi tìm nơi ở mới cho gia đình. Khi đến thành phố Santa Monica, tiểu bang California, ông tìm được căn nhà 5 phòng ngủ với giá chào thuê 28.000 USD/tháng, cao gấp đôi so với năm ngoái. Người môi giới yêu cầu ông phải trả tiền thuê trước 3 tháng và cho biết đã có nhiều người hỏi thuê. Không thể chi trả mức giá thuê quá cao này, ông Joe Thompson nói rằn\ldots
+
+\subsection{Ví dụ 4}
+Một tài xế dùng biển giả bị phạt 17,6 triệu đồng, tước bằng lái 3 tháng
+
+\noindent Nhãn tham chiếu: Thời sự; dự đoán: Ô tô - Xe máy; confidence 0,9868; margin 0,9908.
+
+\noindent URL: \url{https://vietnamnet.vn/mot-tai-xe-dung-bien-gia-bi-phat-17-6-trieu-dong-tuoc-bang-lai-3-thang-2045784.html}.
+
+Ngày 29/7, Đội CSGT số 1, Phòng CSGT đường bộ - đường sắt đã ra quyết định xử phạt vi phạm hành chính, phạt tiền 17,6 triệu đồng, tước quyền sử dụng giấy phép lái xe 03 tháng và tịch thu biển số xe 30G-688.68 đối với lái xe N.V.T (SN 1984, trú tại huyện Yên Phong, tỉnh Bắc Ninh). Trước đó, thông qua trao đổi từ Công ty cổ phần giao thông số Việt Nam trong quá trình thu phí theo hình thức điện tử không dừng (ETC) đã phát hiện một số ô tô cố tình gắn biển số của xe khác để lưu thông qua trạm thu phí, Đội CSGT số 1, Phòng CSGT đường bộ - đường sắt đã tăng cường tuần tra kiểm soát. Trong quá trình\ldots
+
+\subsection{Ví dụ 5}
+Ấm lòng với hành động nam thanh niên đi xe máy dìu cháu nhỏ qua đường
+
+\noindent Nhãn tham chiếu: Bạn đọc; dự đoán: Ô tô - Xe máy; confidence 0,9865; margin 0,9907.
+
+\noindent URL: \url{https://vietnamnet.vn/am-long-voi-hanh-dong-nam-thanh-nien-di-xe-may-diu-chau-nho-qua-duong-740420.html}.
+
+Hành động đẹp này được camera hành trình của một xe ô tô ghi lại trên tuyến đường Quang Trung (quận Hà Đông, Hà Nội). Theo đoạn video trên, một bé gái khoảng 9 tuổi đang đứng một mình giữa dòng phương tiện qua lại đông đúc để chờ sang đường. Lúc này, nam thanh niên điều khiển chiếcHonda WaveAlpha trong bộ đồng phục công nhân đã không ngại ngần dừng lại và dìu cháu bé sang đường an toàn. Thời điểm trên, đường Quang Trung đang có rất nhiều phương tiện qua lại với tốc độ cao như xe buýt, container, xe tải,... rất nguy hiểm nếu cháu bé sang đường một mình. Nhưng chỉ với một hành động nhỏ, nam than\ldots
+
+\subsection{Ví dụ 6}
+Ô tô mới có thể được miễn đăng kiểm lần đầu từ năm 2023
+
+\noindent Nhãn tham chiếu: Thời sự; dự đoán: Ô tô - Xe máy; confidence 0,9862; margin 0,9904.
+
+\noindent URL: \url{https://vietnamnet.vn/o-to-moi-co-the-duoc-mien-dang-kiem-lan-dau-tu-nam-2023-2094970.html}.
+
+Xe mới sẽ được miễn đăng kiểm một năm Thông tin tớiVietNamNetvào sáng 28/12, đại diện Cục Đăng kiểm Việt Nam cho biết, sau 6 tháng đánh giá tác động kết hợp với việc nghiên cứu các yếu tố kỹ thuật và dữ liệu thực tế, Cục Đăng kiểm Việt Nam đã tổng hợp trình Bộ GTVT phương án thực hiện miễnđăng kiểmlần đầu cho xe ô tô sản xuất, lắp ráp, nhập khẩu mới trong thời gian một năm tính từ năm sản xuất. Phương án trên đã được Cục Đăng kiểm Việt Nam đăng ký vào chương trình xây dựng văn bản quy phạm pháp luật năm 2023 của Bộ GTVT và đang thực hiện các bước xây dựng dự thảo bổ sung, sửa đổi 16/2021/TT-BG\ldots
+
+\subsection{Ví dụ 7}
+Hạ 2 tiêm kích F-14 Iran chóng vánh: Israel áp đảo công nghệ quân sự?
+
+\noindent Nhãn tham chiếu: Công nghệ; dự đoán: Thế giới; confidence 0,9853; margin 0,9695.
+
+\noindent URL: \url{https://vietnamnet.vn/ha-2-tiem-kich-f-14-iran-chong-vanh-israel-ap-dao-cong-nghe-quan-su-2412817.html}.
+
+Quân đội Israel (IDF) mới đây đã công bố đoạn video ghi lại khoảnh khắc phá hủy haitiêm kích F-14Tomcat đỗ ngoài trời của Iran. Địa điểm không kích là một căn cứ quân sự gần thành phố Isfahan, Iran. Các cuộc không kích, được thực hiện dưới điều kiện mà giới chức Israel mô tả là "kiểm soát hoàn toàn không phận", đánh dấu sự leo thang đáng kể trong cuộcxung đột Israel - Iran. Khoảnh khắc Israel phá hủy 2 chiến đấu cơ Iran. Nguồn: Times of Israel Chiến dịch này, được xác nhận qua hình ảnh trên không do Lực lượng Phòng vệ Israel (IDF) công bố, đã nhắm vào một căn cứ không quân trọng yếu ở trung tâ\ldots
+
+\subsection{Ví dụ 8}
+Vì sao lần nữa, lại là Pháp?
+
+\noindent Nhãn tham chiếu: Tuần Việt Nam; dự đoán: Thế giới; confidence 0,9847; margin 0,9630.
+
+\noindent URL: \url{https://vietnamnet.vn/vi-sao-lan-nua-lai-la-phap-273204.html}.
+
+- Điều kinh hoàng lại xảy ra ở Paris. Các thi thể nằm trên đường phố, gia đình bạn bè điên cuồng gọi điện thoại, hoảng loạn tìm người thân. Cả một quốc gia trong cơn địa chấn. Một năm bắt đầu với thảm kịch Charlie Hebdo và kết thúc với một làn sóng tấn công mới dữ dội hơn. Tình trạng khẩn cấp quốc gia được ban bố. Lần mới nhất nước Pháp áp dụng nó là năm 2005 khi các cuộc bạo động ở ngoại ô Paris bùng nổ giữa những người trẻ tuổi (chủ yếu là Hồi giáo) hoặc người nhập cư thế hệ hai và lực lượng cảnh sát. Những ngọn nến được thắp lên ở San Francisco, California. Ảnh: Reuters Quá sớm để nói chính\ldots
+
+\subsection{Ví dụ 9}
+Tổng thống Nga Putin đi đâu, chơi gì khi rảnh rỗi?
+
+\noindent Nhãn tham chiếu: Du lịch; dự đoán: Thế giới; confidence 0,9844; margin 0,9721.
+
+\noindent URL: \url{https://vietnamnet.vn/tong-thong-nga-putin-di-dau-choi-gi-khi-ranh-roi-2293553.html}.
+
+Mặc dù Tổng thống Putin, cũng giống như tất cả các công chức khác ở Nga, được nghỉ phép 30 ngày/năm nhưng ông hiếm khi nghỉ thời gian dài. Kỳ nghỉ của ông thường ngắn, chỉ vài ngày. Theo trang Russia Beyond, có một vài điểm đến ở Nga mà Tổng thống đặc biệt yêu thích. Cộng hòa Tuva (thuộc Nga) Nhiều người từng thấy bức ảnh ông Putin cưỡi ngựa đầy oai vệ. Theo nhà báo người Áo Armin Wolf, bức ảnh được chụp vào tháng 8/2009 trong kỳ nghỉ của ông Putin ở Cộng hòa Tuva, một trong những điểm đến yêu thích của Tổng thống Nga. Con ngựa được ông Putin cưỡi là của một người chăn cừu địa phương sống gần \ldots
+
+\subsection{Ví dụ 10}
+Ô tô đang chạy, cả nhà lịm dần vì ngộ độc khí: Cảnh báo nguy hiểm, đừng xem nhẹ
+
+\noindent Nhãn tham chiếu: Ô tô - Xe máy; dự đoán: Sức khỏe; confidence 0,9842; margin 0,9589.
+
+\noindent URL: \url{https://vietnamnet.vn/o-to-dang-chay-ca-nha-lim-dan-vi-ngo-doc-khi-canh-bao-nguy-hiem-dung-xem-nhe-2422455.html}.
+
+Mới đây, Bệnh viện Sản nhi Ninh Bình cho biết, Khoa Cấp cứu vừa tiếp nhận và điều trị cho hai bệnh nhi là anh em ruột trong tình trạng co giật, mắt trợn, tay chân co cứng, lơ mơ và mất ý thức. Điều đáng chú ý là bố mẹ của hai bé cũng có biểu hiện tương tự, như choáng váng và đau đầu nhẹ. Sự việc xảy ra sau khi cả gia đình di chuyển bằng ô tô hơn một tiếng từ phường Hoa Lư theo hướng tỉnh Hà Nam (cũ). Các bác sĩ chẩn đoán nguyên nhân có thể là do ngộ độckhí thải ô tô. Rất may, hai bé được đưa đến viện và xử lý kịp thời nên đã qua cơn nguy hiểm, sức khỏe ổn định và đã được xuất viện. Anh Trần Vă\ldots
+
+\section{Các hình chẩn đoán riêng trước hiệu chỉnh}
+Các biểu đồ sau cung cấp trạng thái trước hiệu chỉnh để đối chiếu với hình so sánh ở chương kết quả. Mỗi biểu đồ là một output riêng của notebook.
+\PortraitFigure{assets/evaluation/precision_before.png}{Precision theo 20 lớp trước hiệu chỉnh.}
+\PortraitFigure{assets/evaluation/recall_before.png}{Recall theo 20 lớp trước hiệu chỉnh.}
+\PortraitFigure{assets/evaluation/f1_before.png}{F1 theo 20 lớp trước hiệu chỉnh.}
+\section{Hai mươi đường Precision--Recall}
+Mỗi class được xét một-chống-phần-còn-lại trên 29.995 mẫu test. Đường tham chiếu là prevalence; AP không phải F1 ở quyết định đa lớp. Các hình giữ nguyên output notebook, không ghép nhiều class thành một ảnh.
+\subsection{ID 0: Bạn đọc}
+\ReportFigure{assets/evaluation/precision_recall/ban-doc.png}{Precision--Recall của Bạn đọc, trên test độc lập.}
+\subsection{ID 1: Bất động sản}
+\ReportFigure{assets/evaluation/precision_recall/bat-dong-san.png}{Precision--Recall của Bất động sản, trên test độc lập.}
+\subsection{ID 2: Chính trị}
+\ReportFigure{assets/evaluation/precision_recall/chinh-tri.png}{Precision--Recall của Chính trị, trên test độc lập.}
+\subsection{ID 3: Công nghiệp hỗ trợ}
+\ReportFigure{assets/evaluation/precision_recall/cong-nghiep-ho-tro.png}{Precision--Recall của Công nghiệp hỗ trợ, trên test độc lập.}
+\subsection{ID 4: Công nghệ}
+\ReportFigure{assets/evaluation/precision_recall/cong-nghe.png}{Precision--Recall của Công nghệ, trên test độc lập.}
+\subsection{ID 5: Du lịch}
+\ReportFigure{assets/evaluation/precision_recall/du-lich.png}{Precision--Recall của Du lịch, trên test độc lập.}
+\subsection{ID 6: Dân tộc - Tôn giáo}
+\ReportFigure{assets/evaluation/precision_recall/dan-toc-ton-giao.png}{Precision--Recall của Dân tộc - Tôn giáo, trên test độc lập.}
+\subsection{ID 7: Dân tộc thiểu số và miền núi}
+\ReportFigure{assets/evaluation/precision_recall/dan-toc-thieu-so-va-mien-nui.png}{Precision--Recall của Dân tộc thiểu số và miền núi, trên test độc lập.}
+\subsection{ID 8: Giáo dục}
+\ReportFigure{assets/evaluation/precision_recall/giao-duc.png}{Precision--Recall của Giáo dục, trên test độc lập.}
+\subsection{ID 9: Kinh doanh}
+\ReportFigure{assets/evaluation/precision_recall/kinh-doanh.png}{Precision--Recall của Kinh doanh, trên test độc lập.}
+\subsection{ID 10: Nông thôn mới}
+\ReportFigure{assets/evaluation/precision_recall/nong-thon-moi.png}{Precision--Recall của Nông thôn mới, trên test độc lập.}
+\subsection{ID 11: Nội dung chuyên đề}
+\ReportFigure{assets/evaluation/precision_recall/noi-dung-chuyen-de.png}{Precision--Recall của Nội dung chuyên đề, trên test độc lập.}
+\subsection{ID 12: Sức khỏe}
+\ReportFigure{assets/evaluation/precision_recall/suc-khoe.png}{Precision--Recall của Sức khỏe, trên test độc lập.}
+\subsection{ID 13: Thế giới}
+\ReportFigure{assets/evaluation/precision_recall/the-gioi.png}{Precision--Recall của Thế giới, trên test độc lập.}
+\subsection{ID 14: Thể thao}
+\ReportFigure{assets/evaluation/precision_recall/the-thao.png}{Precision--Recall của Thể thao, trên test độc lập.}
+\subsection{ID 15: Thời sự}
+\ReportFigure{assets/evaluation/precision_recall/thoi-su.png}{Precision--Recall của Thời sự, trên test độc lập.}
+\subsection{ID 16: Tuần Việt Nam}
+\ReportFigure{assets/evaluation/precision_recall/tuan-viet-nam.png}{Precision--Recall của Tuần Việt Nam, trên test độc lập.}
+\subsection{ID 17: Văn hóa - Giải trí}
+\ReportFigure{assets/evaluation/precision_recall/van-hoa-giai-tri.png}{Precision--Recall của Văn hóa - Giải trí, trên test độc lập.}
+\subsection{ID 18: Ô tô - Xe máy}
+\ReportFigure{assets/evaluation/precision_recall/oto-xe-may.png}{Precision--Recall của Ô tô - Xe máy, trên test độc lập.}
+\subsection{ID 19: Đời sống}
+\ReportFigure{assets/evaluation/precision_recall/doi-song.png}{Precision--Recall của Đời sống, trên test độc lập.}

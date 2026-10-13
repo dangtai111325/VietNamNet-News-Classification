@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "run_id": "phobert_headtail_seed42",
+  "artifact_path": "model",
+  "model_sha256": "607f3240935fa1a977d37555f2dc980f68645dcad1da0578ff3b036aa060deb4"
+}

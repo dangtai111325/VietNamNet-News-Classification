@@ -1,0 +1,24 @@
+# Python 3.14; PyTorch CUDA và GPU NVIDIA cho notebook huấn luyện.
+numpy==2.5.2
+pandas==3.0.6
+pyarrow==26.0.0
+matplotlib==3.11.2
+beautifulsoup4==4.15.0
+requests==2.34.2
+aiohttp==3.14.5
+lxml==6.1.3
+ipykernel==7.3.0
+nbformat>=5.10,<6
+jupyterlab>=4,<5
+trafilatura==2.3.1
+readability-lxml==0.9
+goose3==3.1.22
+newspaper3k==0.2.8
+lxml_html_clean==0.4.5
+torch>=2.6
+transformers==5.17.0
+accelerate==1.15.0
+pyvi==0.1.1
+sentencepiece>=0.2.1
+scikit-learn>=1.4
+scipy>=1.11

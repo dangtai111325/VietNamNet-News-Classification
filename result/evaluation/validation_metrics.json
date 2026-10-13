@@ -1,0 +1,17 @@
+{
+  "selection_split": "validation",
+  "calibration_fit_split": "validation",
+  "samples": 29995,
+  "metrics": {
+    "before": {
+      "accuracy": 0.9125520920153359,
+      "f1_weighted": 0.9130330550227257,
+      "f1_macro": 0.8722978524386932
+    },
+    "after": {
+      "accuracy": 0.9154525754292382,
+      "f1_weighted": 0.9157797883850423,
+      "f1_macro": 0.8762234080441932
+    }
+  }
+}
