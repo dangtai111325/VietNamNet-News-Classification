@@ -1,0 +1,26 @@
+{
+  "fit_split": "train",
+  "vocabulary_size": 50000,
+  "splits": [
+    {
+      "split": "train",
+      "token_count": 73313458,
+      "unknown_count": 570534,
+      "oov_rate": 0.00778211825719638
+    },
+    {
+      "split": "validation",
+      "token_count": 15770637,
+      "unknown_count": 137426,
+      "oov_rate": 0.008714042432147795
+    },
+    {
+      "split": "test",
+      "token_count": 15729833,
+      "unknown_count": 136785,
+      "oov_rate": 0.008695896517146749
+    }
+  ],
+  "max_length_words": 512,
+  "strategy": "head_tail_words"
+}

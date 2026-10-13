@@ -1,0 +1,39 @@
+{
+  "model": "lstm",
+  "corpus_signature": "e6078482e85aa7011cf94b6cb79dbedce88d652f0071f0f2469ba0db3e6c4f23",
+  "split_signature": "87a4aaed1e836705aa5d7161584be0ab825aa16969f85e0f364c1801808f24b6",
+  "files": [
+    {
+      "name": "calibration.json",
+      "sha256": "004b72778d751052ddd947024537420f300bd1c51a3bb2b1eb6ccdeb66ec3b93"
+    },
+    {
+      "name": "checkpoint.pt",
+      "sha256": "e0127e0d991c3a0be2604cdc85f5497bf229ed700e71e7729f2a1307c919e72b"
+    },
+    {
+      "name": "class_weights.json",
+      "sha256": "d499a76ac7307b8c14416df885b1e71772fc3af139be654480d8310754dbd600"
+    },
+    {
+      "name": "inference_config.json",
+      "sha256": "4b2a2cadcc7e1f216ea52daa245dff903c824e25bdd35aef7aebf82cfc2e19a8"
+    },
+    {
+      "name": "labels.json",
+      "sha256": "bd28b178573d2a41ea7b5043420aa9de3f2c554a2b4b0e06599194172ba8990a"
+    },
+    {
+      "name": "selected_config.json",
+      "sha256": "dd32d590acf1d7f2c443a1fd2ad606ef375d34c37da1a39744f8d0864cf6caf6"
+    },
+    {
+      "name": "timing.json",
+      "sha256": "d1b95e9275b843733f059be49c8cefb4c875d9cbe2440493211cf3b810066f83"
+    },
+    {
+      "name": "vocabulary.json",
+      "sha256": "964630062acdb3e2c97cdc48f13b2305104371ce5c332c3326f36bb4ff8bbc13"
+    }
+  ]
+}

@@ -3,6 +3,7 @@
 __pycache__/
 *.pyc
 .pytest_cache/
+.work/
 node_modules/
 app/ui/dist/
 app/.env
@@ -16,6 +17,7 @@ app/.env
 *.pt
 *.pth
 *.ckpt
+*.joblib
 /checkpoints/
 /model/checkpoint-*/
 /result/evaluation/article_metadata.parquet

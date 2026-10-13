@@ -1,0 +1,5 @@
+{
+  "search_seconds": 4473.369264499983,
+  "selected_fit_seconds": 1779.4289708000142,
+  "inference_scope": "DataLoader + host-to-device transfer + model forward; excludes segmentation/encoding"
+}

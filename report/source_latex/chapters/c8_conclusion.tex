@@ -1,16 +1,25 @@
 \chapter{Kết luận và hướng phát triển}
-\section{Bài toán được giải quyết}
-Hệ thống phân loại một chuyên mục cho bài tiếng Việt, hỗ trợ rà soát và lưu phản hồi. Thu thập được đặt trong cùng quy trình NLP: mỗi bài được xác minh class, quy mục con về cha, chuyển nhãn trong taxonomy và loại bài ngoài phạm vi. Nhờ đó, dataset không chỉ là danh sách URL gắn nhãn theo nơi phát hiện.
+\label{chap:conclusion}
+\section{Bài toán và đóng góp thực nghiệm}
+Hệ thống phân loại một chuyên mục cho bài tiếng Việt, hỗ trợ rà soát và lưu phản hồi. Thu thập gắn với xác minh nhãn cấp bài, quy mục con về cha, chuyển bài trong taxonomy và loại bài ngoài phạm vi. Corpus 200.337 bài sạch theo URL trở thành 199.965 bài sau khử trùng văn bản, chia 70/15/15 với seed 42. Bốn pipeline được lựa chọn từ tổng quan nghiên cứu và đánh giá trên cùng các mẫu, URL và nhãn test.
 
-\section{Phương pháp và kết quả}
-Corpus 200.337 bài sạch theo URL trở thành 199.965 bài sau khử trùng văn bản. Chia 70/15/15, weighted cross-entropy theo train, fine-tuning toàn bộ PhoBERT, Head--Tail 256 và chọn checkpoint bằng validation tạo một quy trình có thể truy vết. Calibration fit trên validation; test được tách khỏi các bước lựa chọn.
+SVM/LR dùng TF--IDF toàn văn, stopword và tiêu đề lặp; BiLSTM học biểu diễn chuỗi từ embedding khởi tạo; PhoBERT fine-tune mô hình ngữ cảnh tiền huấn luyện tiếng Việt. Các khác biệt được công khai thay vì coi đây là phép thay kiến trúc thuần túy. Validation chọn cấu hình/checkpoint và calibration; test không tham gia các bước tối ưu đó.
 
-Test 29.995 mẫu đạt Accuracy 91,13\% và Macro-F1 87,25\% sau hiệu chỉnh. Temperature giảm NLL và ECE đáng kể hơn mức tăng nhãn đúng; hiệu chỉnh class chỉ giảm ròng 13 lỗi. Lớp Nông thôn mới F1 46,39\% là hạn chế chính, cùng các ranh giới giữa chuyên đề, dân tộc, du lịch và đời sống. Không diễn giải điểm tổng thể thành chất lượng đồng đều.
+\section{Kết quả và đánh đổi}
+Với argmax, Macro-F1 của PhoBERT là 87,22\%, SVM 85,33\%, LR 84,98\% và BiLSTM 84,60\%. PhoBERT có điểm tổng cao nhất trong thực nghiệm và hơn SVM 350 bài đúng ròng; khoảng bootstrap ghép cặp của chênh lệch Macro-F1 nằm trên 0 khi model cố định. Khoảng SVM--LR và LR--BiLSTM chứa 0, nên không chuyển thứ hạng điểm mẫu thành quy luật chắc chắn.
 
-Ứng dụng dùng đúng gói model, tiền xử lý và calibration, có phân quyền, worker, registry, lưu prediction và review. Chức năng minh họa thể hiện việc dùng mô hình trong một quy trình có người ra quyết định. Chỉ số monitoring và bộ ví dụ giao diện có phạm vi riêng, không được cộng vào kết quả test.
+SVM cung cấp đối chứng mạnh với thời gian fit được chọn 27,32 giây trên CPU. BiLSTM train cấu hình chọn trong 29,66 phút, PhoBERT trong 207,17 phút trên GPU; chi phí tìm nhiều cấu hình được ghi riêng. Số đo suy luận chưa đồng nhất toàn bộ tiền xử lý, batch và thiết bị, nên chưa đủ xếp hạng latency serving. Chất lượng, tài nguyên và yêu cầu biên tập phải được cân nhắc cùng nhau.
 
-\section{Các giới hạn quyết định mức thuyết phục}
-Một nguồn dữ liệu, một seed, không có baseline cùng giao thức và chưa có ablation làm hạn chế kết luận về ưu thế phương pháp. Exact dedup không giải quyết toàn bộ near-duplicates; nhãn chuyên mục không phải gán nhãn ngữ nghĩa độc lập. Head--Tail bỏ phần giữa, pipeline bỏ chữ số/dấu câu và PyVi khác bộ phân đoạn tiền huấn luyện. Không có phép kiểm tra ngoài miền hoặc theo thời gian.
+Ưu thế tổng thể không đồng nghĩa ưu thế mọi lớp. Nông thôn mới đạt F1 48,24\% với BiLSTM, 47,06\% với LR, 45,57\% với PhoBERT argmax và 39,53\% với SVM. Recall cao của BiLSTM đi kèm precision thấp; ranh giới với Nội dung chuyên đề cần được rà soát. Có 1.251 bài cả bốn model cùng sai, gồm những trường hợp tên chủ đề nổi bật khác chuyên mục của tòa soạn.
 
-\section{Ưu tiên phát triển}
-Ưu tiên kiểm toán nhãn nhóm Nông thôn mới--Nội dung chuyên đề và phát hiện gần trùng. Đối chứng cần có TF--IDF tuyến tính cùng split, nhiều seed, khoảng tin cậy và ablation Head--Tail, phân đoạn, chữ số. Validation phục vụ lựa chọn; test theo thời gian xác nhận tổng quát hóa.
+Temperature cải thiện NLL/ECE mà không đổi argmax. BiLSTM/LR có ECE thấp hơn PhoBERT, còn PhoBERT có NLL thấp nhất; confidence và chất lượng nhãn là hai tiêu chí riêng. Điều chỉnh hệ số lớp của PhoBERT tạo trạng thái phục vụ Accuracy 91,13\%, Macro-F1 87,25\%, thêm 13 bài đúng ròng. Mức tăng nhỏ này không thay thế đối chứng pipeline hoặc chứng minh lợi ích mọi lớp.
+
+\section{Ứng dụng và mức độ kiểm chứng}
+Ứng dụng dùng gói PhoBERT cùng tiền xử lý, tokenizer, mapping và calibration; có phân quyền, worker, registry, lưu prediction và review. Ba đối chứng có gói suy luận độc lập nhưng chưa tích hợp thành ba dịch vụ thay thế trong app. Giao diện minh họa quy trình có người ra quyết định; monitoring và bộ ví dụ giao diện không được cộng vào test offline.
+
+Output notebook, artifact và dự đoán theo từng bài được đối chiếu để tái tính kết quả và truy vết lỗi. Các PNG được dùng nguyên bản, sơ đồ kỹ thuật vẽ bằng TikZ. Những kiểm tra cấu trúc và hash bảo đảm tính nhất quán của snapshot, không loại trừ near-duplicate, phụ thuộc sự kiện hoặc nhiễu nhãn ngữ nghĩa.
+
+\section{Giới hạn và ưu tiên phát triển}
+Thực nghiệm chỉ có một nguồn, một seed và ngân sách tìm tham số khác nhau. Bootstrap mô tả bất định của test với model cố định, chưa đo biến thiên huấn luyện; thời gian và bộ nhớ serving chưa được benchmark đồng nhất. Thiếu ablation cho pretraining, phân đoạn, stopword, lặp tiêu đề và Head--Tail nên chưa xác định nguyên nhân riêng của chênh lệch.
+
+Ưu tiên kiểm toán nhóm Nông thôn mới--Nội dung chuyên đề và các lỗi cả bốn model cùng gặp; phát hiện gần trùng, lặp nhiều seed và đánh giá theo thời gian/nguồn khi có dữ liệu phù hợp. Đo latency từ văn bản đến nhãn và peak RAM/VRAM theo cùng giao thức phục vụ giúp lựa chọn triển khai. Ablation có kiểm soát và một tập calibration riêng giúp phân biệt đóng góp của biểu diễn, tối ưu và hiệu chỉnh trước khi thay đổi gói model của ứng dụng.

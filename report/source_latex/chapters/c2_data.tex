@@ -1,5 +1,6 @@
 \chapter{Dữ liệu và tiền xử lý tiếng Việt}
 \label{chap:data}
+Các phương pháp được lựa chọn ở chương~\ref{chap:related} cần cùng một corpus và nhãn tham chiếu để thực hiện đối chứng. Chương này xác định đầu vào chung, quy tắc làm sạch và giới hạn dữ liệu; các phép mã hóa dành riêng cho PhoBERT được phân biệt với những bước xây dựng corpus.
 \section{Nguồn và đơn vị thu thập}
 Corpus gồm tin VietNamNet trong 20 chuyên mục. Notebook lấy URL trên tối đa 500 trang cho mỗi chuyên mục, rồi tải HTML bằng 32 worker. Giới hạn 500 áp dụng cho số trang danh sách, không phải số bài; một trang có nhiều URL và một URL có thể hiện ở nhiều chuyên mục. Chuyên mục ngắn kết thúc khi hết dữ liệu hợp lệ. Phạm vi này không đồng nghĩa thu thập toàn bộ kho tin của website.
 
@@ -49,7 +50,7 @@ Khảo sát BPE trên 1.000 mẫu seed 42, tính cả token đặc biệt, có t
 \ReportFigure{assets/dataset/token_retention.png}{Tỷ lệ token giữ trong giới hạn 256; không đo lượng thông tin ngữ nghĩa còn lại.}
 
 \section{Ghép và chuẩn hóa văn bản}
-Đầu vào là tiêu đề, một khoảng trắng và nội dung. Tiêu đề xuất hiện một lần, nằm ở đầu nên thường được giữ trong head. Pipeline chuyển chữ thường, thay dấu câu và chữ số bằng khoảng trắng, gọi PyVi, chuẩn hóa khoảng trắng và giữ stopwords. Dấu tiếng Việt trong văn bản Unicode thông thường được giữ; dấu gạch dưới thể hiện từ nhiều âm tiết.
+Văn bản chuẩn hóa chung ghép tiêu đề, một khoảng trắng và nội dung. Tiêu đề xuất hiện một lần ở bước chốt corpus; pipeline chuyển chữ thường, thay dấu câu và chữ số bằng khoảng trắng, gọi PyVi, chuẩn hóa khoảng trắng và giữ stopwords. PhoBERT/BiLSTM dùng chuỗi này. Sau khi xác định corpus và chia tập, SVM/LR loại stopword và lặp tiêu đề thêm hai lần để tạo đặc trưng riêng; các biến đổi được mô tả ở chương~\ref{chap:model}. Dấu tiếng Việt trong văn bản Unicode thông thường được giữ; dấu gạch dưới thể hiện từ nhiều âm tiết.
 \PreprocessDiagram
 \DataTable{tables/preprocessing_example.tex}{Trích đoạn thực tế của bài UNIQLO trong output notebook, qua từng bước xử lý.}
 
@@ -65,5 +66,7 @@ Audit xác nhận số nhóm lặp theo URL, văn bản thô và văn bản sạ
 
 \section{Cache, truy vết và giới hạn dữ liệu}
 Cache trong \texttt{temp/} giữ văn bản xử lý và ba tập tensor Head--Tail. Fingerprint gắn dữ liệu, mapping, phép chia, tokenizer và chiều dài. Số dòng giống nhau không đủ chứng minh cache đúng; điều kiện tái sử dụng cần signature khớp. Cache phục vụ tốc độ tái thực thi, không tham gia dịch vụ suy luận.
+
+SVM/LR/BiLSTM có subfolder cache riêng theo model. Hai mô hình tuyến tính giữ văn bản đặc trưng sau stopword và lặp tiêu đề; BiLSTM giữ vocabulary cùng tensor từ theo chiều dài. Các cache này không ghi đè cache BPE hoặc gói PhoBERT active. Cùng corpus và split không có nghĩa dùng chung mọi phép biểu diễn học được.
 
 Corpus là snapshot một nguồn với nhãn từ tòa soạn. Một số bài có đoạn quảng bá, thông tin liên quan hoặc khoảng trắng trích xuất chưa tự nhiên; độ dài cực lớn cần rà soát. Không có kiểm toán ngữ nghĩa thủ công toàn bộ corpus. Vì vậy, dataset sạch được hiểu là đạt quy tắc và kiểm tra cấu trúc đã công bố, không phải không còn mọi dạng nhiễu.

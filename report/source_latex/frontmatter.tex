@@ -1,14 +1,16 @@
 \chapter*{Tóm tắt}
 \addcontentsline{toc}{chapter}{Tóm tắt}
-Phân loại chuyên mục giúp tổ chức bài báo tiếng Việt và hỗ trợ điều phối biên tập. Báo cáo trình bày một quy trình gồm thu thập VietNamNet, xác minh chuyên mục trên từng bài, làm sạch corpus, biểu diễn tiếng Việt, fine-tuning PhoBERT và triển khai đề xuất nhãn có người rà soát. Bài toán sử dụng 20 lớp; nhãn mục con được quy về lớp cha trong taxonomy.
+Phân loại chuyên mục giúp tổ chức bài báo tiếng Việt và hỗ trợ điều phối biên tập. Báo cáo xây dựng corpus VietNamNet, xác minh nhãn ở cấp bài và so sánh SVM, Logistic Regression, LSTM hai chiều (BiLSTM) và PhoBERT trên 20 lớp. Bốn phương pháp đại diện đặc trưng từ vựng, biểu diễn chuỗi và biểu diễn ngữ cảnh có tiền huấn luyện; ứng dụng minh họa dùng PhoBERT để đề xuất nhãn có người rà soát.
 
-Thu thập tạo 205.463 lượt URL, tương ứng 204.280 URL duy nhất. Sau xác minh, dataset có 200.337 bài; khử trùng văn bản và loại xung đột nhãn tạo corpus 199.965 bài. Phép chia phân tầng seed 42 tạo 139.975 mẫu train, 29.995 mẫu validation và 29.995 mẫu test. Các tập không giao nhau theo URL, văn bản thô và văn bản sau tiền xử lý. Validation chọn checkpoint và fit hiệu chỉnh; test phục vụ đánh giá cuối.
+Thu thập tạo 205.463 lượt URL, tương ứng 204.280 URL duy nhất. Sau xác minh có 200.337 bài; khử trùng và loại xung đột nhãn tạo corpus 199.965 bài. Chia phân tầng seed 42 tạo 139.975 mẫu train, 29.995 validation và 29.995 test. Mảng chỉ số chia tập của bốn model giống nhau; toàn bộ URL và nhãn test được đối chiếu theo thứ tự. Validation chọn cấu hình/checkpoint và fit calibration; test không tham gia các bước này.
 
-PhoBERT-base-v2 được fine-tune toàn bộ encoder và đầu phân loại bằng weighted cross-entropy, trọng số tính từ train. Head--Tail giữ 127 token đầu và 127 token cuối, cộng hai token đặc biệt thành 256 vị trí. Huấn luyện chạy đủ bảy epoch trên RTX A3000 Laptop 12 GB, trong 207,17 phút; checkpoint epoch 7 đạt Macro-F1 validation 0,8723. Trên test, Accuracy đạt 91,08\% và Macro-F1 đạt 87,22\%; sau hiệu chỉnh đạt 91,13\% và 87,25\%. Temperature scaling giảm NLL từ 0,3839 xuống 0,3220 và ECE từ 0,0603 xuống 0,0251.
+Với quyết định argmax, Macro-F1 test của PhoBERT/SVM/LR/BiLSTM lần lượt là 87,22\%/85,33\%/84,98\%/84,60\%. PhoBERT đạt Accuracy 91,08\%; sau điều chỉnh hệ số lớp đạt 91,13\% và Macro-F1 87,25\%, thêm 13 bài đúng ròng. Khoảng bootstrap ghép cặp của chênh lệch PhoBERT--SVM nằm trên 0 khi giữ model cố định, trong khi khoảng SVM--LR và LR--BiLSTM chứa 0. Kết luận này không thay thế thực nghiệm nhiều seed.
 
-Chất lượng khác biệt đáng kể theo lớp. Nông thôn mới đạt F1 0,4639, trong khi Thể thao đạt 0,9880. Báo cáo phân tích mất cân bằng, giao thoa chuyên mục, giới hạn văn bản dài, chuyển đổi đúng/sai và các ví dụ truy vết được về dữ liệu. Mức tăng sau hiệu chỉnh chỉ là 13 bài đúng ròng; không đủ cơ sở kết luận vượt trội thống kê. Chưa có baseline cùng giao thức, thực nghiệm nhiều seed hay kiểm tra theo thời gian và ngoài miền.
+SVM/LR dùng TF--IDF toàn văn, stopword và tiêu đề lặp ba lần; BiLSTM học embedding từ đầu, giữ tối đa 512 từ; PhoBERT fine-tune backbone với Head--Tail 256 subword. Fit SVM được chọn mất 27,32 giây trên CPU; BiLSTM train 10 epoch mất 29,66 phút, PhoBERT bảy epoch mất 207,17 phút trên RTX A3000 Laptop 12 GB. Phạm vi timer và workload khác nhau được công bố, nên không coi đó là latency serving đồng nhất.
 
-Ứng dụng sáu dịch vụ dùng cùng trọng số, tokenizer, mapping và hiệu chỉnh của notebook. Các chức năng nhập bài, dự đoán, rà soát, quản lý ngưỡng, registry và monitoring được kiểm tra với dữ liệu minh họa từ corpus. Chỉ số offline, mô phỏng định tuyến và monitoring từ phản hồi được trình bày theo đúng phạm vi, tránh coi bộ ví dụ giao diện là một tập kiểm tra độc lập.
+BiLSTM/LR có F1 Nông thôn mới 48,24\%/47,06\%, cao hơn PhoBERT argmax 45,57\%; lợi thế tổng thể không bảo đảm ưu thế mọi lớp. Cả bốn cùng sai ở 1.251 bài, tập trung ở ranh giới nhãn biên tập. Temperature cải thiện NLL/ECE của bốn model; BiLSTM có ECE thấp nhất, PhoBERT có NLL thấp nhất. Một nguồn, một seed và thiếu ablation giới hạn suy luận về nguyên nhân và tổng quát hóa.
+
+Ứng dụng sáu dịch vụ dùng trọng số, tokenizer, mapping và calibration của gói PhoBERT. Nhập bài, rà soát, quản lý ngưỡng, registry và monitoring được kiểm chứng riêng. Chỉ số offline và monitoring phản hồi có phạm vi khác nhau; bộ ví dụ giao diện không được coi là một tập test độc lập.
 
 \chapter*{Danh mục thuật ngữ}
 \addcontentsline{toc}{chapter}{Danh mục thuật ngữ}
@@ -16,6 +18,12 @@ Chất lượng khác biệt đáng kể theo lớp. Nông thôn mới đạt F1
 \toprule Thuật ngữ & Ý nghĩa trong báo cáo\\\midrule
 Corpus & Tập bài báo, nhãn chuyên mục và metadata nguồn.\\
 Phân đoạn từ & Xác định từ tiếng Việt gồm một hoặc nhiều âm tiết.\\
+TF--IDF & Đặc trưng tần suất từ có trọng số nghịch tần suất tài liệu.\\
+SVM & Bộ phân loại học ranh giới có biên; đối chứng dùng hướng tuyến tính.\\
+Logistic Regression & Bộ phân loại tuyến tính tối ưu log-loss, viết tắt LR.\\
+LSTM & Mạng hồi tiếp học trạng thái theo thứ tự chuỗi token.\\
+BiLSTM & LSTM hai chiều; biến thể được thực thi trong đối chứng.\\
+Biểu diễn ngữ cảnh & Vector token phụ thuộc đoạn văn bản bao quanh nó.\\
 BPE & Mã hóa từ thành các đơn vị subword của tokenizer.\\
 Head--Tail & Giữ đầu và cuối chuỗi token khi vượt giới hạn đầu vào.\\
 Fine-tuning & Cập nhật mô hình tiền huấn luyện cho tác vụ chuyên mục.\\

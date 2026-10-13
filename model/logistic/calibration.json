@@ -1,0 +1,7 @@
+{
+  "temperature": 0.7949536553137899,
+  "fit_split": "validation",
+  "objective": "negative_log_likelihood",
+  "decision": "argmax_raw_scores",
+  "probability_source": "multinomial_logits"
+}

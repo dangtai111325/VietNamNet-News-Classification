@@ -1,0 +1,123 @@
+{
+  "model": "Logistic Regression",
+  "model_key": "logistic",
+  "selected_config": {
+    "name": "unigram_bigram",
+    "max_features": 150000,
+    "ngram_range": [
+      1,
+      2
+    ],
+    "min_df": 3,
+    "C": 3.0,
+    "class_weight": "balanced",
+    "title_weight": 3,
+    "stopwords_sha256": "8560838cf098de9b651ac3380a1c9e8ce8fb2804857db78c4ffdfb40e7de42c7",
+    "max_df": 0.98,
+    "sublinear_tf": true,
+    "norm": "l2",
+    "solver": "lbfgs",
+    "tol": 0.0001,
+    "n_features": 150000,
+    "n_iter": 138,
+    "max_iter": 500
+  },
+  "classes": [
+    "Bạn đọc",
+    "Bất động sản",
+    "Chính trị",
+    "Công nghiệp hỗ trợ",
+    "Công nghệ",
+    "Du lịch",
+    "Dân tộc - Tôn giáo",
+    "Dân tộc thiểu số và miền núi",
+    "Giáo dục",
+    "Kinh doanh",
+    "Nông thôn mới",
+    "Nội dung chuyên đề",
+    "Sức khỏe",
+    "Thế giới",
+    "Thể thao",
+    "Thời sự",
+    "Tuần Việt Nam",
+    "Văn hóa - Giải trí",
+    "Ô tô - Xe máy",
+    "Đời sống"
+  ],
+  "selection_split": "validation",
+  "evaluation_split": "test",
+  "selection_metric": "f1_macro",
+  "validation": {
+    "accuracy": 0.892915485914319,
+    "f1_macro": 0.8491660127989638,
+    "f1_weighted": 0.8934274789044083
+  },
+  "before": {
+    "accuracy": 0.8906151025170862,
+    "f1_macro": 0.8497965158283691,
+    "f1_weighted": 0.8909832652802884,
+    "nll": 0.3652511054377018,
+    "ece_15_bins": 0.038340901759127105
+  },
+  "after": {
+    "accuracy": 0.8906151025170862,
+    "f1_macro": 0.8497965158283691,
+    "f1_weighted": 0.8909832652802884,
+    "nll": 0.3471842207462263,
+    "ece_15_bins": 0.011904221610166642
+  },
+  "temperature": 0.7949536553137899,
+  "class_decision_adjustment": false,
+  "probability_source": "multinomial_logits",
+  "confidence_intervals_95": {
+    "accuracy": {
+      "lower": 0.8869969994999166,
+      "upper": 0.8939031505250875
+    },
+    "f1_macro": {
+      "lower": 0.8436346907199948,
+      "upper": 0.8556262239706834
+    },
+    "f1_weighted": {
+      "lower": 0.8873924433884421,
+      "upper": 0.8943215549014483
+    }
+  },
+  "bootstrap": {
+    "resamples": 500,
+    "method": "iid_percentile_fixed_model",
+    "seed": 42
+  },
+  "corpus_count": 199965,
+  "split_counts": {
+    "train": 139975,
+    "validation": 29995,
+    "test": 29995
+  },
+  "corpus_signature": "e6078482e85aa7011cf94b6cb79dbedce88d652f0071f0f2469ba0db3e6c4f23",
+  "split_signature": "87a4aaed1e836705aa5d7161584be0ab825aa16969f85e0f364c1801808f24b6",
+  "test_urls_sha256": "a9257c8fe7d18596c9a411b30ebe7a054ac3cc215e8e3c55988feb1e88505b7d",
+  "timing": {
+    "search_seconds": 2370.247504800005,
+    "selected_fit_seconds": 239.53084859999944,
+    "inference_scope": "TF-IDF transform + decision_function; excludes Vietnamese segmentation",
+    "preprocessing_seconds": 719.0074147999985,
+    "test_inference_seconds": 13.125025500019547,
+    "inference_samples_per_second": 2285.328893262366
+  },
+  "environment": {
+    "python": "3.14.7",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "cpu_threads": 4,
+    "versions": {
+      "numpy": "2.5.2",
+      "pandas": "3.0.6",
+      "pyarrow": "26.0.0",
+      "pyvi": "0.1.1",
+      "scikit-learn": "1.9.1",
+      "scipy": "1.18.1",
+      "joblib": "1.6.0"
+    },
+    "training_device": "CPU"
+  }
+}

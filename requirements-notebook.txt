@@ -1,4 +1,4 @@
-# Python 3.14; PyTorch CUDA và GPU NVIDIA cho notebook huấn luyện.
+# Python 3.14; PyTorch CUDA và GPU NVIDIA cho PhoBERT/LSTM; SVM/Logistic dùng CPU.
 numpy==2.5.2
 pandas==3.0.6
 pyarrow==26.0.0
@@ -22,3 +22,5 @@ pyvi==0.1.1
 sentencepiece>=0.2.1
 scikit-learn>=1.4
 scipy>=1.11
+joblib>=1.3
+threadpoolctl>=3.1

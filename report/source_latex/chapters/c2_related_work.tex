@@ -1,0 +1,99 @@
+\chapter{Tổng quan nghiên cứu và cơ sở lựa chọn phương pháp}
+\label{chap:related}
+\section{Các hướng tiếp cận phân loại văn bản}
+Một hệ thống phân loại văn bản kết hợp tiền xử lý, biểu diễn đầu vào, bộ phân loại và giao thức đánh giá. Khảo sát của Kowsari và cộng sự tổ chức các phương pháp theo những thành phần này \citep{kowsari2019}. Cách nhìn đó giúp phân biệt ba hướng: đặc trưng từ vựng như BoW/TF--IDF; embedding từ kết hợp mạng xử lý chuỗi; biểu diễn theo ngữ cảnh từ mô hình ngôn ngữ tiền huấn luyện. Khác biệt giữa các hướng nằm cả ở thông tin được giữ trong đầu vào lẫn tri thức học được, không chỉ ở tên thuật toán.
+
+Phân loại tin tức tiếng Việt có nền tảng thực nghiệm trước thời kỳ Transformer. Hoang và cộng sự khảo sát BoW, lựa chọn đặc trưng và mô hình ngôn ngữ n-gram trên corpus tin tức hai cấp nhãn \citep{hoang2007}. Công trình tại FAIR'9 sử dụng từ lõi và xác suất có điều kiện với Naive Bayes trên 220 văn bản, sáu chủ đề \citep{linh2016}. Đây là ví dụ về lựa chọn tín hiệu đại diện cho chuyên mục; mô hình từ lõi không đồng nhất với LDA, và quy mô thử nghiệm nhỏ chưa đại diện bài toán hiện tại.
+
+Khoảng trắng tiếng Việt thường phân cách âm tiết, nên đơn vị đếm không mặc nhiên là từ. Khảo sát của Nguyễn Chí Hiếu nhấn mạnh vai trò biểu diễn và phân đoạn từ trong phân loại tiếng Việt \citep{hieu2022}. VnCoreNLP là một công trình tiêu biểu về công cụ phân đoạn và phân tích ngôn ngữ \citep{vncorenlp2018}. Trong project, công cụ thực thi là PyVi; trích dẫn VnCoreNLP cung cấp bối cảnh nghiên cứu, không thay đổi pipeline. Các khảo sát giúp tổ chức phương pháp nhưng không cung cấp một phép so sánh trực tiếp bốn mô hình trên corpus VietNamNet này.
+
+\section{SVM và Logistic Regression với đặc trưng từ vựng}
+TF--IDF tạo vector thưa, có số chiều phụ thuộc từ vựng và n-gram. SVM tuyến tính học ranh giới có biên giữa các lớp trong không gian đó; Logistic Regression (LR) học điểm tuyến tính bằng mục tiêu log-loss. Cả hai khai thác đồng thời nhiều đặc trưng và regularization, không cần huấn luyện encoder ngôn ngữ lớn. TF--IDF không mô hình hóa đầy đủ thứ tự dài, nhưng n-gram vẫn giữ được một phần ngữ cảnh cục bộ \citep{kowsari2019}.
+
+Trần Cao Đệ và Phạm Nguyên Khang dùng 7.842 bài thuộc 10 chủ đề từ báo điện tử, gồm VietNamNet, với 5.000 bài train và 2.842 bài test. TF--IDF kết hợp SVD và SVM đạt F1 trung bình được báo cáo là 91,0\%, so với 84,1\% của cây quyết định \citep{de2012}. Kết quả cho thấy biểu diễn và giảm chiều có thể ảnh hưởng chất lượng. Tuy nhiên, SVD được mô tả trên ma trận toàn corpus trước huấn luyện bộ phân loại; giao thức đó chưa bảo đảm một đánh giá quy nạp chỉ học biến đổi từ train. Không suy ra SVD bắt buộc cho SVM, và không sao chép cách fit này vào đối chứng mới.
+
+Trên VNNews-01 gồm 37.500 bài, 25 lớp từ hơn 30 website, Duong và Truong Hoang đánh giá bằng trung bình F-measure qua cross-validation năm fold. SVM kernel RBF đạt 0,749; LR multinomial đạt 0,734 \citep{duong2019}. Giá trị 0,749 thuộc RBF, không phải LinearSVC; nguồn cũng chưa xác định rõ cách tổng hợp F-measure theo lớp. Đây là bằng chứng cho tính khả thi của cả SVM và LR, không phải một mức Macro-F1 có thể đối chiếu với project.
+
+LR có lý do lựa chọn riêng, không chỉ là phương án thay thế khi không dùng SVM. Trong nghiên cứu của Nguyen Thi Hien và cộng sự, LR với TF--IDF đạt Accuracy 92,77\% ở Level 1 \citep{hien2024}; trên BN-VN3S, LR đạt Macro-F1 91,36\%, còn LinearSVC đạt 92,33\% \citep{chau2026}. Hai bộ phân loại cùng biểu diễn nhưng khác mục tiêu tối ưu tạo đối chứng để kiểm tra liệu tín hiệu từ vựng đã giải thích phần lớn nhãn hay chưa. Lựa chọn tuyến tính cũng phù hợp khảo sát corpus lớn, song chi phí thực tế vẫn phải đo trên cùng phần cứng.
+
+\section{Embedding từ và mạng hồi tiếp LSTM}
+Embedding biểu diễn token bằng vector đặc, còn LSTM tích lũy trạng thái theo thứ tự chuỗi. Hướng này có thể học quan hệ vượt một n-gram cố định mà không dùng encoder Transformer tiền huấn luyện \citep{kowsari2019}. Embedding tĩnh không tự trở thành biểu diễn theo ngữ cảnh; ngữ cảnh được hình thành qua mạng xử lý chuỗi. Trạng thái phụ thuộc bước trước làm hạn chế song song hóa theo chiều thời gian khi chuỗi dài. Chiều dài đầu vào, chất lượng phân đoạn, nguồn embedding và khả năng học từ ít gặp đều ảnh hưởng kết quả.
+
+Nguyen Thi Hien và cộng sự khảo sát LR, cây quyết định, SVM, LSTM và CNN trên hai cấp nhãn 10/27 của corpus tin tức. Ở Level 1, LSTM với BoW đạt Accuracy 94,52\%; với TF--IDF, LSTM đạt 93,75\% và SVM đạt 93,60\% \citep{hien2024}. Các giá trị hỗ trợ nghiên cứu LSTM trên tiếng Việt nhưng chưa tách tác động kiến trúc khỏi biểu diễn. Nguồn chưa giải thích đủ việc chuyển đặc trưng BoW/TF--IDF và SVD thành trục tuần tự của LSTM. Vì vậy, thiết kế khảo sát ở đây dùng chuỗi token có thứ tự và embedding, không coi các chiều TF--IDF là vị trí từ.
+
+UIT-ViON đối chiếu LSTM với nhiều embedding cùng LR, TextCNN và PhoBERT trên tiêu đề tin \citep{tran2021}. Kết quả này bổ sung bằng chứng ở đầu vào ngắn; không chứng minh cùng cấu hình phù hợp bài dài. Một hướng LSTM--CNN cũng được thực nghiệm trên cảm xúc tiếng Việt \citep{vo2017}, nhưng tác vụ cảm xúc và kiến trúc lai không phải benchmark cho LSTM phân loại chuyên mục. Tương tự, BiGRU trong BN-VN3S là bằng chứng về họ mạng hồi tiếp, không phải kết quả của LSTM \citep{chau2026}.
+
+\section{PhoBERT và điều kiện hiệu quả của mô hình tiền huấn luyện}
+PhoBERT phát triển mô hình ngôn ngữ tiền huấn luyện riêng cho tiếng Việt theo hướng RoBERTa, kết hợp phân đoạn từ và BPE trước học biểu diễn ngữ cảnh \citep{phobert}. Fine-tuning tận dụng tham số đã học trên corpus lớn cho tác vụ có giám sát, đi kèm yêu cầu bộ nhớ và giới hạn chiều dài đầu vào. Bài PhoBERT gốc đánh giá POS, parsing, NER và NLI, không trực tiếp cung cấp kết quả phân loại chuyên mục của project. Checkpoint \texttt{phobert-base-v2} có thông tin riêng từ model card và config; chương~\ref{chap:model} trình bày cấu hình thực thi.
+
+UIT-ViON gồm 260.000 tiêu đề, 13 chủ đề từ sáu nguồn, chia train/validation/test theo 80/10/10. PhoBERT đạt F1-score 80,62\%, cao nhất trong bảng kết quả của nguồn \citep{tran2021}. Tuy nhiên, bài gọi tác vụ đa nhãn ở Abstract/Conclusion và mô tả sigmoid/BCE, trong khi các phần khác dùng cách diễn đạt đa lớp và cấu hình softmax. Mục đánh giá gọi F1 là macro-averaged. Sự không nhất quán về giao thức nhãn cần được giữ trong diễn giải; không coi đây là đối chứng đồng nhất với 20 lớp đơn nhãn. Tiêu đề cũng không chứa toàn bộ nội dung và không có vấn đề cắt bài dài như corpus hiện tại.
+
+BN-VN3S của Chau và cộng sự cung cấp 946.696 bài từ VietNamNet, VnExpress và Dân Trí, với 10 chủ đề. Phép chia phân tầng 80/10/10 được dùng chung, các kết quả lấy trung bình ba seed. Macro-F1 của BiGRU, LinearSVC và PhoBERT lần lượt là 92,42\%, 92,33\% và 87,98\% \citep{chau2026}. Transformer được fine-tune với cơ chế cửa sổ trượt 256 token rồi tổng hợp ở cấp bài. Thứ hạng trong thiết lập này bác bỏ giả định Transformer mặc nhiên tốt nhất; nó không chứng minh SVM hay mạng hồi tiếp luôn tốt hơn PhoBERT.
+
+BN-VN3S còn đánh giá thay đổi theo thời gian và để riêng một nguồn báo làm test. Những thiết lập đó đặt câu hỏi tổng quát hóa khác với chia ngẫu nhiên cùng phân phối \citep{chau2026}. Corpus có VietNamNet không có nghĩa taxonomy, snapshot hay nhãn trùng project. Bản nghiên cứu của Kiệt và Lang cung cấp bằng chứng bổ trợ: sau lọc còn 162.580 bài dài 100--300 từ, F1 của LR/SVM/BiLSTM--CNN/PhoBERT là 0,894/0,896/0,888/0,907 \citep{kietlang}. Nguồn chưa xác định rõ cách tổng hợp F1 và chưa xác minh được venue công bố. Không đổi các giá trị thành Macro-F1; mô hình lai và corpus lọc độ dài cũng khác LSTM và Head--Tail của thiết kế hiện tại.
+
+\section{Tổng hợp bằng chứng và giới hạn so sánh}
+Bảng~\ref{tab:related} tập trung các nghiên cứu tin tức. Các giá trị chỉ có ý nghĩa trong điều kiện từng hàng, không tạo thứ hạng liên nghiên cứu. Khác nguồn, số lớp, đơn vị đầu vào, cách lọc, phép chia và metric đều có thể thay đổi độ khó. Accuracy không thay Macro-F1; F1 chưa rõ cách tổng hợp không được tự gán thành Macro-F1 hay Weighted-F1.
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.17\linewidth}>{\raggedright\arraybackslash}p{0.24\linewidth}>{\raggedright\arraybackslash}p{0.20\linewidth}>{\raggedright\arraybackslash}p{\dimexpr0.39\linewidth-18pt\relax}@{}}
+\caption{Nghiên cứu phân loại tin tức tiếng Việt và điều kiện diễn giải; số liệu thuộc từng nguồn, không phải benchmark chung.}\label{tab:related}\\
+\toprule
+Nghiên cứu & Dữ liệu và giao thức & Phương pháp chính & Phát hiện và giới hạn\\\midrule
+\endfirsthead
+\multicolumn{4}{l}{\tablename\ \thetable\ (tiếp theo)}\\
+\toprule Nghiên cứu & Dữ liệu và giao thức & Phương pháp chính & Phát hiện và giới hạn\\\midrule
+\endhead
+\bottomrule\endfoot
+Hoang và cộng sự (2007) \citep{hoang2007} & Tin tức đa nguồn; hai cấp 10/27 nhãn; train/test riêng. & BoW, chọn đặc trưng, SVM và mô hình n-gram. & Biểu diễn ảnh hưởng chất lượng; taxonomy và giao thức lịch sử khác corpus hiện tại.\\[4pt]
+Trần Cao Đệ, Phạm Nguyên Khang (2012) \citep{de2012} & 7.842 bài, 10 chủ đề; train 5.000, test 2.842. & TF--IDF, SVD, SVM; cây quyết định. & F1 trung bình báo cáo 91,0\% và 84,1\%; SVD trên toàn corpus cần lưu ý khi tái hiện.\\[4pt]
+Duong, Truong Hoang (2019) \citep{duong2019} & VNNews-01: 37.500 bài, 25 lớp; cross-validation năm fold. & TF--IDF; SVM, LR và các bộ phân loại khác. & F-measure: RBF SVM 0,749, LR 0,734; chưa rõ tổng hợp theo lớp.\\[4pt]
+Tran và cộng sự (2021) \citep{tran2021} & UIT-ViON: 260.000 tiêu đề, 13 chủ đề; 80/10/10. & TF--IDF + LR; embedding + CNN/LSTM; PhoBERT. & PhoBERT F1 80,62\%; nguồn mô tả đa nhãn nhưng giao thức chưa nhất quán; đầu vào ngắn.\\[4pt]
+Nguyen Thi Hien và cộng sự (2024) \citep{hien2024} & Corpus tin tức hai cấp 10/27 nhãn; kết quả nêu ở Level 1. & BoW/TF--IDF; LR, SVM, LSTM, CNN. & Accuracy: LSTM--BoW 94,52\%, SVM--TF--IDF 93,60\%; đầu vào tuần tự cần làm rõ.\\[4pt]
+Kiệt, Lang (s.d.) \citep{kietlang} & 162.580 bài, 9 lớp; lọc 100--300 từ; train/test khoảng 80/20. & TF--IDF + LR/SVM; BiLSTM--CNN; PhoBERT. & F1: 0,894/0,896/0,888/0,907; chưa rõ tổng hợp F1 và venue; bằng chứng bổ trợ.\\[4pt]
+Chau và cộng sự (2026) \citep{chau2026} & BN-VN3S: 946.696 bài, 10 chủ đề; 80/10/10, ba seed; thêm test nguồn/thời gian. & TF--IDF + LR/LinearSVC; BiGRU; PhoBERT và các mô hình khác. & Macro-F1: BiGRU 92,42\%, LinearSVC 92,33\%, PhoBERT 87,98\%; phụ thuộc cấu hình và dữ liệu.\\
+\end{longtable}
+\endgroup
+
+\section{Cơ sở lựa chọn bốn phương pháp}
+SVM và LR là hai đối chứng tuyến tính dùng TF--IDF: một hướng tối ưu biên phân lớp, một hướng tối ưu log-loss. Giữ cùng cách biểu diễn giúp khảo sát ảnh hưởng mục tiêu học. LSTM khảo sát biểu diễn chuỗi và thứ tự token; PhoBERT khảo sát biểu diễn ngữ cảnh có tiền huấn luyện tiếng Việt. Bốn lựa chọn bao phủ ba họ biểu diễn có bằng chứng liên quan, với các yêu cầu tài nguyên và cách dùng thông tin khác nhau.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[box/.append style={text width=27mm,minimum height=15mm},flow/.append style={line width=0.7pt}]
+\node[box,text width=21mm] (input) at (0,0) {Tiêu đề và\\nội dung\\tiếng Việt};
+\node[box] (tfidf) at (3.8,2.0) {TF--IDF};
+\node[box] (tokens) at (3.8,0) {Tokenization\\Embedding từ};
+\node[box] (bpe) at (3.8,-2.0) {Phân đoạn từ\\BPE};
+\node[box] (linear) at (7.4,2.0) {SVM / LR};
+\node[box] (lstm) at (7.4,0) {LSTM};
+\node[box] (pho) at (7.4,-2.0) {PhoBERT\\Đầu phân loại};
+\node[box,text width=21mm] (output) at (11.2,0) {Dự đoán\\chuyên mục};
+\coordinate (fork) at (1.7,0);
+\coordinate (join) at (9.4,0);
+\draw[thick] (input.east)--(fork);
+\draw[flow] (fork)|-(tfidf.west);
+\draw[flow] (fork)--(tokens.west);
+\draw[flow] (fork)|-(bpe.west);
+\draw[flow] (tfidf)--(linear);
+\draw[flow] (tokens)--(lstm);
+\draw[flow] (bpe)--(pho);
+\draw[thick] (linear.east)-|(join);
+\draw[thick] (lstm.east)--(join);
+\draw[thick] (pho.east)-|(join);
+\draw[flow] (join)--(output.west);
+\end{tikzpicture}
+\caption{Khung ba hướng biểu diễn của bốn phương pháp; kiến trúc thực thi và kết quả đối chứng được trình bày ở các chương sau.}
+\label{fig:method_families}
+\end{figure}
+
+Đối chứng phải dùng cùng corpus sau làm sạch, taxonomy 20 lớp và các mẫu train/validation/test 70/15/15 ở chương~\ref{chap:problem}. Từ vựng, IDF và các biến đổi học từ dữ liệu chỉ fit trên train; validation chọn siêu tham số, test đánh giá cuối. Macro-F1 là tiêu chí chính, cùng Accuracy, Weighted-F1 và precision/recall theo lớp. Thời gian, bộ nhớ và tốc độ suy luận cần đo với môi trường, batch và phạm vi công việc được công bố. Khác biệt về pretraining, embedding và phần văn bản được giữ phải được nêu rõ: đây là so sánh các pipeline thực tế, chưa phải ablation chỉ thay kiến trúc.
+
+Corpus hiện tại có 20 chuyên mục của một tòa soạn, lớp ít mẫu và ranh giới giao thoa; tỷ lệ lớp lớn/nhỏ khoảng 13,05 lần. Những đặc điểm này khác taxonomy rộng 10/13 chủ đề, tiêu đề ngắn hoặc corpus đã lọc độ dài trong nghiên cứu trước. Vì vậy, lựa chọn mô hình cần được kiểm chứng tại chỗ, đặc biệt ở nhóm Nông thôn mới, Nội dung chuyên đề và các chuyên mục dân tộc, thay vì suy ra từ một F1 tổng thể bên ngoài.
+
+\section{Phạm vi bằng chứng và liên hệ với thiết kế dữ liệu}
+Nghiên cứu trước cung cấp căn cứ lựa chọn, còn các notebook SVM, LR, BiLSTM và PhoBERT tạo bằng chứng đối chứng trên corpus hiện tại. Chương~\ref{chap:comparison} đối chiếu chất lượng, chi phí và sai số theo lớp của các pipeline được chọn trên validation. Bằng chứng bên ngoài không xác định trước thứ hạng tại chỗ; một kết quả cao nhất cũng không chứng minh ưu thế trên mọi corpus, seed hay điều kiện triển khai. Ứng dụng dùng gói PhoBERT được kiểm chứng độc lập với phạm vi đối chứng offline.
+
+Một phép so sánh có ý nghĩa trước hết cần đầu vào và nhãn đáng tin cậy. Chương~\ref{chap:data} xác định nguồn tin, quy tắc nhãn cha--con, chuyển chuyên mục ở cấp bài, khử trùng và giới hạn corpus. Đây là cơ sở chung cho các phương pháp, trước khi xét biểu diễn và tối ưu riêng của PhoBERT ở các chương tiếp theo.

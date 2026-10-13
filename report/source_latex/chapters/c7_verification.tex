@@ -2,14 +2,16 @@
 \label{chap:verification}
 \section{Phân cấp bằng chứng}
 Output notebook cung cấp bằng chứng thực nghiệm; JSON/Parquet/NPZ cho phép tái tính; app cung cấp bằng chứng phục vụ; ảnh giao diện xác nhận trạng thái người dùng nhìn thấy. Không thay một loại bằng chứng bằng loại khác: app khởi động được không chứng minh nhãn đúng, và ma trận đúng số lượng không chứng minh corpus không có near-duplicates.
-\DataTable{tables/test_summary.tex}{Phạm vi kiểm chứng trên sản phẩm.}
+\DataTable{tables/test_summary.tex}{Kiểm chứng notebook dữ liệu, PhoBERT và ứng dụng.}
 
-Notebook dữ liệu có 15 cell mã đã thực thi và không có output lỗi. Notebook PhoBERT có 72 cell mã, 65 hình và không có output lỗi. Bốn hình dữ liệu cùng 65 hình mô hình tạo 69 PNG riêng 300 dpi. Mỗi hình trong báo cáo lấy từ output tương ứng, trừ sơ đồ TikZ và ảnh app có nguồn được nêu rõ.
+Notebook dữ liệu có 15 cell mã đã thực thi; PhoBERT có 72 cell mã và 65 hình. SVM, LR và BiLSTM mỗi notebook có 48 cell, trong đó 31 cell mã đều đã thực thi, không có output lỗi; số hình lần lượt là 63, 63 và 53. Bốn PNG dữ liệu, 65 PNG PhoBERT và 179 PNG đối chứng tạo 248 hình nguồn độc lập 300 dpi. Báo cáo chọn các hình cần phân tích, giữ nguyên từng PNG và đối chiếu hash với figure manifest; không ghép các ma trận hoặc các đường học thành một ảnh. Sơ đồ TikZ và ảnh app có nguồn riêng được nêu rõ.
 
 \section{Đối chiếu dữ liệu và kết quả}
 Số lượt URL, unique URL, Parquet sạch và corpus sau khử trùng được phân biệt. Số mẫu train + validation + test bằng 199.965. Class weights tính từ train; ma trận có 20 hàng/cột và tổng 29.995; tổng hàng khớp support. Tái tính argmax sau temperature và hệ số trên toàn bộ logits test khớp 29.995 nhãn trong predictions và cùng công thức app.
 
 Mapping id2label/label2id của config, label config, calibration và taxonomy phải đồng nhất. Hash trọng số trong active manifest khớp model. Cache được bảo toàn và không dùng làm dữ liệu runtime của app. Thứ tự mẫu được truy vết qua article index, split manifest và hash văn bản, tránh ghép một nhãn dự đoán với bài khác.
+
+Đối chứng xác nhận mảng chia của cả bốn model giống nhau cho train, validation và test. Predictions của SVM/LR/BiLSTM được ghép với URL từ article metadata PhoBERT, khớp toàn bộ nhãn và thứ tự 29.995 bài. Argmax score, confusion matrix, support, Accuracy/Macro-F1/Weighted-F1 và NLL sau temperature của các đối chứng được tái tính, khớp artifact. Tính toán ghép cặp dùng dự đoán đã lưu; không huấn luyện hay suy luận lại để tạo số khác. Các kiểm tra này xác nhận tính nhất quán, không chứng minh mọi nhãn corpus đúng về ngữ nghĩa.
 
 \section{Kiểm tra ứng dụng}
 Các kiểm tra bao gồm health, ba vai trò đăng nhập, sai mật khẩu, thiếu phiên, truy cập trái vai trò, nội dung rỗng hoặc chỉ ký hiệu, nhãn ngoài taxonomy, ngưỡng đảo thứ tự, bài không tồn tại, worker Redis--Dramatiq, API của các trang và đăng xuất hủy phiên. Bài minh họa được suy luận thật; không sinh confidence ngẫu nhiên hoặc lấy nhãn tham chiếu thay kết quả model.
@@ -17,9 +19,9 @@ Các kiểm tra bao gồm health, ba vai trò đăng nhập, sai mật khẩu, t
 Kiểm tra công thức calibration bao gồm nhiệt độ không dương/không hữu hạn và tie theo ID. Frontend được build bằng TypeScript và Vite; giao diện được mở qua trình duyệt để kiểm tra từng vai trò. Chỉ những kiểm tra đã thực thi được ghi là đạt. Không đưa số lượng testcase của một bộ kiểm tra không kèm kết quả vào bằng chứng.
 
 \section{Trình tự tái hiện}
-Chạy notebook dữ liệu từ thư mục gốc bằng Python 3.14 để tạo corpus sạch. Chạy notebook PhoBERT với kernel PyTorch CUDA trên GPU NVIDIA. Chế độ fresh bắt đầu fine-tuning từ backbone; các đầu ra được lưu tại dataset, temp, model, result và assets báo cáo. Nội dung HTML có thể thay đổi theo thời điểm, nên crawl lại không cam kết tái tạo đúng số bài của snapshot.
+Chạy notebook dữ liệu từ gốc bằng Python 3.14 để tạo corpus sạch. SVM/LR dùng CPU và scikit-learn; BiLSTM/PhoBERT dùng kernel PyTorch CUDA trên GPU NVIDIA. Chế độ fresh khởi tạo pipeline độc lập: BiLSTM học từ đầu, PhoBERT fine-tune backbone. SVM/LR/BiLSTM lưu trong các subfolder theo model, không thay gói PhoBERT active của app. Nội dung HTML thay đổi theo thời điểm; crawl lại không cam kết tạo đúng snapshot.
 
-Để xem kết quả mà không train lại, mở output notebook và các file evaluation. Để thực hiện đánh giá lại trong notebook, chọn evaluate với gói tương thích. Để train tiếp, chọn continue và hiểu rằng optimizer/scheduler khởi tạo mới. Những thao tác này khác nhau về mục đích và chi phí; Run All ở chế độ fresh vẫn huấn luyện bảy epoch tối đa.
+Để xem kết quả không train lại, đọc output notebook và file evaluation. Chế độ evaluate cần gói tương thích; SVM/LR không có continue mà fit lại khi fresh. BiLSTM và PhoBERT có continue, nạp trọng số tương thích nhưng khởi tạo optimizer/scheduler mới. Giới hạn mỗi lượt là 10 epoch cho BiLSTM và bảy epoch cho PhoBERT; số epoch thực tế còn phụ thuộc early stopping. Đây không phải resume đầy đủ trạng thái optimizer giữa một epoch.
 
 Ứng dụng khởi động từ gốc bằng Docker Compose; README nêu tài khoản, cổng, backup và log. Báo cáo biên dịch từ source bằng XeLaTeX, BibTeX rồi hai lượt XeLaTeX để giải quyết trích dẫn và tham chiếu. Phông Times New Roman, Cambria Math, khổ A4 và macro trình bày dùng thống nhất theo mẫu.
 

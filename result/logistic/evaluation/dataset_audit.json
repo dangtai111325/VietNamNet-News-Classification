@@ -1,0 +1,30 @@
+{
+  "source_count": 200337,
+  "corpus_count": 199965,
+  "conflicting_label_rows_removed": 8,
+  "same_label_duplicate_rows_removed": 364,
+  "class_counts": {
+    "Bạn đọc": 12119,
+    "Bất động sản": 12309,
+    "Chính trị": 12242,
+    "Công nghiệp hỗ trợ": 1292,
+    "Công nghệ": 11061,
+    "Du lịch": 10979,
+    "Dân tộc - Tôn giáo": 3700,
+    "Dân tộc thiểu số và miền núi": 1088,
+    "Giáo dục": 12259,
+    "Kinh doanh": 12643,
+    "Nông thôn mới": 969,
+    "Nội dung chuyên đề": 12568,
+    "Sức khỏe": 12385,
+    "Thế giới": 11889,
+    "Thể thao": 12267,
+    "Thời sự": 12420,
+    "Tuần Việt Nam": 11276,
+    "Văn hóa - Giải trí": 12317,
+    "Ô tô - Xe máy": 12299,
+    "Đời sống": 11883
+  },
+  "source_signature": "46f31d3cafa5756f8508c854fbeeca698fab972ab599631e994a089dd5b9dc10",
+  "corpus_signature": "e6078482e85aa7011cf94b6cb79dbedce88d652f0071f0f2469ba0db3e6c4f23"
+}

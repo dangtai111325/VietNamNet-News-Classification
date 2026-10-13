@@ -1,0 +1,27 @@
+{
+  "model": "logistic",
+  "corpus_signature": "e6078482e85aa7011cf94b6cb79dbedce88d652f0071f0f2469ba0db3e6c4f23",
+  "split_signature": "87a4aaed1e836705aa5d7161584be0ab825aa16969f85e0f364c1801808f24b6",
+  "files": [
+    {
+      "name": "calibration.json",
+      "sha256": "fd8cb5e496dfc6853fa2967af216d6a8e12408bb5d45a4d12379492e78c8f4c5"
+    },
+    {
+      "name": "inference_config.json",
+      "sha256": "ec16ac4e1763edafab0df11e553f6ac062efc3764a664a5a226e18f314145bcb"
+    },
+    {
+      "name": "labels.json",
+      "sha256": "bd28b178573d2a41ea7b5043420aa9de3f2c554a2b4b0e06599194172ba8990a"
+    },
+    {
+      "name": "pipeline.joblib",
+      "sha256": "cc8feff2c2e948f5ca9085be44022d5b767c91caa3d5f260388441b74ed561d0"
+    },
+    {
+      "name": "selected_config.json",
+      "sha256": "d0892125e1707041914e2c4160d5c9b6a23a5e03d92c9ad834f3c5da5eab7d2c"
+    }
+  ]
+}

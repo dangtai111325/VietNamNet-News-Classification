@@ -1,0 +1,122 @@
+[
+  {
+    "id": 0,
+    "label": "Bạn đọc",
+    "average_precision": 0.9798182406418482,
+    "roc_auc": 0.9962923555726407
+  },
+  {
+    "id": 1,
+    "label": "Bất động sản",
+    "average_precision": 0.9663019174746097,
+    "roc_auc": 0.996819432514494
+  },
+  {
+    "id": 2,
+    "label": "Chính trị",
+    "average_precision": 0.9393149560312639,
+    "roc_auc": 0.9944232413184979
+  },
+  {
+    "id": 3,
+    "label": "Công nghiệp hỗ trợ",
+    "average_precision": 0.9203949054332103,
+    "roc_auc": 0.9982742916327791
+  },
+  {
+    "id": 4,
+    "label": "Công nghệ",
+    "average_precision": 0.941052029409253,
+    "roc_auc": 0.9943463889283136
+  },
+  {
+    "id": 5,
+    "label": "Du lịch",
+    "average_precision": 0.9345171867597688,
+    "roc_auc": 0.9948630898361067
+  },
+  {
+    "id": 6,
+    "label": "Dân tộc - Tôn giáo",
+    "average_precision": 0.6570791378771262,
+    "roc_auc": 0.9851293820994909
+  },
+  {
+    "id": 7,
+    "label": "Dân tộc thiểu số và miền núi",
+    "average_precision": 0.6163873538563668,
+    "roc_auc": 0.99485564971612
+  },
+  {
+    "id": 8,
+    "label": "Giáo dục",
+    "average_precision": 0.9678115727456976,
+    "roc_auc": 0.9962678222265277
+  },
+  {
+    "id": 9,
+    "label": "Kinh doanh",
+    "average_precision": 0.8964873776909073,
+    "roc_auc": 0.9850006864670092
+  },
+  {
+    "id": 10,
+    "label": "Nông thôn mới",
+    "average_precision": 0.43462930420898543,
+    "roc_auc": 0.9939044790284616
+  },
+  {
+    "id": 11,
+    "label": "Nội dung chuyên đề",
+    "average_precision": 0.8365847048141857,
+    "roc_auc": 0.9826896608341424
+  },
+  {
+    "id": 12,
+    "label": "Sức khỏe",
+    "average_precision": 0.9811593541595918,
+    "roc_auc": 0.9975687370189841
+  },
+  {
+    "id": 13,
+    "label": "Thế giới",
+    "average_precision": 0.9933922139398363,
+    "roc_auc": 0.998658451931656
+  },
+  {
+    "id": 14,
+    "label": "Thể thao",
+    "average_precision": 0.9976413076756615,
+    "roc_auc": 0.9997362619968653
+  },
+  {
+    "id": 15,
+    "label": "Thời sự",
+    "average_precision": 0.9601612064223863,
+    "roc_auc": 0.9933460110869096
+  },
+  {
+    "id": 16,
+    "label": "Tuần Việt Nam",
+    "average_precision": 0.9322059022429113,
+    "roc_auc": 0.9938489280362
+  },
+  {
+    "id": 17,
+    "label": "Văn hóa - Giải trí",
+    "average_precision": 0.9784531246289474,
+    "roc_auc": 0.9974892168312297
+  },
+  {
+    "id": 18,
+    "label": "Ô tô - Xe máy",
+    "average_precision": 0.9938212395484147,
+    "roc_auc": 0.9993032679172262
+  },
+  {
+    "id": 19,
+    "label": "Đời sống",
+    "average_precision": 0.8955385515904225,
+    "roc_auc": 0.9867797293769417
+  }
+]

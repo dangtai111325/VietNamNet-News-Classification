@@ -1,0 +1,122 @@
+[
+  {
+    "id": 0,
+    "label": "Bạn đọc",
+    "average_precision": 0.9849010770116186,
+    "roc_auc": 0.9979906213640138
+  },
+  {
+    "id": 1,
+    "label": "Bất động sản",
+    "average_precision": 0.9703211425426609,
+    "roc_auc": 0.997827745074414
+  },
+  {
+    "id": 2,
+    "label": "Chính trị",
+    "average_precision": 0.9442295771245344,
+    "roc_auc": 0.9952591613094054
+  },
+  {
+    "id": 3,
+    "label": "Công nghiệp hỗ trợ",
+    "average_precision": 0.9490031478092887,
+    "roc_auc": 0.9981115281193428
+  },
+  {
+    "id": 4,
+    "label": "Công nghệ",
+    "average_precision": 0.9449119572804022,
+    "roc_auc": 0.9958291979923004
+  },
+  {
+    "id": 5,
+    "label": "Du lịch",
+    "average_precision": 0.9363605997089723,
+    "roc_auc": 0.9956904125660356
+  },
+  {
+    "id": 6,
+    "label": "Dân tộc - Tôn giáo",
+    "average_precision": 0.7060247443208659,
+    "roc_auc": 0.9860605170387778
+  },
+  {
+    "id": 7,
+    "label": "Dân tộc thiểu số và miền núi",
+    "average_precision": 0.622611727396136,
+    "roc_auc": 0.9952809352003121
+  },
+  {
+    "id": 8,
+    "label": "Giáo dục",
+    "average_precision": 0.9672832078872331,
+    "roc_auc": 0.9962733650265618
+  },
+  {
+    "id": 9,
+    "label": "Kinh doanh",
+    "average_precision": 0.9132040615146751,
+    "roc_auc": 0.9879955324674508
+  },
+  {
+    "id": 10,
+    "label": "Nông thôn mới",
+    "average_precision": 0.440098264383493,
+    "roc_auc": 0.9941249953533242
+  },
+  {
+    "id": 11,
+    "label": "Nội dung chuyên đề",
+    "average_precision": 0.8240045915051063,
+    "roc_auc": 0.9784471010533647
+  },
+  {
+    "id": 12,
+    "label": "Sức khỏe",
+    "average_precision": 0.9823027659066492,
+    "roc_auc": 0.9976369637251713
+  },
+  {
+    "id": 13,
+    "label": "Thế giới",
+    "average_precision": 0.9929414160724518,
+    "roc_auc": 0.9989243255461367
+  },
+  {
+    "id": 14,
+    "label": "Thể thao",
+    "average_precision": 0.9984293745933787,
+    "roc_auc": 0.9998879070054744
+  },
+  {
+    "id": 15,
+    "label": "Thời sự",
+    "average_precision": 0.9623809133835912,
+    "roc_auc": 0.9948423691425112
+  },
+  {
+    "id": 16,
+    "label": "Tuần Việt Nam",
+    "average_precision": 0.9286311848945822,
+    "roc_auc": 0.9934405461494515
+  },
+  {
+    "id": 17,
+    "label": "Văn hóa - Giải trí",
+    "average_precision": 0.9788926790136045,
+    "roc_auc": 0.9979773936803525
+  },
+  {
+    "id": 18,
+    "label": "Ô tô - Xe máy",
+    "average_precision": 0.9965286097676571,
+    "roc_auc": 0.999758186640481
+  },
+  {
+    "id": 19,
+    "label": "Đời sống",
+    "average_precision": 0.9146926154049763,
+    "roc_auc": 0.9893504623554104
+  }
+]

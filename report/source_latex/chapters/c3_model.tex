@@ -1,7 +1,9 @@
-\chapter{Biểu diễn văn bản và kiến trúc PhoBERT}
+\chapter{Biểu diễn văn bản và kiến trúc các mô hình}
 \label{chap:model}
-\section{Từ đặc trưng bề mặt đến biểu diễn theo ngữ cảnh}
-Trong phân loại văn bản, một cách tiếp cận truyền thống là đếm từ hoặc sử dụng TF--IDF rồi huấn luyện bộ phân loại tuyến tính. Cách này có lợi thế về chi phí và khả năng kiểm tra trọng số, nhưng biểu diễn một từ chủ yếu dựa trên sự xuất hiện của nó. Với tin tức giao thoa chủ đề, cùng một từ như ``thị trường'' có thể chỉ thị trường tài chính, thị trường du lịch hoặc thị trường tiêu dùng. Ngữ cảnh xung quanh quyết định cách hiểu hữu ích cho chuyên mục.
+Chương~\ref{chap:related} xác định ba hướng biểu diễn được lựa chọn. Chương này mô tả đúng các cấu hình thực thi: TF--IDF với SVM/LR, LSTM hai chiều với embedding học từ đầu và PhoBERT-base-v2 có tiền huấn luyện. Các khác biệt về stopword, tiêu đề và đơn vị cắt được công khai để diễn giải kết quả so sánh.
+\input{chapters/model_baselines}
+\section{Biểu diễn theo ngữ cảnh với PhoBERT}
+Với tin tức giao thoa chủ đề, cùng một từ như ``thị trường'' có thể chỉ thị trường tài chính, du lịch hoặc tiêu dùng; encoder tạo biểu diễn phụ thuộc đoạn văn bản được giữ để cung cấp tín hiệu cho đầu phân loại.
 
 Encoder Transformer tạo biểu diễn của mỗi vị trí dựa trên các vị trí còn lại trong đoạn văn bản được giữ. Mô hình tiền huấn luyện cung cấp tham số đã học các quy luật ngôn ngữ; fine-tuning điều chỉnh biểu diễn và đầu phân loại theo 20 nhãn của bài toán. BERT là một cơ sở của hướng học biểu diễn hai chiều và fine-tuning cho tác vụ downstream \citep{bert}; RoBERTa nghiên cứu các thay đổi trong quy trình tiền huấn luyện BERT \citep{roberta}. PhoBERT tập trung vào tiếng Việt \citep{phobert}.
 
@@ -90,5 +92,5 @@ Xác suất tổng bằng 1 giữa 20 lớp trong taxonomy. Điều đó không 
 \section{Quy mô tham số và ý nghĩa của fine-tuning}
 Checkpoint có 135.013.652 tham số. Embedding chiếm 49.353.216; 12 lớp encoder chiếm 85.054.464; đầu phân loại chiếm 605.972. Tổng số tham số được tính từ kiến trúc và tensor của gói mô hình, không suy ra bằng cách làm tròn nhãn ``135M''.
 
-Fine-tuning cập nhật mô hình cho tác vụ chuyên mục, thay vì tiền huấn luyện lại từ đầu trên corpus tin tức này. Đầu phân loại tương thích 20 lớp được khởi tạo khi tạo mô hình cho tác vụ; encoder nhận tham số mô hình nền. Toàn bộ quá trình dùng nhãn giám sát của corpus. Lợi ích kỳ vọng là tận dụng biểu diễn tiếng Việt, nhưng không có baseline cùng dữ liệu để định lượng phần lợi ích riêng của tiền huấn luyện.
+Fine-tuning cập nhật mô hình cho tác vụ chuyên mục, thay vì tiền huấn luyện lại từ đầu trên corpus tin tức này. Đầu phân loại tương thích 20 lớp được khởi tạo khi tạo mô hình cho tác vụ; encoder nhận tham số mô hình nền. Toàn bộ quá trình dùng nhãn giám sát của corpus. Đối chứng ở chương~\ref{chap:comparison} cho biết hiệu quả các pipeline trên cùng test, nhưng chưa cô lập phần lợi ích riêng của pretraining khỏi kiến trúc và biểu diễn.
 

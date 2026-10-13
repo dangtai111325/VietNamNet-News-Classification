@@ -1,0 +1,26 @@
+{
+  "n_features": 150000,
+  "fit_split": "train",
+  "selected_config": {
+    "name": "unigram_bigram",
+    "max_features": 150000,
+    "ngram_range": [
+      1,
+      2
+    ],
+    "min_df": 3,
+    "C": 0.5,
+    "class_weight": "balanced",
+    "title_weight": 3,
+    "stopwords_sha256": "8560838cf098de9b651ac3380a1c9e8ce8fb2804857db78c4ffdfb40e7de42c7",
+    "max_df": 0.98,
+    "sublinear_tf": true,
+    "norm": "l2",
+    "solver": "liblinear_dual_auto",
+    "tol": 0.0001,
+    "n_features": 150000,
+    "n_iter": 119,
+    "max_iter": 5000
+  },
+  "note": "Feature weights are model coefficients, not causal explanations."
+}

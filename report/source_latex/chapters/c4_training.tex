@@ -1,5 +1,7 @@
 \chapter{Huấn luyện và hiệu chỉnh dự đoán}
 \label{chap:training}
+Các mô hình dùng cùng train/validation/test nhưng có optimizer, trọng số lớp, tiêu chí hội tụ và ngân sách lựa chọn riêng. Chương này trình bày lựa chọn SVM/LR, huấn luyện BiLSTM và fine-tuning PhoBERT; chương~\ref{chap:comparison} đối chiếu chất lượng, calibration và chi phí của các cấu hình được chọn.
+\input{chapters/training_baselines}
 \section{Chuẩn bị ba tập và tensor}
 Phân tầng được thực hiện sau khử trùng, seed 42, theo tỷ lệ 70/15/15. Các tensor input IDs, attention mask và nhãn bảo toàn thứ tự bài. Cache train, validation và test có chiều lần lượt $139\,975\times256$, $29\,995\times256$ và $29\,995\times256$. Padding không tham gia attention như token văn bản. Dataloader train xáo trộn mẫu; validation và test giữ phân bố lớp thực tế.
 

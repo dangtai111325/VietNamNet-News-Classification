@@ -1,0 +1,150 @@
+{
+  "model": "BiLSTM",
+  "model_key": "lstm",
+  "selected_config": {
+    "name": "head_tail_512_sqrt",
+    "max_length": 512,
+    "hidden_dim": 128,
+    "num_layers": 1,
+    "dropout": 0.35,
+    "learning_rate": 0.001,
+    "class_weight_alpha": 0.5,
+    "embedding_dim": 200,
+    "vocabulary_size": 50000,
+    "max_epochs": 10,
+    "batch_size": 64,
+    "early_stopping_patience": 2,
+    "early_stopping_min_delta": 0.001,
+    "weight_decay": 0.0001,
+    "gradient_clip": 1.0,
+    "scheduler_factor": 0.5,
+    "scheduler_patience": 0,
+    "seed": 42,
+    "classes": [
+      "Bạn đọc",
+      "Bất động sản",
+      "Chính trị",
+      "Công nghiệp hỗ trợ",
+      "Công nghệ",
+      "Du lịch",
+      "Dân tộc - Tôn giáo",
+      "Dân tộc thiểu số và miền núi",
+      "Giáo dục",
+      "Kinh doanh",
+      "Nông thôn mới",
+      "Nội dung chuyên đề",
+      "Sức khỏe",
+      "Thế giới",
+      "Thể thao",
+      "Thời sự",
+      "Tuần Việt Nam",
+      "Văn hóa - Giải trí",
+      "Ô tô - Xe máy",
+      "Đời sống"
+    ],
+    "vocabulary_signature": "878d22e2896f9ca482b2aa6343f97b343f18a506ca6a3b78d09375572489370d",
+    "run_signature": "a49e42b64c7c927f53bacaaabc139718cbc2f3d900bd3e76f4a0b5a8a5e4571d",
+    "best_epoch": 10,
+    "gpu_peak_allocated_gib": 0.5641589164733887,
+    "amp": "bf16",
+    "parameter_count": 10343060
+  },
+  "classes": [
+    "Bạn đọc",
+    "Bất động sản",
+    "Chính trị",
+    "Công nghiệp hỗ trợ",
+    "Công nghệ",
+    "Du lịch",
+    "Dân tộc - Tôn giáo",
+    "Dân tộc thiểu số và miền núi",
+    "Giáo dục",
+    "Kinh doanh",
+    "Nông thôn mới",
+    "Nội dung chuyên đề",
+    "Sức khỏe",
+    "Thế giới",
+    "Thể thao",
+    "Thời sự",
+    "Tuần Việt Nam",
+    "Văn hóa - Giải trí",
+    "Ô tô - Xe máy",
+    "Đời sống"
+  ],
+  "selection_split": "validation",
+  "evaluation_split": "test",
+  "selection_metric": "f1_macro",
+  "validation": {
+    "accuracy": 0.8892815469244875,
+    "f1_macro": 0.844931681081459,
+    "f1_weighted": 0.8897645482510572
+  },
+  "before": {
+    "accuracy": 0.8866477746291048,
+    "f1_macro": 0.8459952537644462,
+    "f1_weighted": 0.887105263220982,
+    "nll": 0.41633872120387017,
+    "ece_15_bins": 0.05319604507401042
+  },
+  "after": {
+    "accuracy": 0.8866477746291048,
+    "f1_macro": 0.8459952537644462,
+    "f1_weighted": 0.887105263220982,
+    "nll": 0.3681362167190467,
+    "ece_15_bins": 0.011488450029317039
+  },
+  "temperature": 1.4684780176414483,
+  "class_decision_adjustment": false,
+  "probability_source": "neural_multiclass_logits",
+  "confidence_intervals_95": {
+    "accuracy": {
+      "lower": 0.8829629938323054,
+      "upper": 0.8902992165360893
+    },
+    "f1_macro": {
+      "lower": 0.8402545723100151,
+      "upper": 0.8514893219092524
+    },
+    "f1_weighted": {
+      "lower": 0.8834682349031939,
+      "upper": 0.8907885970998816
+    }
+  },
+  "bootstrap": {
+    "resamples": 500,
+    "method": "iid_percentile_fixed_model",
+    "seed": 42
+  },
+  "corpus_count": 199965,
+  "split_counts": {
+    "train": 139975,
+    "validation": 29995,
+    "test": 29995
+  },
+  "corpus_signature": "e6078482e85aa7011cf94b6cb79dbedce88d652f0071f0f2469ba0db3e6c4f23",
+  "split_signature": "87a4aaed1e836705aa5d7161584be0ab825aa16969f85e0f364c1801808f24b6",
+  "test_urls_sha256": "a9257c8fe7d18596c9a411b30ebe7a054ac3cc215e8e3c55988feb1e88505b7d",
+  "timing": {
+    "search_seconds": 4473.369264499983,
+    "selected_fit_seconds": 1779.4289708000142,
+    "inference_scope": "DataLoader + host-to-device transfer + model forward; excludes segmentation/encoding",
+    "preprocessing_seconds": 535.3918624000216,
+    "test_inference_seconds": 9.233207099983701,
+    "inference_samples_per_second": 3248.6003698598884
+  },
+  "environment": {
+    "python": "3.14.7",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "cpu_threads": 4,
+    "versions": {
+      "numpy": "2.5.2",
+      "pandas": "3.0.6",
+      "pyarrow": "26.0.0",
+      "pyvi": "0.1.1",
+      "scikit-learn": "1.9.1",
+      "scipy": "1.18.1",
+      "torch": "2.11.0+cu128"
+    },
+    "training_device": "NVIDIA RTX A3000 12GB Laptop GPU"
+  }
+}

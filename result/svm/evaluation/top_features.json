@@ -1,0 +1,1322 @@
+[
+  {
+    "id": 0,
+    "label": "Bạn đọc",
+    "features": [
+      {
+        "term": "bạn_đọc",
+        "coefficient": 4.227528470728877
+      },
+      {
+        "term": "báo vietnamnet",
+        "coefficient": 2.6182488279255134
+      },
+      {
+        "term": "banbandoc vietnamnet",
+        "coefficient": 2.2264903811231997
+      },
+      {
+        "term": "banbandoc",
+        "coefficient": 2.2264903811231997
+      },
+      {
+        "term": "vietnamnet",
+        "coefficient": 2.1974730674342395
+      },
+      {
+        "term": "địa_chỉ banbandoc",
+        "coefficient": 2.074037225003157
+      },
+      {
+        "term": "đáp_án",
+        "coefficient": 1.9608203932279988
+      },
+      {
+        "term": "chẳng",
+        "coefficient": 1.8712618579018692
+      },
+      {
+        "term": "đáp_án chính_xác",
+        "coefficient": 1.8033530898372265
+      },
+      {
+        "term": "ủng_hộ",
+        "coefficient": 1.7470990243451658
+      },
+      {
+        "term": "giúp_đỡ",
+        "coefficient": 1.6413866897028335
+      },
+      {
+        "term": "trao",
+        "coefficient": 1.5430251162393727
+      },
+      {
+        "term": "báo",
+        "coefficient": 1.4697436543726339
+      },
+      {
+        "term": "covid",
+        "coefficient": 1.4488355991284887
+      },
+      {
+        "term": "luật_sư_phạm",
+        "coefficient": 1.405726924486997
+      }
+    ]
+  },
+  {
+    "id": 1,
+    "label": "Bất động sản",
+    "features": [
+      {
+        "term": "bất_động_sản",
+        "coefficient": 3.503969471950312
+      },
+      {
+        "term": "dự_án",
+        "coefficient": 2.970227178003841
+      },
+      {
+        "term": "bđs",
+        "coefficient": 2.764633865123801
+      },
+      {
+        "term": "gia chủ",
+        "coefficient": 2.715953599582541
+      },
+      {
+        "term": "căn_hộ",
+        "coefficient": 2.4566672735190043
+      },
+      {
+        "term": "đất",
+        "coefficient": 2.404135497185849
+      },
+      {
+        "term": "cư_dân",
+        "coefficient": 2.0532429510863963
+      },
+      {
+        "term": "kiến_trúc_sư",
+        "coefficient": 1.7654111556979346
+      },
+      {
+        "term": "vinhomes",
+        "coefficient": 1.6757166380638506
+      },
+      {
+        "term": "biệt_thự",
+        "coefficient": 1.6226698347730162
+      },
+      {
+        "term": "môi_giới",
+        "coefficient": 1.5742683571614686
+      },
+      {
+        "term": "chủ",
+        "coefficient": 1.490068976403738
+      },
+      {
+        "term": "không_gian",
+        "coefficient": 1.4838206016206097
+      },
+      {
+        "term": "xây_dựng",
+        "coefficient": 1.4534463266635964
+      },
+      {
+        "term": "tiện_ích",
+        "coefficient": 1.4340358261966226
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "label": "Chính trị",
+    "features": [
+      {
+        "term": "tổng_bí_thư",
+        "coefficient": 2.9019746191137705
+      },
+      {
+        "term": "nội_vụ",
+        "coefficient": 2.805492881269947
+      },
+      {
+        "term": "thủ_tướng",
+        "coefficient": 2.7760299015412766
+      },
+      {
+        "term": "thủ_tướng phạm",
+        "coefficient": 2.546922205494858
+      },
+      {
+        "term": "phu_nhân",
+        "coefficient": 2.29993708185254
+      },
+      {
+        "term": "đại_biểu",
+        "coefficient": 2.266694110770226
+      },
+      {
+        "term": "bí_thư",
+        "coefficient": 2.0691556057723486
+      },
+      {
+        "term": "chủ_tịch",
+        "coefficient": 1.9591667619487199
+      },
+      {
+        "term": "nêu",
+        "coefficient": 1.8643484547519602
+      },
+      {
+        "term": "đại_biểu nguyễn",
+        "coefficient": 1.7750967235651345
+      },
+      {
+        "term": "lưu_ý",
+        "coefficient": 1.7712292058704908
+      },
+      {
+        "term": "phát_ngôn",
+        "coefficient": 1.6974862092207423
+      },
+      {
+        "term": "phạm minh",
+        "coefficient": 1.686894002353566
+      },
+      {
+        "term": "quốc_phòng",
+        "coefficient": 1.5235733652190837
+      },
+      {
+        "term": "tổng_bí_thư chủ_tịch",
+        "coefficient": 1.502540836242148
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "label": "Công nghiệp hỗ trợ",
+    "features": [
+      {
+        "term": "công_nghiệp",
+        "coefficient": 2.8090146054662766
+      },
+      {
+        "term": "infographic",
+        "coefficient": 2.278884934099483
+      },
+      {
+        "term": "thaco",
+        "coefficient": 1.8239645810485583
+      },
+      {
+        "term": "phát_triển công_nghiệp",
+        "coefficient": 1.7250077223822915
+      },
+      {
+        "term": "doanh_nghiệp công_nghiệp",
+        "coefficient": 1.7121316885555198
+      },
+      {
+        "term": "cnht",
+        "coefficient": 1.635005893404647
+      },
+      {
+        "term": "ngành công_nghiệp",
+        "coefficient": 1.6187097999928204
+      },
+      {
+        "term": "sản_xuất",
+        "coefficient": 1.5461632363311153
+      },
+      {
+        "term": "dn",
+        "coefficient": 1.5061792529898865
+      },
+      {
+        "term": "linh_kiện",
+        "coefficient": 1.4787107466705323
+      },
+      {
+        "term": "dệt",
+        "coefficient": 1.44799347682509
+      },
+      {
+        "term": "sản_phẩm",
+        "coefficient": 1.4232767492324134
+      },
+      {
+        "term": "cơ_khí",
+        "coefficient": 1.4119761317282038
+      },
+      {
+        "term": "công_nghiệp việt_nam",
+        "coefficient": 1.2737912478188447
+      },
+      {
+        "term": "may",
+        "coefficient": 1.2595283550577991
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "label": "Công nghệ",
+    "features": [
+      {
+        "term": "công_nghệ",
+        "coefficient": 3.0597659688363272
+      },
+      {
+        "term": "ceo",
+        "coefficient": 2.372010444020744
+      },
+      {
+        "term": "cục chuyển_đổi",
+        "coefficient": 2.2695074269563627
+      },
+      {
+        "term": "viettel",
+        "coefficient": 2.238503581212959
+      },
+      {
+        "term": "iphone",
+        "coefficient": 2.208661709539262
+      },
+      {
+        "term": "apple",
+        "coefficient": 2.14944247758038
+      },
+      {
+        "term": "drone",
+        "coefficient": 2.0966118049377998
+      },
+      {
+        "term": "tt",
+        "coefficient": 2.0220596491844645
+      },
+      {
+        "term": "tt tt",
+        "coefficient": 1.9552740937852937
+      },
+      {
+        "term": "samsung",
+        "coefficient": 1.887240983944911
+      },
+      {
+        "term": "mobifone",
+        "coefficient": 1.8520404300466196
+      },
+      {
+        "term": "game",
+        "coefficient": 1.8489695852850347
+      },
+      {
+        "term": "công_ty",
+        "coefficient": 1.7997020244687356
+      },
+      {
+        "term": "meta",
+        "coefficient": 1.7837263356093729
+      },
+      {
+        "term": "startup",
+        "coefficient": 1.7249399708218989
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "label": "Du lịch",
+    "features": [
+      {
+        "term": "du_khách",
+        "coefficient": 7.036862597036738
+      },
+      {
+        "term": "du_lịch",
+        "coefficient": 4.2321689547567924
+      },
+      {
+        "term": "đỗ an",
+        "coefficient": 3.422748818397205
+      },
+      {
+        "term": "vtc cơ_quan",
+        "coefficient": 3.244469343340526
+      },
+      {
+        "term": "zing",
+        "coefficient": 2.70460350460372
+      },
+      {
+        "term": "thực_khách",
+        "coefficient": 2.645527957431896
+      },
+      {
+        "term": "vtc",
+        "coefficient": 2.5865602343977105
+      },
+      {
+        "term": "vtv cơ_quan",
+        "coefficient": 2.5672104785292915
+      },
+      {
+        "term": "khám_phá",
+        "coefficient": 2.2287747253462533
+      },
+      {
+        "term": "expedia",
+        "coefficient": 1.9600714308170397
+      },
+      {
+        "term": "q n",
+        "coefficient": 1.9429958017598719
+      },
+      {
+        "term": "travel",
+        "coefficient": 1.9196716447462725
+      },
+      {
+        "term": "thế_giới",
+        "coefficient": 1.8928088980114743
+      },
+      {
+        "term": "linh trang",
+        "coefficient": 1.87404940361094
+      },
+      {
+        "term": "hút",
+        "coefficient": 1.8157024411920988
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "label": "Dân tộc - Tôn giáo",
+    "features": [
+      {
+        "term": "tôn_giáo",
+        "coefficient": 2.635470959033197
+      },
+      {
+        "term": "dân_tộc tôn_giáo",
+        "coefficient": 2.241335274192031
+      },
+      {
+        "term": "phật_giáo",
+        "coefficient": 1.9985155814952222
+      },
+      {
+        "term": "dân_tộc",
+        "coefficient": 1.9197288605597087
+      },
+      {
+        "term": "trường nội_trú",
+        "coefficient": 1.8381428549303838
+      },
+      {
+        "term": "đồng_bào",
+        "coefficient": 1.7978613178864051
+      },
+      {
+        "term": "sở dân_tộc",
+        "coefficient": 1.743271174636712
+      },
+      {
+        "term": "vùng_cao",
+        "coefficient": 1.6306462922114042
+      },
+      {
+        "term": "hội văn_hóa",
+        "coefficient": 1.6166444692956121
+      },
+      {
+        "term": "dtts",
+        "coefficient": 1.5649169292226135
+      },
+      {
+        "term": "buôn_làng",
+        "coefficient": 1.5242533418391404
+      },
+      {
+        "term": "tổ_quốc tình_hình",
+        "coefficient": 1.5105712072796038
+      },
+      {
+        "term": "gùi",
+        "coefficient": 1.4767059762054024
+      },
+      {
+        "term": "bảo phùng",
+        "coefficient": 1.4681129591609077
+      },
+      {
+        "term": "ubnd xã",
+        "coefficient": 1.4680279553980908
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "label": "Dân tộc thiểu số và miền núi",
+    "features": [
+      {
+        "term": "huyện",
+        "coefficient": 3.0984522591229076
+      },
+      {
+        "term": "đồng_bào",
+        "coefficient": 3.0935311250044015
+      },
+      {
+        "term": "dtts",
+        "coefficient": 2.923547261870279
+      },
+      {
+        "term": "dân_tộc_thiểu_số",
+        "coefficient": 2.7302028610155236
+      },
+      {
+        "term": "phụ_nữ",
+        "coefficient": 2.508024500253191
+      },
+      {
+        "term": "phát_triển",
+        "coefficient": 1.9014740483954113
+      },
+      {
+        "term": "cơm thịt",
+        "coefficient": 1.7487822587861965
+      },
+      {
+        "term": "nước_ngoài cơ_quan",
+        "coefficient": 1.6327148772838964
+      },
+      {
+        "term": "chương_trình hộ",
+        "coefficient": 1.613108832333835
+      },
+      {
+        "term": "cửa_khẩu",
+        "coefficient": 1.592561775452616
+      },
+      {
+        "term": "khiên",
+        "coefficient": 1.579021931616702
+      },
+      {
+        "term": "mộc châu",
+        "coefficient": 1.5590180877476754
+      },
+      {
+        "term": "bảo_tồn",
+        "coefficient": 1.5551438709460381
+      },
+      {
+        "term": "rộng đường",
+        "coefficient": 1.4711844826243814
+      },
+      {
+        "term": "gieo mầm",
+        "coefficient": 1.4018236111394928
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "label": "Giáo dục",
+    "features": [
+      {
+        "term": "gd đt",
+        "coefficient": 2.8340042504588463
+      },
+      {
+        "term": "trường",
+        "coefficient": 2.5684032870836084
+      },
+      {
+        "term": "học_sinh",
+        "coefficient": 2.418665808812743
+      },
+      {
+        "term": "mit",
+        "coefficient": 2.2362431272851926
+      },
+      {
+        "term": "phụ_huynh",
+        "coefficient": 2.131713205352389
+      },
+      {
+        "term": "đt",
+        "coefficient": 2.0921144960848648
+      },
+      {
+        "term": "đh",
+        "coefficient": 1.934519567147493
+      },
+      {
+        "term": "giáo_viên",
+        "coefficient": 1.93216243499693
+      },
+      {
+        "term": "nữ_sinh",
+        "coefficient": 1.8560582372614856
+      },
+      {
+        "term": "upu",
+        "coefficient": 1.811021839198439
+      },
+      {
+        "term": "careerviet",
+        "coefficient": 1.7996316497974116
+      },
+      {
+        "term": "nhà_trường",
+        "coefficient": 1.773510111479998
+      },
+      {
+        "term": "sinh_viên",
+        "coefficient": 1.7319292138379916
+      },
+      {
+        "term": "vlab innovation",
+        "coefficient": 1.7132449363130833
+      },
+      {
+        "term": "vlab",
+        "coefficient": 1.7091655443406706
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "label": "Kinh doanh",
+    "features": [
+      {
+        "term": "nhnn",
+        "coefficient": 1.9976201111198995
+      },
+      {
+        "term": "ngân_hàng",
+        "coefficient": 1.9650893596216432
+      },
+      {
+        "term": "vietjet",
+        "coefficient": 1.7982353126531352
+      },
+      {
+        "term": "vớipv",
+        "coefficient": 1.739843027281338
+      },
+      {
+        "term": "tài_chính",
+        "coefficient": 1.7215624913047987
+      },
+      {
+        "term": "điện mặt_trời",
+        "coefficient": 1.6467130008376696
+      },
+      {
+        "term": "cục hải_quan",
+        "coefficient": 1.5582583420783032
+      },
+      {
+        "term": "tài_sản bảo_đảm",
+        "coefficient": 1.5350943330396447
+      },
+      {
+        "term": "giao_dịch",
+        "coefficient": 1.5315611218623604
+      },
+      {
+        "term": "doanh_nghiệp",
+        "coefficient": 1.5140517156803535
+      },
+      {
+        "term": "ctcp",
+        "coefficient": 1.4978777550891824
+      },
+      {
+        "term": "đồng_hành",
+        "coefficient": 1.4682579978438304
+      },
+      {
+        "term": "vingroup",
+        "coefficient": 1.4420967485340646
+      },
+      {
+        "term": "quản_lý phát_triển",
+        "coefficient": 1.4209496691368924
+      },
+      {
+        "term": "petrovietnam",
+        "coefficient": 1.3915833574397842
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "label": "Nông thôn mới",
+    "features": [
+      {
+        "term": "nông_thôn",
+        "coefficient": 3.182305205345183
+      },
+      {
+        "term": "bứt_phá vươn",
+        "coefficient": 1.436745565054471
+      },
+      {
+        "term": "tương_hỗ",
+        "coefficient": 1.4097155309288099
+      },
+      {
+        "term": "vạt",
+        "coefficient": 1.3268491126276203
+      },
+      {
+        "term": "nông_thôn hướng",
+        "coefficient": 1.3056014765113093
+      },
+      {
+        "term": "thi_đua xây_dựng",
+        "coefficient": 1.2932715830773402
+      },
+      {
+        "term": "hiệu_quả kinh_tế",
+        "coefficient": 1.261476463989189
+      },
+      {
+        "term": "xã khu",
+        "coefficient": 1.1981701547163839
+      },
+      {
+        "term": "gis",
+        "coefficient": 1.1962100082434952
+      },
+      {
+        "term": "huyện",
+        "coefficient": 1.1952091017598272
+      },
+      {
+        "term": "cuộc_sống việt",
+        "coefficient": 1.1350969782351106
+      },
+      {
+        "term": "dân đóng_góp",
+        "coefficient": 1.1330807055585528
+      },
+      {
+        "term": "hiến m",
+        "coefficient": 1.1162593655930828
+      },
+      {
+        "term": "tiêu_chí",
+        "coefficient": 1.0658594345262047
+      },
+      {
+        "term": "nông_dân nông_thôn",
+        "coefficient": 1.0618196196552108
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "label": "Nội dung chuyên đề",
+    "features": [
+      {
+        "term": "nghèo thông_tin",
+        "coefficient": 3.274662357086826
+      },
+      {
+        "term": "ukvfta",
+        "coefficient": 2.918836055403772
+      },
+      {
+        "term": "nông_thôn",
+        "coefficient": 2.8141339546569144
+      },
+      {
+        "term": "thủ_tướng chính_phủ",
+        "coefficient": 2.0809435685395457
+      },
+      {
+        "term": "kiều oanh",
+        "coefficient": 1.9688393711568608
+      },
+      {
+        "term": "asean",
+        "coefficient": 1.9187651648586124
+      },
+      {
+        "term": "truyền_thông chính_sách",
+        "coefficient": 1.9169983327922626
+      },
+      {
+        "term": "vương_quốc",
+        "coefficient": 1.816263493713508
+      },
+      {
+        "term": "kiến_trúc",
+        "coefficient": 1.766209114136642
+      },
+      {
+        "term": "tỉnh",
+        "coefficient": 1.7289875278212052
+      },
+      {
+        "term": "tội_phạm mua_bán",
+        "coefficient": 1.7203952105447866
+      },
+      {
+        "term": "kts",
+        "coefficient": 1.6885358905364605
+      },
+      {
+        "term": "ntm",
+        "coefficient": 1.6648667874095084
+      },
+      {
+        "term": "tiếp_cận thông_tin",
+        "coefficient": 1.6200234713864867
+      },
+      {
+        "term": "nct",
+        "coefficient": 1.614779239775737
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "label": "Sức khỏe",
+    "features": [
+      {
+        "term": "y_tế",
+        "coefficient": 3.2399208658493506
+      },
+      {
+        "term": "bác_sĩ",
+        "coefficient": 2.9255901847337817
+      },
+      {
+        "term": "người_bệnh",
+        "coefficient": 2.5428509865727156
+      },
+      {
+        "term": "bệnh_nhân",
+        "coefficient": 2.3624873241919495
+      },
+      {
+        "term": "sở y_tế",
+        "coefficient": 2.1772295868863414
+      },
+      {
+        "term": "sống thọ",
+        "coefficient": 1.852286026746676
+      },
+      {
+        "term": "thực_phẩm",
+        "coefficient": 1.7708693123967174
+      },
+      {
+        "term": "hằng",
+        "coefficient": 1.61972856755628
+      },
+      {
+        "term": "bhyt",
+        "coefficient": 1.5953625977781616
+      },
+      {
+        "term": "bệnh_viện",
+        "coefficient": 1.559963946284759
+      },
+      {
+        "term": "tổn_thương",
+        "coefficient": 1.5000291024570724
+      },
+      {
+        "term": "trẻ",
+        "coefficient": 1.4672122697748196
+      },
+      {
+        "term": "medlatec",
+        "coefficient": 1.4286788725131259
+      },
+      {
+        "term": "cấp_cứu",
+        "coefficient": 1.4274122038024633
+      },
+      {
+        "term": "tiến_sĩ",
+        "coefficient": 1.3331618566885732
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "label": "Thế giới",
+    "features": [
+      {
+        "term": "rt",
+        "coefficient": 3.2242435499689566
+      },
+      {
+        "term": "tờ",
+        "coefficient": 2.884138222215765
+      },
+      {
+        "term": "trump",
+        "coefficient": 2.83809148492365
+      },
+      {
+        "term": "bbc",
+        "coefficient": 2.785661759581688
+      },
+      {
+        "term": "nga",
+        "coefficient": 2.4748193410332306
+      },
+      {
+        "term": "tổng_thống",
+        "coefficient": 2.2371597287467373
+      },
+      {
+        "term": "cnn",
+        "coefficient": 2.206355246017369
+      },
+      {
+        "term": "hãng",
+        "coefficient": 1.9857095292302913
+      },
+      {
+        "term": "guardian",
+        "coefficient": 1.911212708107085
+      },
+      {
+        "term": "ukraine",
+        "coefficient": 1.8123542871347282
+      },
+      {
+        "term": "thiệt_mạng",
+        "coefficient": 1.793277637869036
+      },
+      {
+        "term": "thông_cáo",
+        "coefficient": 1.7368756874505875
+      },
+      {
+        "term": "yonhap",
+        "coefficient": 1.7257477844984161
+      },
+      {
+        "term": "uav",
+        "coefficient": 1.6979438924318058
+      },
+      {
+        "term": "mỹ",
+        "coefficient": 1.6835466088260271
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "label": "Thể thao",
+    "features": [
+      {
+        "term": "vđv",
+        "coefficient": 2.040436890996747
+      },
+      {
+        "term": "league",
+        "coefficient": 2.039576963614817
+      },
+      {
+        "term": "hlv",
+        "coefficient": 2.0307839498603575
+      },
+      {
+        "term": "bóng_chuyền",
+        "coefficient": 1.859647298548853
+      },
+      {
+        "term": "bóng_đá",
+        "coefficient": 1.682587099925591
+      },
+      {
+        "term": "thi_đấu",
+        "coefficient": 1.5846420521970301
+      },
+      {
+        "term": "giải",
+        "coefficient": 1.5755629014176056
+      },
+      {
+        "term": "vs",
+        "coefficient": 1.573882050386946
+      },
+      {
+        "term": "arsenal",
+        "coefficient": 1.5735610113121488
+      },
+      {
+        "term": "liverpool",
+        "coefficient": 1.5290649870672173
+      },
+      {
+        "term": "tuyển",
+        "coefficient": 1.5123102287605368
+      },
+      {
+        "term": "mu",
+        "coefficient": 1.4979650944885385
+      },
+      {
+        "term": "ngoại_hạng",
+        "coefficient": 1.4521948177342807
+      },
+      {
+        "term": "u",
+        "coefficient": 1.4223260332586751
+      },
+      {
+        "term": "thắng",
+        "coefficient": 1.416678728795101
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "label": "Thời sự",
+    "features": [
+      {
+        "term": "bị_cáo",
+        "coefficient": 2.8619615304019344
+      },
+      {
+        "term": "công_an",
+        "coefficient": 2.6815349742694368
+      },
+      {
+        "term": "phường",
+        "coefficient": 2.664142006452933
+      },
+      {
+        "term": "ngày_công_an",
+        "coefficient": 2.272178345657216
+      },
+      {
+        "term": "xã",
+        "coefficient": 2.249306591270294
+      },
+      {
+        "term": "hà_nội",
+        "coefficient": 2.209765807969533
+      },
+      {
+        "term": "bị_can",
+        "coefficient": 1.949775923087621
+      },
+      {
+        "term": "tphcm",
+        "coefficient": 1.9275528012473244
+      },
+      {
+        "term": "csgt",
+        "coefficient": 1.9123619557817824
+      },
+      {
+        "term": "cũ",
+        "coefficient": 1.7958058191946682
+      },
+      {
+        "term": "trú",
+        "coefficient": 1.7947063138479695
+      },
+      {
+        "term": "h",
+        "coefficient": 1.7852694656947166
+      },
+      {
+        "term": "lực_lượng chức_năng",
+        "coefficient": 1.7052796908803693
+      },
+      {
+        "term": "hđxx",
+        "coefficient": 1.6872889926501613
+      },
+      {
+        "term": "cáo_trạng",
+        "coefficient": 1.608499331813375
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "label": "Tuần Việt Nam",
+    "features": [
+      {
+        "term": "tuần việt",
+        "coefficient": 3.8651170275788673
+      },
+      {
+        "term": "vn",
+        "coefficient": 2.306137853394241
+      },
+      {
+        "term": "lts",
+        "coefficient": 2.2930022708978304
+      },
+      {
+        "term": "dư_luận",
+        "coefficient": 2.279271739084442
+      },
+      {
+        "term": "biển đông",
+        "coefficient": 2.2386869879590927
+      },
+      {
+        "term": "tq",
+        "coefficient": 2.188465055437804
+      },
+      {
+        "term": "cải_cách",
+        "coefficient": 2.14156081772919
+      },
+      {
+        "term": "báo_chí",
+        "coefficient": 2.07212557471073
+      },
+      {
+        "term": "obama",
+        "coefficient": 1.984036742175055
+      },
+      {
+        "term": "tỉ",
+        "coefficient": 1.9350159387065993
+      },
+      {
+        "term": "câu_chuyện",
+        "coefficient": 1.876653662150918
+      },
+      {
+        "term": "mấy",
+        "coefficient": 1.8744810950301631
+      },
+      {
+        "term": "dân",
+        "coefficient": 1.815516320308952
+      },
+      {
+        "term": "đất_nước",
+        "coefficient": 1.7874543183786793
+      },
+      {
+        "term": "dường_như",
+        "coefficient": 1.72854676654709
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "label": "Văn hóa - Giải trí",
+    "features": [
+      {
+        "term": "diễn_viên",
+        "coefficient": 3.7981105341437025
+      },
+      {
+        "term": "ca_sĩ",
+        "coefficient": 3.7219729508075527
+      },
+      {
+        "term": "hoa_hậu",
+        "coefficient": 3.495916286984412
+      },
+      {
+        "term": "nghệ_sĩ",
+        "coefficient": 3.070571738799551
+      },
+      {
+        "term": "khán_giả",
+        "coefficient": 3.050954928190058
+      },
+      {
+        "term": "nsnd",
+        "coefficient": 2.880179126533923
+      },
+      {
+        "term": "sách",
+        "coefficient": 2.846195695572003
+      },
+      {
+        "term": "người_mẫu",
+        "coefficient": 2.6229422513282548
+      },
+      {
+        "term": "tác_giả",
+        "coefficient": 2.5936015840976774
+      },
+      {
+        "term": "mc",
+        "coefficient": 2.577091954790074
+      },
+      {
+        "term": "btc",
+        "coefficient": 2.433960827859756
+      },
+      {
+        "term": "vtv",
+        "coefficient": 2.2296342646381206
+      },
+      {
+        "term": "tác_phẩm",
+        "coefficient": 2.190081103233826
+      },
+      {
+        "term": "miss",
+        "coefficient": 2.070593424175016
+      },
+      {
+        "term": "tập",
+        "coefficient": 2.0277849123104303
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "label": "Ô tô - Xe máy",
+    "features": [
+      {
+        "term": "xe",
+        "coefficient": 3.975913431363141
+      },
+      {
+        "term": "otoxemay",
+        "coefficient": 3.077952152659852
+      },
+      {
+        "term": "otoxemay vietnamnet",
+        "coefficient": 3.0686806189209395
+      },
+      {
+        "term": "email otoxemay",
+        "coefficient": 2.9957333388794694
+      },
+      {
+        "term": "nội_dung đăng_tải",
+        "coefficient": 2.4143122211592867
+      },
+      {
+        "term": "vn nội_dung",
+        "coefficient": 2.4091085083180905
+      },
+      {
+        "term": "ô_tô",
+        "coefficient": 2.159634910897115
+      },
+      {
+        "term": "email",
+        "coefficient": 2.0704714519949383
+      },
+      {
+        "term": "vietnamnet vn",
+        "coefficient": 1.9711583646088147
+      },
+      {
+        "term": "vinfast",
+        "coefficient": 1.9534260662163658
+      },
+      {
+        "term": "mẫu xe",
+        "coefficient": 1.697927427048967
+      },
+      {
+        "term": "vietnamnet",
+        "coefficient": 1.672430326759974
+      },
+      {
+        "term": "đại_lý",
+        "coefficient": 1.6675987929490887
+      },
+      {
+        "term": "chủ xe",
+        "coefficient": 1.6400734782555084
+      },
+      {
+        "term": "suv",
+        "coefficient": 1.5972841307303052
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "label": "Đời sống",
+    "features": [
+      {
+        "term": "hôm",
+        "coefficient": 2.634524515320756
+      },
+      {
+        "term": "bandoisong vietnamnet",
+        "coefficient": 2.577186843861213
+      },
+      {
+        "term": "bandoisong",
+        "coefficient": 2.577186843861213
+      },
+      {
+        "term": "nhân_vật cung_cấp",
+        "coefficient": 2.5194161472835606
+      },
+      {
+        "term": "mạng bình_luận",
+        "coefficient": 2.132954721164583
+      },
+      {
+        "term": "sn",
+        "coefficient": 1.8838740373121339
+      },
+      {
+        "term": "ảnh nhân_vật",
+        "coefficient": 1.777325276006246
+      },
+      {
+        "term": "gái",
+        "coefficient": 1.7682136365213141
+      },
+      {
+        "term": "đàn_ông",
+        "coefficient": 1.7536932808352985
+      },
+      {
+        "term": "phát_hiện",
+        "coefficient": 1.492316216352841
+      },
+      {
+        "term": "truyền_thông địa_phương",
+        "coefficient": 1.4791561301345364
+      },
+      {
+        "term": "phụ_nữ",
+        "coefficient": 1.4609456806304675
+      },
+      {
+        "term": "báu_vật",
+        "coefficient": 1.4522053381702873
+      },
+      {
+        "term": "mẹo",
+        "coefficient": 1.432268326026742
+      },
+      {
+        "term": "chồng",
+        "coefficient": 1.410463571816187
+      }
+    ]
+  }
+]

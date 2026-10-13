@@ -1,10 +1,10 @@
-# Phân loại chủ đề tin tức tiếng Việt bằng PhoBERT
+# Phân loại chủ đề tin tức tiếng Việt
 
 Bài tập lớn môn **Cách tiếp cận hiện đại trong xử lý ngôn ngữ tự nhiên (CO5087)**, Trường Đại học Bách khoa – ĐHQG TP.HCM, Khoa Khoa học và Kỹ thuật Máy tính.
 
 **Đặng Nguyễn Tấn Tài — MSSV 2570357**, lớp CH01, học kỳ 261 (2026–2027). Giảng viên: Lê Thành Sách, Nguyễn Quốc Minh.
 
-Dự án xây dựng corpus VietNamNet có bằng chứng chuyên mục, fine-tuning PhoBERT cho phân loại đơn nhãn 20 lớp và ứng dụng hỗ trợ biên tập. Hai notebook tự chứa quy trình dữ liệu và mô hình; gói model, số liệu thực nghiệm, ứng dụng và báo cáo sử dụng cùng taxonomy và quy tắc suy luận.
+Dự án xây dựng corpus VietNamNet có bằng chứng chuyên mục, phân loại đơn nhãn 20 lớp bằng PhoBERT, BiLSTM, Linear SVM và Logistic Regression, cùng ứng dụng hỗ trợ biên tập dùng PhoBERT. Notebook dataset cung cấp đầu vào chung; mỗi notebook huấn luyện tự chứa quy trình, cache và artifact riêng. Gói model phục vụ ứng dụng, số liệu thực nghiệm PhoBERT và báo cáo sử dụng cùng taxonomy và quy tắc suy luận.
 
 ## Mục lục
 
@@ -12,6 +12,7 @@ Dự án xây dựng corpus VietNamNet có bằng chứng chuyên mục, fine-tu
 - [Cấu trúc dự án](#cấu-trúc-dự-án)
 - [Phạm vi repository Git](#phạm-vi-repository-git)
 - [Thực thi notebook](#thực-thi-notebook)
+- [Thực nghiệm LSTM, SVM và Logistic Regression](#thực-nghiệm-lstm-svm-và-logistic-regression)
 - [Dataset và taxonomy](#dataset-và-taxonomy)
 - [Mô hình và huấn luyện](#mô-hình-và-huấn-luyện)
 - [Hiệu chỉnh và suy luận](#hiệu-chỉnh-và-suy-luận)
@@ -25,7 +26,18 @@ Dự án xây dựng corpus VietNamNet có bằng chứng chuyên mục, fine-tu
 
 ## Kết quả và phạm vi
 
-Dataset sạch theo chuyên mục có **200.337 bài**. Sau khử trùng văn bản và loại nhóm xung đột nhãn, corpus dùng chia tập có **199.965 bài**: train **139.975**, validation **29.995**, test **29.995**. Chia phân tầng 70/15/15, seed 42.
+Dataset sạch theo chuyên mục có **200.337 bài**. Sau khử trùng văn bản và loại nhóm xung đột nhãn, corpus dùng chia tập có **199.965 bài**: train **139.975**, validation **29.995**, test **29.995**. Chia phân tầng 70/15/15, seed 42. Bốn notebook mô hình có output đầy đủ; các chỉ số chia tập giống nhau và toàn bộ URL/nhãn test khớp theo thứ tự.
+
+| Mô hình được chọn bằng validation | Accuracy test | Macro-F1 test | Weighted-F1 test |
+|---|---:|---:|---:|
+| Linear SVM, TF-IDF unigram/bigram, C=0,5, balanced | 89,9150% | 85,3308% | 89,8771% |
+| Logistic Regression, TF-IDF unigram/bigram, C=3,0, balanced | 89,0615% | 84,9797% | 89,0983% |
+| BiLSTM, 512 từ, embedding 200, hidden 128 mỗi hướng, α=0,5 | 88,6648% | 84,5995% | 88,7105% |
+| PhoBERT-base-v2, Head–Tail 256 subword, argmax | 91,0818% | 87,2191% | 91,1176% |
+
+Đối chứng chính dùng argmax score/logit; temperature dương không đổi nhãn. SVM/LR tìm 12 cấu hình mỗi model, BiLSTM tìm ba cấu hình; bảng chỉ chứa cấu hình được chọn trên validation. SVM/LR dùng toàn văn, bỏ stopword và lặp tiêu đề ba lần; BiLSTM học embedding từ đầu và cắt theo từ, PhoBERT có pretraining và cắt theo subword. Đây là so sánh pipeline, không phải ablation cô lập kiến trúc.
+
+Trạng thái PhoBERT phục vụ ứng dụng có thêm hệ số điều chỉnh lớp:
 
 | Chỉ số test | Softmax chuẩn | Temperature và hệ số class |
 |---|---:|---:|
@@ -39,7 +51,7 @@ Hiệu chỉnh quyết định sửa đúng 112 bài và làm sai thêm 99 bài,
 
 Thực nghiệm hoàn thành bảy epoch trên một RTX A3000 Laptop 12 GB trong 12.429,91 giây, khoảng 3 giờ 27 phút. Checkpoint tốt nhất theo Macro-F1 validation ở epoch 7. Loss validation thấp nhất ở epoch 3 rồi tăng; lựa chọn checkpoint theo F1 và theo loss có thể khác nhau.
 
-Corpus phản ánh taxonomy của một tòa soạn, có các chuyên mục giao thoa. Kiểm tra exact duplicate không loại trừ gần trùng hoặc chung sự kiện. Một seed, một cấu hình Head–Tail và một nguồn dữ liệu chưa đủ để kết luận ưu thế so với baseline hoặc khả năng tổng quát hóa ngoài miền. Báo cáo phân tích những giới hạn này và đề xuất thực nghiệm đối chứng.
+BiLSTM và LR đạt F1 Nông thôn mới 48,24% và 47,06%, so với PhoBERT argmax 45,57%; điểm tổng cao nhất không bảo đảm tốt nhất mọi lớp. Fit SVM được chọn mất 27,32 giây trên CPU, BiLSTM 29,66 phút và PhoBERT 207,17 phút trên GPU; tổng tìm cấu hình và phạm vi timer được phân biệt trong báo cáo. Bootstrap ghép cặp từ dự đoán đã xuất cho thấy khoảng chênh lệch PhoBERT–SVM nằm trên 0 với model cố định, còn khoảng SVM–LR và LR–BiLSTM chứa 0. Một seed, một nguồn và thiếu ablation chưa đủ kết luận ưu thế trên mọi corpus hoặc khả năng tổng quát hóa ngoài miền.
 
 ## Cấu trúc dự án
 
@@ -48,14 +60,19 @@ BTL_NLP_VietnamNet/
 ├── README.md                       Tài liệu vận hành và mô tả dự án
 ├── Dataset_VietNamNet.ipynb         Thu thập, xác minh nhãn, xuất corpus sạch
 ├── PhoBERT_Classification.ipynb     Fine-tuning, calibration, đánh giá và hình
+├── LSTM_Classification.ipynb        BiLSTM, chọn checkpoint bằng validation
+├── SVM_Classification.ipynb         TF-IDF và LinearSVC
+├── Logistic_Regression.ipynb        TF-IDF và Logistic Regression đa lớp
+├── resources/                      Stopword riêng cho SVM và Logistic
 ├── requirements-notebook.txt       Thư viện thực thi notebook
 ├── requirements-codegen.txt        Thư viện tạo bindings Protobuf
 ├── dataset/                        20 Parquet và bốn JSON theo giai đoạn URL
 ├── temp/                           Cache tiền xử lý, tensor và split manifest
-├── model/                          Trọng số, tokenizer, nhãn và calibration
+├── model/                          Gói PhoBERT; lstm/, svm/, logistic/ khi chạy
 ├── result/
 │   ├── evaluation/                 JSON, NPZ, Parquet, lịch sử và phân tích lỗi
 │   ├── figures/                    69 PNG độc lập 300 dpi
+│   ├── lstm/, svm/, logistic/       Đầu ra riêng của từng notebook tương ứng
 │   └── classification_report.txt   Báo cáo chỉ số do notebook xuất
 ├── nlp/                            Hợp đồng model và pipeline suy luận của app
 ├── app/
@@ -72,11 +89,11 @@ BTL_NLP_VietnamNet/
 └── artifact_manifest.json          Manifest artifact của project
 ```
 
-`nlp/` là mã runtime cần cho ứng dụng. Hai notebook tự chứa mã nguồn và không phụ thuộc các module này. `temp/` là cache thực nghiệm; giữ lại giúp giảm thời gian tiền xử lý và tokenize. Các `requirements*.txt`, `model/vocab.txt` và `result/classification_report.txt` là file chức năng hoặc kết quả thực nghiệm, không phải tài liệu hướng dẫn riêng.
+`nlp/` là mã runtime cần cho ứng dụng. Các notebook tự chứa mã nguồn và không phụ thuộc các module này. `temp/` là cache thực nghiệm; giữ lại giúp giảm thời gian tiền xử lý và tokenize. Ba notebook LSTM/SVM/Logistic chỉ dùng subfolder của mình trong `temp/`, `model/`, `result/`; không đọc hoặc ghi cache, trọng số, registry và assets báo cáo của PhoBERT. Các `requirements*.txt`, `model/vocab.txt` và `result/classification_report.txt` là file chức năng hoặc kết quả thực nghiệm, không phải tài liệu hướng dẫn riêng.
 
 ## Phạm vi repository Git
 
-Repository chứa mã nguồn ứng dụng, hai notebook cùng output, báo cáo PDF và nguồn LaTeX, hình PNG, chỉ số đánh giá, cấu hình model và tokenizer. Các file dung lượng lớn được loại bằng `.gitignore`: corpus Parquet và ba danh sách URL (`data_URLs_raw.json`, `data_URLs_removed.json`, `data_URLs_clean.json`), trọng số model, cache trong `temp/` và `result/evaluation/article_metadata.parquet`. File `dataset/data_URLs_meta.json` được giữ để mô tả snapshot dữ liệu. Cấu hình VS Code trên máy và file `app/.env` không được đưa vào Git.
+Mã nguồn ứng dụng, notebook, báo cáo PDF/LaTeX, hình PNG, chỉ số đánh giá và cấu hình model phục vụ việc đọc và tái hiện. Năm notebook trong snapshot có output của lượt thực nghiệm tương ứng. Các file dung lượng lớn được loại bằng `.gitignore`: corpus Parquet và ba danh sách URL (`data_URLs_raw.json`, `data_URLs_removed.json`, `data_URLs_clean.json`), trọng số model, pipeline `.joblib`, cache trong `temp/` và `result/evaluation/article_metadata.parquet`. File `dataset/data_URLs_meta.json` mô tả snapshot dữ liệu. Cấu hình VS Code trên máy và file `app/.env` không được đưa vào Git; nội dung repository thực tế phụ thuộc các file đã commit/push.
 
 Sau khi clone, chạy notebook dataset để tạo corpus, rồi chạy notebook PhoBERT để tạo trọng số, cache và kết quả. Muốn phục vụ đúng checkpoint của thực nghiệm trong báo cáo, đặt gói model tương ứng vào `model/` và đối chiếu SHA-256 trong `app/artifacts/active.json`. Chỉ có cấu hình và tokenizer trong repository chưa đủ để chạy dịch vụ suy luận. Khi huấn luyện một checkpoint khác, sử dụng metadata và registry do notebook xuất cho checkpoint đó.
 
@@ -88,6 +105,7 @@ Mở thư mục gốc trong VS Code hoặc Jupyter và chọn kernel Python 3.14
 
 1. **Dataset_VietNamNet.ipynb — Run All**: thu thập URL, tải nội dung cùng bằng chứng chuyên mục, chuẩn hóa nhãn, đối chiếu và xuất dataset sạch.
 2. **PhoBERT_Classification.ipynb — Run All**: đọc corpus, tiền xử lý, khử trùng, chia tập, tokenize, fine-tuning, fit calibration trên validation, đánh giá test và xuất artifact.
+3. **LSTM_Classification.ipynb**, **SVM_Classification.ipynb**, **Logistic_Regression.ipynb**: mỗi notebook có thể Run All độc lập sau notebook dataset, không cần chạy notebook huấn luyện nào trước nó. LSTM dùng GPU local; SVM và Logistic dùng CPU.
 
 Môi trường thực nghiệm: Python 3.14.7; PyTorch 2.11.0+cu128; CUDA 12.8; Transformers 5.17.0; Accelerate 1.15.0; NumPy 2.5.2; pandas 3.0.6; scikit-learn 1.9.1; PyArrow 26.0.0; PyVi 0.1.1. `requirements-notebook.txt` khai báo thư viện. Với máy khác, chọn bản PyTorch CUDA phù hợp theo [hướng dẫn chính thức](https://pytorch.org/get-started/locally/) rồi cài các dependency còn lại. Chạy trên máy hiện tại không yêu cầu tạo môi trường ảo trong project.
 
@@ -104,6 +122,37 @@ Các notebook xác định đường dẫn từ thư mục dự án. Đầu vào
 `continue` kiểm tra dữ liệu, tiền xử lý, mapping và fingerprint cả ba tập. Optimizer, scheduler và bộ đếm early stopping được khởi tạo lại; đây không phải resume một bước đang chạy dở. Nếu validation không cải thiện, model đầu vào được giữ. Hai lượt đủ bảy epoch có thể tạo đường học 14 epoch; early stopping có thể làm số điểm ít hơn. Cache hợp lệ được tái sử dụng ngay cả khi chọn `fresh`.
 
 Muốn thu thập hoàn toàn từ đầu, dừng kernel và chủ động dọn đầu ra dataset trước Run All. Muốn train từ backbone trên corpus đang có, chọn `fresh`; không cần xóa cache hoặc dataset. Đọc output và `result/evaluation/` đủ để xem thực nghiệm mà không train lại.
+
+## Thực nghiệm LSTM, SVM và Logistic Regression
+
+Ba notebook thực hiện cùng quy tắc chuẩn hóa/khử trùng corpus và chia phân tầng 70/15/15, seed 42. Khử trùng diễn ra trước khi loại stopword hay tạo biểu diễn riêng. Từng notebook tự tạo corpus/split, không đọc split của notebook khác. Thứ tự Parquet, thứ tự giữ bài trùng và hai lần `train_test_split` được cố định; `split_manifest.json` xuất indices và hash danh sách URL theo thứ tự cho cả ba tập. Với cùng snapshot dataset và phiên bản tiền xử lý, các mô hình được đánh giá trên cùng các bài viết.
+
+| Notebook | Biểu diễn và cấu hình tìm kiếm | Thiết bị | Chế độ |
+|---|---|---|---|
+| LSTM | Vocabulary train ≤50.000 từ, embedding học từ đầu 200 chiều, BiLSTM hidden 128 mỗi hướng, dropout 0,35; thử Head–Tail 256/512 từ và trọng số lớp lũy thừa 0,5/1 | GPU NVIDIA local | `fresh`, `continue`, `evaluate` |
+| SVM | TF-IDF unigram hoặc unigram+bigram, ≤150.000 đặc trưng, min_df=3, C=0,5/1,5/3, trọng số đều/balanced; LinearSVC L2 squared hinge, dual auto | CPU, giới hạn 4 thread | `fresh`, `evaluate` |
+| Logistic | TF-IDF cùng không gian tìm kiếm; multinomial Logistic Regression L2, solver L-BFGS | CPU, giới hạn 4 thread | `fresh`, `evaluate` |
+
+SVM và Logistic có bản stopword riêng tại `resources/svm/vietnamese-stopwords.txt` và `resources/logistic/vietnamese-stopwords.txt`, tăng trọng số tiêu đề ba lần sau khi chốt corpus. LSTM giữ stopword, học vocabulary chỉ từ train, dùng PAD/UNK và packed sequence để loại padding khỏi phép tính recurrent. Độ dài LSTM tính bằng từ đã phân đoạn; độ dài PhoBERT tính bằng subword, không coi hai giới hạn token là cùng một đơn vị.
+
+LSTM dùng AdamW lr=0,001, weight decay=0,0001, batch train 64/eval 128, clip norm=1, tối đa 10 epoch/cấu hình. Early stopping có patience=2, min delta=0,001 theo Macro-F1 validation; scheduler giảm learning rate một nửa sau một epoch không cải thiện đủ ngưỡng, trước lượt huấn luyện tiếp theo. Checkpoint được giữ khi điểm validation tốt hơn, kể cả cải thiện chưa vượt min delta của patience. `continue` nối lịch sử epoch, tạo optimizer/scheduler mới và giữ checkpoint đầu vào nếu các epoch bổ sung không cải thiện. SVM/Logistic tối ưu đến hội tụ; nếu đạt giới hạn vòng lặp sẽ thử một giới hạn lớn hơn. Cấu hình chưa hội tụ không được chọn.
+
+Chỉ validation chọn cấu hình: Macro-F1 trước, Weighted-F1/Accuracy để phá hòa, rồi giữ cấu hình gặp trước. Mỗi model chỉ xuất test của cấu hình được chọn; không refit bằng train+validation, không chọn số tốt nhất từ nhiều lượt test. Temperature dương fit NLL validation trước đánh giá test; không có hệ số quyết định riêng từng lớp. Temperature giữ nguyên argmax nên Accuracy/F1 trước và sau giống nhau. Xác suất SVM là softmax của margin đã hiệu chỉnh, không phải xác suất gốc của LinearSVC.
+
+| Loại đầu ra | Vị trí của mỗi model (`lstm`, `svm`, `logistic`) |
+|---|---|
+| Gói model | `model/<model>/`: checkpoint hoặc pipeline, config, nhãn, calibration, manifest |
+| Kết quả cho bảng so sánh | `result/<model>/evaluation/comparison_summary.json` |
+| Dữ liệu đối chiếu | Split/corpus fingerprints, URL hash, predictions Parquet, confusion matrix JSON, CSV chỉ số từng lớp |
+| Tìm tham số | `search_results.json`: cấu hình, Macro-F1 validation, thời gian fit; không có điểm test từng ứng viên |
+| Hình báo cáo | `result/<model>/figures/`: từng PNG riêng 300 dpi, ma trận, P/R/F1, calibration, PR 20 lớp, ROC, phân bố và kiểm tra split |
+| Chẩn đoán riêng | LSTM: đường học, OOV, token retention, trọng số lớp; SVM/Logistic: hệ số từ vựng riêng từng lớp |
+
+`comparison_summary.json` phân biệt thời gian tìm tham số, thời gian fit cấu hình được chọn và thời gian inference. Inference SVM/Logistic gồm tạo TF-IDF và tính score; LSTM gồm DataLoader/chuyển GPU/forward. Các thời gian này không gồm phân đoạn và cần nêu phạm vi khi so sánh. Khoảng tin cậy bootstrap iid 95% trên test đo bất định với model cố định, không thay thế nhiều seed. Khi so sánh PhoBERT, phân biệt F1 softmax chuẩn với F1 sau hệ số lớp; không dùng cải thiện của calibration xác suất làm bằng chứng cải thiện phân loại.
+
+Model mới không tự được đăng ký vào ứng dụng: app phục vụ gói PhoBERT trong `model/`. Báo cáo và số liệu PhoBERT giữ hợp đồng đó; kết quả đầy đủ của từng baseline được notebook tương ứng sinh khi Run All.
+
+Tài liệu thuật toán: [LinearSVC](https://scikit-learn.org/stable/modules/generated/sklearn.svm.LinearSVC.html), [Logistic Regression](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html), [PyTorch LSTM](https://docs.pytorch.org/docs/stable/generated/torch.nn.LSTM.html).
 
 ## Dataset và taxonomy
 
@@ -296,9 +345,9 @@ Bindings Protobuf đi kèm mã ứng dụng. Nếu phát triển schema, cài `r
 
 ## Báo cáo
 
-[CO5087_Report.pdf](report/CO5087_Report.pdf) gồm bài toán, thu thập/chuẩn hóa corpus, biểu diễn tiếng Việt, kiến trúc Transformer/PhoBERT, giao thức huấn luyện, calibration, kết quả từng lớp, phân tích lỗi, ứng dụng, kiểm chứng và phụ lục đối chiếu cell.
+[CO5087_Report.pdf](report/CO5087_Report.pdf) gồm bài toán, tổng quan nghiên cứu, corpus, biểu diễn/kiến trúc bốn model, huấn luyện, calibration, phân tích sâu PhoBERT, so sánh SVM/LR/BiLSTM/PhoBERT, ứng dụng và kiểm chứng. Chương so sánh dùng cùng test, tách argmax khỏi hệ số lớp, phân tích F1 từng chuyên mục, lỗi chung, bootstrap ghép cặp và phạm vi số đo tài nguyên. Các chỉ số nghiên cứu trước có vai trò riêng, không thay thế kết quả của project.
 
-Nguồn vào là `report/source_latex/main.tex`; nội dung tại `chapters/`, bảng tại `tables/`, ảnh tại `assets/`, sơ đồ TikZ tại `architectures.tex`, tham khảo tại `references.bib`. Hình notebook là PNG độc lập; ảnh ứng dụng là screenshot từ hệ thống phục vụ checkpoint này. Số liệu trình bày phân biệt train/validation/test, corpus sạch và corpus sau khử trùng, kết quả offline và monitoring minh họa.
+Nguồn vào là `report/source_latex/main.tex`; nội dung tại `chapters/`, bảng tại `tables/`, ảnh tại `assets/`, tham khảo tại `references.bib`. Sơ đồ TikZ được định nghĩa trong `architectures.tex`, chương tổng quan và phần kiến trúc BiLSTM. Hình notebook là PNG độc lập; các hình đối chứng được sao chép nguyên byte vào `assets/baselines/`. Ảnh ứng dụng là screenshot từ hệ thống phục vụ checkpoint PhoBERT. Số liệu phân biệt train/validation/test, corpus sạch và sau khử trùng, offline và monitoring minh họa.
 
 Biên dịch từ `report/source_latex/`, cần XeLaTeX, BibTeX, Times New Roman và Cambria Math:
 
@@ -314,7 +363,7 @@ Khổ A4, font, cỡ chữ, lề, heading, caption và macro hình/bảng đư�
 
 ## Kiểm chứng
 
-Hai notebook có output đầy đủ và không có cell error: 15 cell mã dữ liệu, 72 cell mã PhoBERT. Artifact đối soát 20 class, 200.337 Parquet sạch, 199.965 mẫu chia tập và 29.995 mẫu test. Chín phép kiểm tra giao nhau exact theo URL/raw text/clean text trên ba cặp tập đều bằng không.
+Năm notebook có output đầy đủ và không có cell error: 15 cell mã dữ liệu, 72 cell mã PhoBERT, 31 cell mã cho mỗi notebook SVM/LR/BiLSTM. Artifact đối soát 20 class, 200.337 Parquet sạch, 199.965 mẫu chia tập và 29.995 mẫu test. Ba đối chứng có cùng mảng split với PhoBERT; URL, nhãn và thứ tự test khớp. Chỉ số, ma trận và NLL được tái tính từ score/dự đoán đã xuất, không train lại để tạo số cho báo cáo. Chín phép kiểm tra giao nhau exact theo URL/raw text/clean text trên ba cặp tập đều bằng không.
 
 46 kiểm tra ứng dụng/hợp đồng model đạt, gồm:
 
@@ -350,4 +399,4 @@ Nội dung bài báo và quyền tác giả thuộc [VietNamNet](https://vietnam
 
 Backbone do VinAI cung cấp: [PhoBERT](https://github.com/VinAIResearch/PhoBERT), [model card PhoBERT-base-v2](https://huggingface.co/vinai/phobert-base-v2). Model card công bố AGPL-3.0; sử dụng/phân phối trọng số fine-tune cần tuân theo giấy phép upstream. Phân đoạn từ dùng [PyVi](https://github.com/trungtv/pyvi) 0.1.1. PyTorch, Transformers, thư viện Python, Docker images và dependency frontend có giấy phép riêng trong bản phân phối; `package-lock.json` ghi dependency UI.
 
-Bibliography báo cáo dẫn các nguồn về Transformer, BERT, RoBERTa, PhoBERT, AdamW, temperature scaling và công cụ phân đoạn. Các sơ đồ mô tả đúng pipeline dự án; các kết quả benchmark upstream không được coi là kết quả của corpus này.
+Bibliography báo cáo dẫn các nghiên cứu phân loại tin tức tiếng Việt, khảo sát phương pháp, Transformer, BERT, RoBERTa, PhoBERT, AdamW, temperature scaling và công cụ phân đoạn. Bảng tổng quan ghi rõ corpus, phương pháp, metric và giới hạn từng nguồn; chỉ số bên ngoài không được dùng để xếp hạng mô hình trên corpus này. Sơ đồ ba hướng biểu diễn trong chương tổng quan là khung lựa chọn phương pháp, còn các sơ đồ kỹ thuật mô tả pipeline PhoBERT và ứng dụng đang phục vụ.

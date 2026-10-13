@@ -1,0 +1,7 @@
+{
+  "temperature": 0.271753015794408,
+  "fit_split": "validation",
+  "objective": "negative_log_likelihood",
+  "decision": "argmax_raw_scores",
+  "probability_source": "softmax_temperature_of_svm_margins"
+}

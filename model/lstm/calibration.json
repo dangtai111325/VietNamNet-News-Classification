@@ -1,0 +1,7 @@
+{
+  "temperature": 1.4684780176414483,
+  "fit_split": "validation",
+  "objective": "negative_log_likelihood",
+  "decision": "argmax_raw_scores",
+  "probability_source": "neural_multiclass_logits"
+}

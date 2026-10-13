@@ -1,0 +1,68 @@
+[
+  {
+    "candidate": 1,
+    "config": {
+      "name": "head_tail_256_sqrt",
+      "max_length": 256,
+      "hidden_dim": 128,
+      "num_layers": 1,
+      "dropout": 0.35,
+      "learning_rate": 0.001,
+      "class_weight_alpha": 0.5
+    },
+    "best_epoch": 9,
+    "epochs_this_run": 9,
+    "validation": {
+      "accuracy": 0.8804467411235206,
+      "f1_macro": 0.8373950855831136,
+      "f1_weighted": 0.8809184746383718
+    },
+    "validation_loss": 0.4653843251150073,
+    "fit_seconds": 887.775432399998,
+    "gpu_peak_allocated_gib": 0.3573164939880371
+  },
+  {
+    "candidate": 2,
+    "config": {
+      "name": "head_tail_512_sqrt",
+      "max_length": 512,
+      "hidden_dim": 128,
+      "num_layers": 1,
+      "dropout": 0.35,
+      "learning_rate": 0.001,
+      "class_weight_alpha": 0.5
+    },
+    "best_epoch": 10,
+    "epochs_this_run": 10,
+    "validation": {
+      "accuracy": 0.8892815469244875,
+      "f1_macro": 0.844931681081459,
+      "f1_weighted": 0.8897645482510572
+    },
+    "validation_loss": 0.43413205497684776,
+    "fit_seconds": 1779.4289708000142,
+    "gpu_peak_allocated_gib": 0.5641589164733887
+  },
+  {
+    "candidate": 3,
+    "config": {
+      "name": "head_tail_512_balanced",
+      "max_length": 512,
+      "hidden_dim": 128,
+      "num_layers": 1,
+      "dropout": 0.35,
+      "learning_rate": 0.001,
+      "class_weight_alpha": 1.0
+    },
+    "best_epoch": 10,
+    "epochs_this_run": 10,
+    "validation": {
+      "accuracy": 0.8817469578263044,
+      "f1_macro": 0.8402633407778829,
+      "f1_weighted": 0.8819534817225099
+    },
+    "validation_loss": 0.5324517205165953,
+    "fit_seconds": 1731.166540700011,
+    "gpu_peak_allocated_gib": 0.5641589164733887
+  }
+]

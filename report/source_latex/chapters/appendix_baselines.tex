@@ -1,0 +1,31 @@
+\section{Chỉ dẫn cell ba notebook đối chứng}
+SVM, Logistic Regression và LSTM mỗi file có 48 cell, gồm 31 cell mã đã thực thi. Số cell dưới đây tính từ 1 và bao gồm markdown. Cấu trúc chung thuận tiện đối chiếu nhưng mỗi notebook tự chứa mã, cache, gói model và output riêng; không đọc model của notebook khác.
+\begin{table}[H]\centering\small\caption{Các nhóm cell của ba notebook đối chứng.}
+\begin{tabular}{r p{112mm}}\toprule Cell & Nội dung và bằng chứng\\\midrule
+3 & Cấu hình model, seed, split và chế độ fresh\\
+5--8 & Thư viện, helper, tiến độ và đường dẫn\\
+10--11 & Chính sách taxonomy và xác minh dataset sạch\\
+13--15 & Thiết bị, đọc 20 Parquet, kiểm tra URL\\
+17--21 & Phân bố, độ dài và thống kê dữ liệu đầu vào\\
+23--24 & Chuẩn hóa PyVi, khử trùng và ví dụ văn bản\\
+26--27 & Chia 70/15/15, support, overlap và độ dài\\
+29--30 & SVM/LR: stopword, TF--IDF; BiLSTM: vocabulary, packed sequence\\
+32 & Tìm cấu hình trên validation và giữ model/checkpoint chọn\\
+34 & Fit temperature chỉ trên validation\\
+35--36 & Score test, chỉ số, bootstrap, ma trận và dự đoán từng bài\\
+38--39 & Xuất gói suy luận, nạp lại và đối chiếu trên ba bài validation\\
+41--43 & Calibration test, lớp yếu và lỗi confidence cao\\
+44 & SVM/LR: đặc trưng; BiLSTM: lịch sử, OOV và tỷ lệ từ giữ\\
+46--47 & Hình đánh giá, PR từng lớp, ROC, manifest và bảng cấu hình chọn\\\bottomrule
+\end{tabular}\end{table}
+
+\section{Đường dẫn bằng chứng so sánh}
+Các file \texttt{result/<model>/evaluation/metrics.json} và \texttt{comparison\_summary.json} lưu cấu hình chọn, fingerprint, chỉ số và timer. \texttt{split\_manifest.json} lưu chỉ số ba tập; \texttt{test\_scores.npz} và \texttt{predictions.parquet} cho phép tái tính chỉ số mà không chạy model. \texttt{classification\_report.json} và \texttt{confusion\_matrix.json} giữ số liệu theo lớp. Tên \texttt{<model>} là \texttt{svm}, \texttt{logistic} hoặc \texttt{lstm}; PhoBERT dùng \texttt{result/evaluation/}.
+
+Các bảng so sánh và khoảng ghép cặp được tính từ cùng thứ tự test, đủ 20 nhãn, theo phương pháp ở mục~\ref{sec:paired_comparison}. Hình báo cáo đối chứng là bản sao nguyên byte từ \texttt{result/<model>/figures/}; hash được đối chiếu với \texttt{figure\_manifest.json}. Source LaTeX giữ các bảng kết quả và caption cùng đơn vị đo, không thay output của notebook bằng một giá trị suy đoán.
+
+\section{Ma trận số lượng của các đối chứng}
+Ma trận dưới đây dùng số bài thay cho phần trăm. Tổng mỗi ma trận bằng 29.995, tổng hàng khớp support trong bảng chia tập. Các ma trận chuẩn hóa của cùng model được đặt ở chương~\ref{chap:comparison}. Mỗi ma trận là một PNG riêng của notebook, dùng cùng ID 0--19 với PhoBERT.
+\PortraitFigure{assets/baselines/svm/evaluation/confusion_matrix.png}{Ma trận số lượng của SVM; cùng test và taxonomy 20 lớp.}
+\PortraitFigure{assets/baselines/logistic/evaluation/confusion_matrix.png}{Ma trận số lượng của Logistic Regression; tổng 29.995 bài.}
+\PortraitFigure{assets/baselines/lstm/evaluation/confusion_matrix.png}{Ma trận số lượng của BiLSTM; mỗi hàng là một lớp tham chiếu.}

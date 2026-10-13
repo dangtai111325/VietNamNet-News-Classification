@@ -1,0 +1,56 @@
+[
+  {
+    "left": "train",
+    "right": "validation",
+    "key": "URL",
+    "overlap": 0
+  },
+  {
+    "left": "train",
+    "right": "validation",
+    "key": "Văn bản gốc",
+    "overlap": 0
+  },
+  {
+    "left": "train",
+    "right": "validation",
+    "key": "Văn bản chuẩn hóa",
+    "overlap": 0
+  },
+  {
+    "left": "train",
+    "right": "test",
+    "key": "URL",
+    "overlap": 0
+  },
+  {
+    "left": "train",
+    "right": "test",
+    "key": "Văn bản gốc",
+    "overlap": 0
+  },
+  {
+    "left": "train",
+    "right": "test",
+    "key": "Văn bản chuẩn hóa",
+    "overlap": 0
+  },
+  {
+    "left": "validation",
+    "right": "test",
+    "key": "URL",
+    "overlap": 0
+  },
+  {
+    "left": "validation",
+    "right": "test",
+    "key": "Văn bản gốc",
+    "overlap": 0
+  },
+  {
+    "left": "validation",
+    "right": "test",
+    "key": "Văn bản chuẩn hóa",
+    "overlap": 0
+  }
+]

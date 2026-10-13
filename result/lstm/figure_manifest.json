@@ -1,0 +1,219 @@
+{
+  "model": "lstm",
+  "format": "PNG",
+  "dpi": 300,
+  "files": [
+    {
+      "path": "figures/dataset/class_distribution.png",
+      "sha256": "89d4b7760ef7442d429606dc2efa6316855c85d28a3f485e251778432875c6f2"
+    },
+    {
+      "path": "figures/dataset/oov_rate.png",
+      "sha256": "2a08db474f88daf9fc25799803f41a4c6f7fac20e3d58310950d3b12058a1848"
+    },
+    {
+      "path": "figures/dataset/raw_class_distribution.png",
+      "sha256": "50cf1d8eb0a762899f20157602e141f48aa2d0fc8e38e737ed8776b883530f37"
+    },
+    {
+      "path": "figures/dataset/raw_content_characters_length.png",
+      "sha256": "c9979ebdcedd7b42ba0fb1d3fb0ce58b6b255e1aeba5d5cbdc5fa58dfb72d4c3"
+    },
+    {
+      "path": "figures/dataset/raw_content_words_length.png",
+      "sha256": "54b3de54eded39ab7d77bc7fb1f3b52d313df6a2981b16a9d8156635bb676e21"
+    },
+    {
+      "path": "figures/dataset/raw_title_words_length.png",
+      "sha256": "af9955eb766599115607dc46228c9b2703bf526d90aab7d69790969d7f71dcae"
+    },
+    {
+      "path": "figures/dataset/split_distribution.png",
+      "sha256": "990808f08f3ebbab54b2cea4e14840dd45748c7de3b2985a42161ceccccf7038"
+    },
+    {
+      "path": "figures/dataset/split_overlap.png",
+      "sha256": "54345554832c4605856c889b61d65826c427505111087335396b502d3c5f0782"
+    },
+    {
+      "path": "figures/dataset/text_length.png",
+      "sha256": "b674f53dc16348cab99e1c16c670eb7f670b335d4e03fdda417dfc32df210683"
+    },
+    {
+      "path": "figures/dataset/token_retention.png",
+      "sha256": "9504cffaf2a1ea5248ecffc9e8024b412cbbaa2f2a843351300a21df0b8b2b8d"
+    },
+    {
+      "path": "figures/evaluation/confidence.png",
+      "sha256": "98c214fac9c9b83a7eea1065daf97209ad23dc54f1ab7be971c93d420c3066b8"
+    },
+    {
+      "path": "figures/evaluation/confusion_matrix.png",
+      "sha256": "6ec4bc6635431ca016f0fb608919ed3c45a4a70cb004611600ef08005168f42b"
+    },
+    {
+      "path": "figures/evaluation/confusion_matrix_normalized.png",
+      "sha256": "246d744d99c1cd2304395fec9aedbc60af027a3f6fb0e64e76b299b378ab11f9"
+    },
+    {
+      "path": "figures/evaluation/ece_comparison.png",
+      "sha256": "d3a7e12a0d5358787947332e92503d0fd4ecdcc8e82101f1e36b44f4b1cfc571"
+    },
+    {
+      "path": "figures/evaluation/macro_roc.png",
+      "sha256": "c64372fa52af9340bacd2af3d247f4aa58b960cb858bfea2070dc3b865b2b294"
+    },
+    {
+      "path": "figures/evaluation/nll_comparison.png",
+      "sha256": "ea942df2f0439e02ad81d58892d41d66f970407e41d8bfd1d00aba9d9963ac37"
+    },
+    {
+      "path": "figures/evaluation/per_class_f1.png",
+      "sha256": "c693d3a96671d25653c508f72ed2dcd31c3ff2383cc4c7de140626e6bbeb70f2"
+    },
+    {
+      "path": "figures/evaluation/per_class_precision.png",
+      "sha256": "e2babe52187da4c5ac48d6afd8e1303d42de1777f1e673ed1fc10c7fec30c032"
+    },
+    {
+      "path": "figures/evaluation/per_class_recall.png",
+      "sha256": "01c8eb501a7dc1a6f9628abfa163aed5190e93ded2b7ee5fb4cdc19f83d8e963"
+    },
+    {
+      "path": "figures/evaluation/precision_recall/class_00.png",
+      "sha256": "bc8dc99d70b09d99590af775264d29cf29f986faa569b4ac72e66a1490412d99"
+    },
+    {
+      "path": "figures/evaluation/precision_recall/class_01.png",
+      "sha256": "b582429958b9d77615cb4cf0cd9bab85e4e54cbc9325e1d69cda39766fbdbd18"
+    },
+    {
+      "path": "figures/evaluation/precision_recall/class_02.png",
+      "sha256": "a636bb0aa8d3ab7b29c37fe2dd72b8403bf5b262994eff529feaee2a5f6046a8"
+    },
+    {
+      "path": "figures/evaluation/precision_recall/class_03.png",
+      "sha256": "2baaf64427748a0be320fb74f96df678da2a26c2ef0b2f0a8637c2d8ac15eead"
+    },
+    {
+      "path": "figures/evaluation/precision_recall/class_04.png",
+      "sha256": "e86fbe962da14cf0aa74c25a0619b0e66938a42a13db85b2c48219037309b2e1"
+    },
+    {
+      "path": "figures/evaluation/precision_recall/class_05.png",
+      "sha256": "864a718fc50a6c4211de2afebebcc13787354dc9f885ab876b63bda84109d058"
+    },
+    {
+      "path": "figures/evaluation/precision_recall/class_06.png",
+      "sha256": "7670cb5364ee7ad279ee82845ff17f34edc08c62bce2ad65608a33cc516f601d"
+    },
+    {
+      "path": "figures/evaluation/precision_recall/class_07.png",
+      "sha256": "03d8c6deb80c5b18c1e74cb1a37717d1538a63499a098d76b9b2e364212add19"
+    },
+    {
+      "path": "figures/evaluation/precision_recall/class_08.png",
+      "sha256": "485624f3b0ccdbfbc7c8049cd433647d3e2271156d6143048431500bbbf965aa"
+    },
+    {
+      "path": "figures/evaluation/precision_recall/class_09.png",
+      "sha256": "457a30859144fe2c91b15601067ff7d196bdf20be19ef4acc07515302d358815"
+    },
+    {
+      "path": "figures/evaluation/precision_recall/class_10.png",
+      "sha256": "9b41d57da3a57d1eaf991e4ad2d011e1d8c1f16e2cc204e04ae8ed3955bdd538"
+    },
+    {
+      "path": "figures/evaluation/precision_recall/class_11.png",
+      "sha256": "c09b6292ed0057521db482d2d141ae929216846eaf130f8129a490cae5eded4a"
+    },
+    {
+      "path": "figures/evaluation/precision_recall/class_12.png",
+      "sha256": "ead74f8f0eb6ac7c498411ca3d00a1a1c2b544e1d9ddf32300e0171b311c3938"
+    },
+    {
+      "path": "figures/evaluation/precision_recall/class_13.png",
+      "sha256": "d148db2ee4cf5f979f01b25bd33eef67bd1e04c39f4420912b01c206d7c0d98a"
+    },
+    {
+      "path": "figures/evaluation/precision_recall/class_14.png",
+      "sha256": "c3e2fffc4084d6770f442a8897b5ea9ad7290584125fd2704fe5c29032246df9"
+    },
+    {
+      "path": "figures/evaluation/precision_recall/class_15.png",
+      "sha256": "6f2e19fdb9734600bee40eba3b6e13a8fc7ff95e1275591d0553f5a61bfc8425"
+    },
+    {
+      "path": "figures/evaluation/precision_recall/class_16.png",
+      "sha256": "7b8e4c1639d96033b538516b4d626532868af7daf81f396c63f67ef5b16bb108"
+    },
+    {
+      "path": "figures/evaluation/precision_recall/class_17.png",
+      "sha256": "abd3f0bea0f8e06cc6dd81801e62a575586454cf9651f84a8618beb2597eef7f"
+    },
+    {
+      "path": "figures/evaluation/precision_recall/class_18.png",
+      "sha256": "82b3c20a6ea3a42118e9cf42432e9142babbeb64e39d9b631e1727da478c7e62"
+    },
+    {
+      "path": "figures/evaluation/precision_recall/class_19.png",
+      "sha256": "996a793a3b8f2d0ba898856314fad7a7744b146b970c0969b46f29d227ab7b99"
+    },
+    {
+      "path": "figures/evaluation/reliability_before.png",
+      "sha256": "09fa7da2fe4abbaa05acc39b3d72183d3761fb2ab3d1a0de75595bd7888211dc"
+    },
+    {
+      "path": "figures/evaluation/reliability_temperature.png",
+      "sha256": "295b792595e2bd06a09fddbf0122916eab8345ff6405026bb9a0854483e53eaa"
+    },
+    {
+      "path": "figures/evaluation/support_vs_f1.png",
+      "sha256": "8fc0c6427a7e09bd494023dd43c8364ab53ff82804cd8d51b66144bf280f3706"
+    },
+    {
+      "path": "figures/evaluation/top_confusions.png",
+      "sha256": "ac44cbbc90c834f257034c4f0d662dfd587380c10c4cedbb8092927da8e7e11c"
+    },
+    {
+      "path": "figures/selection/validation_macro_f1.png",
+      "sha256": "ee401e2f31ddc537a3bfbe362f6d28a5e17d1e66386066f4d3cb5ed3888eadcc"
+    },
+    {
+      "path": "figures/training/class_weights.png",
+      "sha256": "63adcb652632429324f00ff57ee0231f866a2fd83a09aea02b8cc8bcf2212ef9"
+    },
+    {
+      "path": "figures/training/epoch_seconds.png",
+      "sha256": "85a550425be3288412554f62b34604cb6f798dc396db6481b5f7da545986e545"
+    },
+    {
+      "path": "figures/training/last_gradient_norm.png",
+      "sha256": "bb8b5ad59044993c7ef04705652192e76138c11d641a918a64c532aca30d133b"
+    },
+    {
+      "path": "figures/training/learning_rate.png",
+      "sha256": "dffbb39629c40df49a81d869a5d7ffd467ea8035889c585124061c6825addf7c"
+    },
+    {
+      "path": "figures/training/train_loss.png",
+      "sha256": "a615216563cecf42ecf52bf961247d590fcac3c2559afea83148260fc1018786"
+    },
+    {
+      "path": "figures/training/validation_accuracy.png",
+      "sha256": "d25d0f2c63ce213aa810b51fc826f761c7d5d7ef8dd693345e4e6bd4bd1e672e"
+    },
+    {
+      "path": "figures/training/validation_f1_macro.png",
+      "sha256": "b7300e1a5b260a8e4746f05b110e130706c9a9f25238e829a1fd592702e41830"
+    },
+    {
+      "path": "figures/training/validation_f1_weighted.png",
+      "sha256": "a5e5fdb21bcc8043e1be1d96d53018fc29aa7ecd4edd7bd2b21b77e55eda13b7"
+    },
+    {
+      "path": "figures/training/validation_loss.png",
+      "sha256": "5b4fc1f0450aa116028b98d37a71d1c3093efe6efefcd378172abde444b02873"
+    }
+  ]
+}

@@ -1,7 +1,7 @@
-\chapter{Kết quả và phân tích lỗi}
+\chapter{Kết quả và phân tích lỗi PhoBERT}
 \label{chap:results}
 \section{Nguồn bằng chứng và giao thức đo}
-Notebook xuất logits, dự đoán, ma trận, history và metadata cho validation/test. Các số trong chương này dùng 29.995 mẫu test độc lập sau khi tham số chọn trên validation đã cố định. Sáu chỉ số trước/sau trong metrics khớp output notebook; nhãn dự đoán, support và ma trận được tái tính từ logits. Không chạy fine-tuning bổ sung để tạo số cho báo cáo.
+Notebook PhoBERT xuất logits, dự đoán, ma trận, history và metadata cho validation/test. Các số trong chương này dùng 29.995 mẫu test độc lập sau khi tham số chọn trên validation đã cố định. Sáu chỉ số trước/sau trong metrics khớp output notebook; nhãn dự đoán, support và ma trận được tái tính từ logits. Chương~\ref{chap:comparison} so sánh với ba đối chứng trên cùng mẫu; chương này phân tích sâu PhoBERT và quy tắc phục vụ ứng dụng.
 
 Hàng ma trận là nhãn tham chiếu, cột là nhãn dự đoán; tổng hàng bằng support lớp và tổng ma trận bằng 29.995. Metadata liên kết test position với article index và URL của bài. Đây là điều kiện để phân tích lỗi từ bài thật, thay vì xây ví dụ rồi tự gán xác suất.
 
@@ -96,8 +96,8 @@ Notebook tạo một đường PR riêng cho mỗi lớp. Các đường dùng x
 \subsection{Hợp lệ nội tại}
 Test tách khỏi lựa chọn và hiệu chỉnh; exact duplicates được loại trước chia. Tuy vậy, near-duplicates, bài cùng sự kiện và sai nhãn ngữ nghĩa chưa được kiểm toán toàn bộ. Các bước lowercase, bỏ số, PyVi, Head--Tail và balanced weights chưa có đối chứng riêng.
 \subsection{Hợp lệ thống kê}
-Một seed không cho độ lệch chuẩn do huấn luyện. Chỉ tăng 13 bài đúng ròng sau hiệu chỉnh không đủ chứng minh lợi ích ổn định. Chưa thực hiện kiểm định cặp hay bootstrap cho khoảng tin cậy; không gán mức ý nghĩa thống kê cho sự chênh lệch này.
+Một seed không cho độ lệch chuẩn do huấn luyện. Chỉ tăng 13 bài đúng ròng sau hiệu chỉnh không đủ chứng minh lợi ích ổn định. Chưa có kiểm định ghép cặp riêng cho thay đổi quyết định trước và sau hiệu chỉnh theo lớp; không gán mức ý nghĩa thống kê cho mức tăng này. Phân tích bootstrap ghép cặp ở chương~\ref{chap:comparison} đánh giá chênh lệch giữa bốn mô hình theo quyết định argmax, không đánh giá tác động của hiệu chỉnh theo lớp.
 \subsection{Hợp lệ bên ngoài}
 Corpus một tòa soạn, phép chia ngẫu nhiên và taxonomy cố định không đo chất lượng ở nguồn khác, tin tương lai hoặc bài ngoài miền. Không thể cam kết hiệu năng của test áp dụng cho mọi tin đưa vào app. Nhãn chính sách và chuyên đề cần đặc biệt lưu ý khi website đổi cấu trúc.
-\subsection{Baseline và ablation còn thiếu}
-Chưa có TF--IDF + SVM/logistic regression trên cùng split, so sánh model đóng băng encoder, head-only hoặc xử lý nhiều đoạn. Vì vậy, kết quả chứng minh pipeline hoạt động và đạt các chỉ số đã đo, chưa chứng minh PhoBERT hoặc từng thiết kế vượt trội mọi phương án. Những phép đối chứng này là phần ưu tiên khi cần nâng mức thuyết phục học thuật.
+\subsection{Đối chứng và các ablation cần thực hiện}
+Đối chứng SVM, Logistic Regression và BiLSTM trên cùng split được phân tích ở chương~\ref{chap:comparison}. Chưa có ablation đóng băng encoder, head-only, xử lý nhiều đoạn, lặp tiêu đề và stopword. Vì vậy, có thể so hiệu quả các pipeline được đo nhưng chưa quy chênh lệch cho một lựa chọn riêng hoặc kết luận ưu thế trên mọi corpus. Số liệu nghiên cứu bên ngoài không thay thế đối chứng tại chỗ này.

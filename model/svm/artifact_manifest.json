@@ -1,0 +1,27 @@
+{
+  "model": "svm",
+  "corpus_signature": "e6078482e85aa7011cf94b6cb79dbedce88d652f0071f0f2469ba0db3e6c4f23",
+  "split_signature": "87a4aaed1e836705aa5d7161584be0ab825aa16969f85e0f364c1801808f24b6",
+  "files": [
+    {
+      "name": "calibration.json",
+      "sha256": "cf025de650b16eb6e717c5cfa4106648c1e351d36026f26f02f6948e37beaeb3"
+    },
+    {
+      "name": "inference_config.json",
+      "sha256": "8550f7a297d2558d57839b52758141f4b54bb81ba9731230370ce21f1fb2c6e0"
+    },
+    {
+      "name": "labels.json",
+      "sha256": "bd28b178573d2a41ea7b5043420aa9de3f2c554a2b4b0e06599194172ba8990a"
+    },
+    {
+      "name": "pipeline.joblib",
+      "sha256": "9934d845a1a7971fcdc20588530295f0886665057e2bdd659fda4b93cdb569e1"
+    },
+    {
+      "name": "selected_config.json",
+      "sha256": "7c9225672da8dd6cad4f6af8acf481befbe5aeb36d21979d54f81e91861bcccf"
+    }
+  ]
+}
