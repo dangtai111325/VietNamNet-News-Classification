@@ -1,7 +1,7 @@
 \chapter{Bằng chứng và chỉ dẫn đối chiếu}
 \input{chapters/appendix_baselines}
 \section{Môi trường thực nghiệm}
-Python 3.14.7; PyTorch 2.11.0+cu128; CUDA 12.8; Transformers 5.17.0; NumPy 2.5.2; pandas 3.0.6; scikit-learn 1.9.1; PyArrow 26.0.0; PyVi 0.1.1. GPU RTX A3000 Laptop 12 GB; một GPU, BF16/TF32, batch train 32, tích lũy 2 và eval 64. Model checkpoint và tokenizer được giữ cùng cấu hình. Metadata đánh giá ghi thời gian test 106,322 giây không gồm nạp model.
+Python 3.14.7; PyTorch 2.11.0+cu128; CUDA 12.8; Transformers 5.17.0; NumPy 2.5.2; pandas 3.0.6; scikit-learn 1.9.1; PyArrow 26.0.0; PyVi 0.1.1. GPU RTX A3000 Laptop 12 GB; một GPU, BF16/TF32, batch train 32, tích lũy 2 và eval 64. Mô hình bản lưu mô hình và tokenizer được giữ cùng cấu hình. Thông tin mô tả đánh giá ghi thời gian test 106.322 giây không gồm nạp mô hình.
 
 \section{Chỉ dẫn đọc từng cell notebook PhoBERT}
 Mã cell dưới đây là vị trí bắt đầu từ 1 trong file, bao gồm markdown. Số thực thi là execution count trong output; số hình là PNG hiển thị của cell đó. Nội dung được đọc theo nhóm chức năng do notebook quy định.
@@ -102,16 +102,16 @@ Mã cell dưới đây là vị trí bắt đầu từ 1 trong file, bao gồm m
 87 & 72 & Xuất kết quả và phân tích trực quan & 0\\
 \bottomrule\end{tabular}\end{table}
 \section{Các kiểm tra ứng dụng được thực thi}
-\begin{table}[H]\centering\small\caption{Kiểm tra hợp đồng model và ứng dụng 1--23.}
+\begin{table}[H]\centering\small\caption{Kiểm tra hợp đồng mô hình và ứng dụng 1--23.}
 \begin{tabular}{r p{135mm}}\toprule ID & Kiểm tra đạt\\\midrule
-1 & Model SHA-256 và taxonomy 20 lớp\\
-2 & Toàn bộ 29.995 quyết định sau hiệu chỉnh khớp app\\
+1 & Mô hình SHA-256 và hệ thống chuyên mục 20 lớp\\
+2 & Toàn bộ 29,995 quyết định sau hiệu chỉnh khớp app\\
 3 & Từ chối nhiệt độ không hợp lệ 0\\
 4 & Từ chối nhiệt độ không hợp lệ -1\\
 5 & Từ chối nhiệt độ không hợp lệ inf\\
 6 & Từ chối nhiệt độ không hợp lệ nan\\
 7 & Tie-breaking theo ID\\
-8 & Health model\\
+8 & Health mô hình\\
 9 & Thiếu phiên trả 401\\
 10 & Sai mật khẩu trả 401\\
 11 & Đăng nhập editor\\
@@ -123,18 +123,18 @@ Mã cell dưới đây là vị trí bắt đầu từ 1 trong file, bao gồm m
 17 & Phân quyền data-scientist /admin/ops\\
 18 & Bài rỗng trả 422\\
 19 & Văn bản chỉ chữ số và ký hiệu trả 422\\
-20 & Nhãn ngoài taxonomy trả 422\\
+20 & Nhãn ngoài hệ thống chuyên mục trả 422\\
 21 & Ngưỡng định tuyến đảo ngược trả 422\\
 22 & Worker import Redis–Dramatiq\\
 23 & Giao diện/API /editor/dashboard\\
 \bottomrule\end{tabular}\end{table}
-\begin{table}[H]\centering\small\caption{Kiểm tra hợp đồng model và ứng dụng 24--46.}
+\begin{table}[H]\centering\small\caption{Kiểm tra hợp đồng mô hình và ứng dụng 24--46.}
 \begin{tabular}{r p{135mm}}\toprule ID & Kiểm tra đạt\\\midrule
 24 & Giao diện/API /editor/review\\
 25 & Giao diện/API /editor/classifier\\
 26 & Giao diện/API /admin/ops\\
 27 & Giao diện/API /scientist/monitoring\\
-28 & Giao diện/API /scientist/model-versions\\
+28 & Giao diện/API /scientist/mô hình-versions\\
 29 & Giao diện/API /scientist/dataset-lab\\
 30 & Monitoring được tính lại\\
 31 & Article không tồn tại trả 404\\
@@ -149,8 +149,8 @@ Mã cell dưới đây là vị trí bắt đầu từ 1 trong file, bao gồm m
 40 & Head–Tail ranh giới 256\\
 41 & Head–Tail ranh giới 1000\\
 42 & Tiền xử lý ví dụ UNIQLO khớp output notebook\\
-43 & Tensor checkpoint có đúng 135.013.652 tham số\\
-44 & Registry đọc đúng gói 20 lớp và 29.995 mẫu test\\
+43 & Tensor bản lưu mô hình có đúng 135,013,652 tham số\\
+44 & Registry đọc đúng gói 20 lớp và 29,995 mẫu test\\
 45 & 32 dự đoán CPU thực tế khớp nhãn offline\\
 46 & Khôi phục backup riêng: 32 bài, 32 dự đoán, 10 phản hồi, không phiên đăng nhập\\
 \bottomrule\end{tabular}\end{table}
@@ -159,7 +159,7 @@ Mã cell dưới đây là vị trí bắt đầu từ 1 trong file, bao gồm m
 \subsection{Ví dụ 1}
 Vệ tinh AI Trung Quốc giúp Iran săn lùng căn cứ Mỹ tại Trung Đông?
 
-\noindent Nhãn tham chiếu: Công nghệ; dự đoán: Thế giới; confidence 0,9882; margin 0,9787.
+\noindent Nhãn tham chiếu: Công nghệ; dự đoán: Thế giới; độ tin cậy 0.9882; margin 0.9787.
 
 \noindent URL: \url{https://vietnamnet.vn/ve-tinh-ai-trung-quoc-giup-iran-san-lung-can-cu-my-tai-trung-dong-2504640.html}.
 
@@ -168,7 +168,7 @@ Theo hãng tinABC News,ngày 5/4, các quan chức từ Cơ quan Tình báo Qu�
 \subsection{Ví dụ 2}
 Báo chí quốc tế đưa tin Tổng Bí thư Nguyễn Phú Trọng từ trần
 
-\noindent Nhãn tham chiếu: Chính trị; dự đoán: Thế giới; confidence 0,9871; margin 0,9752.
+\noindent Nhãn tham chiếu: Chính trị; dự đoán: Thế giới; độ tin cậy 0.9871; margin 0.9752.
 
 \noindent URL: \url{https://vietnamnet.vn/bao-chi-quoc-te-dua-tin-tong-bi-thu-nguyen-phu-trong-tu-tran-2304216.html}.
 
@@ -177,25 +177,25 @@ Hãng thông tấn Trung Quốc Xinhua đưa tin Tổng Bí thư Đảng Cộng 
 \subsection{Ví dụ 3}
 Giá thuê nhà tại Los Angeles tăng chóng mặt sau thảm họa cháy rừng
 
-\noindent Nhãn tham chiếu: Bất động sản; dự đoán: Thế giới; confidence 0,9869; margin 0,9772.
+\noindent Nhãn tham chiếu: Bất động sản; dự đoán: Thế giới; độ tin cậy 0.9869; margin 0.9772.
 
 \noindent URL: \url{https://vietnamnet.vn/gia-thue-nha-tai-los-angeles-tang-chong-mat-sau-tham-hoa-chay-rung-2364710.html}.
 
-Theo NBC News, nhiều người dân tại thành phố Los Angeles đã đổ xô đi tìm nhà ở trong khi các vụcháy rừngvẫn đang diễn ra. Điều này dẫn đến một số chủ nhà và người môi giới tăng tiền thuê nhà lên quá cao. Vụ cháy rừng đã khiến ông Joe Thompson phải đi tìm nơi ở mới cho gia đình. Khi đến thành phố Santa Monica, tiểu bang California, ông tìm được căn nhà 5 phòng ngủ với giá chào thuê 28.000 USD/tháng, cao gấp đôi so với năm ngoái. Người môi giới yêu cầu ông phải trả tiền thuê trước 3 tháng và cho biết đã có nhiều người hỏi thuê. Không thể chi trả mức giá thuê quá cao này, ông Joe Thompson nói rằn\ldots
+Theo NBC News, nhiều người dân tại thành phố Los Angeles đã đổ xô đi tìm nhà ở trong khi các vụcháy rừngvẫn đang diễn ra. Điều này dẫn đến một số chủ nhà và người môi giới tăng tiền thuê nhà lên quá cao. Vụ cháy rừng đã khiến ông Joe Thompson phải đi tìm nơi ở mới cho gia đình. Khi đến thành phố Santa Monica, tiểu bang California, ông tìm được căn nhà 5 phòng ngủ với giá chào thuê 28,000 USD/tháng, cao gấp đôi so với năm ngoái. Người môi giới yêu cầu ông phải trả tiền thuê trước 3 tháng và cho biết đã có nhiều người hỏi thuê. Không thể chi trả mức giá thuê quá cao này, ông Joe Thompson nói rằn\ldots
 
 \subsection{Ví dụ 4}
-Một tài xế dùng biển giả bị phạt 17,6 triệu đồng, tước bằng lái 3 tháng
+Một tài xế dùng biển giả bị phạt 17.6 triệu đồng, tước bằng lái 3 tháng
 
-\noindent Nhãn tham chiếu: Thời sự; dự đoán: Ô tô - Xe máy; confidence 0,9868; margin 0,9908.
+\noindent Nhãn tham chiếu: Thời sự; dự đoán: Ô tô - Xe máy; độ tin cậy 0.9868; margin 0.9908.
 
 \noindent URL: \url{https://vietnamnet.vn/mot-tai-xe-dung-bien-gia-bi-phat-17-6-trieu-dong-tuoc-bang-lai-3-thang-2045784.html}.
 
-Ngày 29/7, Đội CSGT số 1, Phòng CSGT đường bộ - đường sắt đã ra quyết định xử phạt vi phạm hành chính, phạt tiền 17,6 triệu đồng, tước quyền sử dụng giấy phép lái xe 03 tháng và tịch thu biển số xe 30G-688.68 đối với lái xe N.V.T (SN 1984, trú tại huyện Yên Phong, tỉnh Bắc Ninh). Trước đó, thông qua trao đổi từ Công ty cổ phần giao thông số Việt Nam trong quá trình thu phí theo hình thức điện tử không dừng (ETC) đã phát hiện một số ô tô cố tình gắn biển số của xe khác để lưu thông qua trạm thu phí, Đội CSGT số 1, Phòng CSGT đường bộ - đường sắt đã tăng cường tuần tra kiểm soát. Trong quá trình\ldots
+Ngày 29/7, Đội CSGT số 1, Phòng CSGT đường bộ - đường sắt đã ra quyết định xử phạt vi phạm hành chính, phạt tiền 17.6 triệu đồng, tước quyền sử dụng giấy phép lái xe 03 tháng và tịch thu biển số xe 30G-688.68 đối với lái xe N.V.T (SN 1984, trú tại huyện Yên Phong, tỉnh Bắc Ninh). Trước đó, thông qua trao đổi từ Công ty cổ phần giao thông số Việt Nam trong quá trình thu phí theo hình thức điện tử không dừng (ETC) đã phát hiện một số ô tô cố tình gắn biển số của xe khác để lưu thông qua trạm thu phí, Đội CSGT số 1, Phòng CSGT đường bộ - đường sắt đã tăng cường tuần tra kiểm soát. Trong quá trình\ldots
 
 \subsection{Ví dụ 5}
 Ấm lòng với hành động nam thanh niên đi xe máy dìu cháu nhỏ qua đường
 
-\noindent Nhãn tham chiếu: Bạn đọc; dự đoán: Ô tô - Xe máy; confidence 0,9865; margin 0,9907.
+\noindent Nhãn tham chiếu: Bạn đọc; dự đoán: Ô tô - Xe máy; độ tin cậy 0.9865; margin 0.9907.
 
 \noindent URL: \url{https://vietnamnet.vn/am-long-voi-hanh-dong-nam-thanh-nien-di-xe-may-diu-chau-nho-qua-duong-740420.html}.
 
@@ -204,7 +204,7 @@ Hành động đẹp này được camera hành trình của một xe ô tô g
 \subsection{Ví dụ 6}
 Ô tô mới có thể được miễn đăng kiểm lần đầu từ năm 2023
 
-\noindent Nhãn tham chiếu: Thời sự; dự đoán: Ô tô - Xe máy; confidence 0,9862; margin 0,9904.
+\noindent Nhãn tham chiếu: Thời sự; dự đoán: Ô tô - Xe máy; độ tin cậy 0.9862; margin 0.9904.
 
 \noindent URL: \url{https://vietnamnet.vn/o-to-moi-co-the-duoc-mien-dang-kiem-lan-dau-tu-nam-2023-2094970.html}.
 
@@ -213,7 +213,7 @@ Xe mới sẽ được miễn đăng kiểm một năm Thông tin tớiVietNamNe
 \subsection{Ví dụ 7}
 Hạ 2 tiêm kích F-14 Iran chóng vánh: Israel áp đảo công nghệ quân sự?
 
-\noindent Nhãn tham chiếu: Công nghệ; dự đoán: Thế giới; confidence 0,9853; margin 0,9695.
+\noindent Nhãn tham chiếu: Công nghệ; dự đoán: Thế giới; độ tin cậy 0.9853; margin 0.9695.
 
 \noindent URL: \url{https://vietnamnet.vn/ha-2-tiem-kich-f-14-iran-chong-vanh-israel-ap-dao-cong-nghe-quan-su-2412817.html}.
 
@@ -222,7 +222,7 @@ Quân đội Israel (IDF) mới đây đã công bố đoạn video ghi lại kh
 \subsection{Ví dụ 8}
 Vì sao lần nữa, lại là Pháp?
 
-\noindent Nhãn tham chiếu: Tuần Việt Nam; dự đoán: Thế giới; confidence 0,9847; margin 0,9630.
+\noindent Nhãn tham chiếu: Tuần Việt Nam; dự đoán: Thế giới; độ tin cậy 0.9847; margin 0.9630.
 
 \noindent URL: \url{https://vietnamnet.vn/vi-sao-lan-nua-lai-la-phap-273204.html}.
 
@@ -231,7 +231,7 @@ Vì sao lần nữa, lại là Pháp?
 \subsection{Ví dụ 9}
 Tổng thống Nga Putin đi đâu, chơi gì khi rảnh rỗi?
 
-\noindent Nhãn tham chiếu: Du lịch; dự đoán: Thế giới; confidence 0,9844; margin 0,9721.
+\noindent Nhãn tham chiếu: Du lịch; dự đoán: Thế giới; độ tin cậy 0.9844; margin 0.9721.
 
 \noindent URL: \url{https://vietnamnet.vn/tong-thong-nga-putin-di-dau-choi-gi-khi-ranh-roi-2293553.html}.
 
@@ -240,7 +240,7 @@ Mặc dù Tổng thống Putin, cũng giống như tất cả các công chức 
 \subsection{Ví dụ 10}
 Ô tô đang chạy, cả nhà lịm dần vì ngộ độc khí: Cảnh báo nguy hiểm, đừng xem nhẹ
 
-\noindent Nhãn tham chiếu: Ô tô - Xe máy; dự đoán: Sức khỏe; confidence 0,9842; margin 0,9589.
+\noindent Nhãn tham chiếu: Ô tô - Xe máy; dự đoán: Sức khỏe; độ tin cậy 0.9842; margin 0.9589.
 
 \noindent URL: \url{https://vietnamnet.vn/o-to-dang-chay-ca-nha-lim-dan-vi-ngo-doc-khi-canh-bao-nguy-hiem-dung-xem-nhe-2422455.html}.
 
@@ -252,7 +252,7 @@ Các biểu đồ sau cung cấp trạng thái trước hiệu chỉnh để đ�
 \PortraitFigure{assets/evaluation/recall_before.png}{Recall theo 20 lớp trước hiệu chỉnh.}
 \PortraitFigure{assets/evaluation/f1_before.png}{F1 theo 20 lớp trước hiệu chỉnh.}
 \section{Hai mươi đường Precision--Recall}
-Mỗi class được xét một-chống-phần-còn-lại trên 29.995 mẫu test. Đường tham chiếu là prevalence; AP không phải F1 ở quyết định đa lớp. Các hình giữ nguyên output notebook, không ghép nhiều class thành một ảnh.
+Mỗi class được xét một-chống-phần-còn-lại trên 29,995 mẫu test. Đường tham chiếu là prevalence; AP không phải F1 ở quyết định đa lớp. Các hình giữ nguyên output notebook, không ghép nhiều class thành một ảnh.
 \subsection{ID 0: Bạn đọc}
 \ReportFigure{assets/evaluation/precision_recall/ban-doc.png}{Precision--Recall của Bạn đọc, trên test độc lập.}
 \subsection{ID 1: Bất động sản}

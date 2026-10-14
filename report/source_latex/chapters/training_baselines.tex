@@ -1,24 +1,24 @@
-SVM và LR mỗi model duyệt 12 cấu hình: hai profile unigram/unigram--bigram, ba giá trị $C\in\{0,5;1,5;3,0\}$ và uniform/balanced. Các profile TF--IDF chỉ fit trên train; mỗi classifier dùng ma trận của profile tương ứng. Validation chọn Macro-F1, rồi Weighted-F1 và Accuracy khi bằng nhau; không refit thêm validation vào train. Cả 12 cấu hình của mỗi model đều hội tụ; bảng~\ref{tab:linear_config} ghi nghiệm được chọn. Không có đường học theo epoch cho hai bộ phân loại này.
+SVM và LR mỗi mô hình duyệt 12 cấu hình: hai cách tạo đặc trưng: từ đơn (unigram) và từ đơn kèm cặp từ liên tiếp (unigram--bigram), ba giá trị $C\in\{0.5;1.5;3.0\}$ và hai cách đặt trọng số lớp: bằng nhau (uniform) hoặc nghịch tần suất (balanced). Các cách biểu diễn TF--IDF chỉ học từ tập huấn luyện; mỗi bộ phân loại dùng ma trận của cách biểu diễn tương ứng. Validation chọn Macro-F1, rồi Weighted-F1 và Accuracy khi bằng nhau; không huấn luyện lại trên dữ liệu gộp train và validation. Cả 12 cấu hình của mỗi mô hình đều hội tụ; bảng~\ref{tab:linear_config} ghi nghiệm được chọn. Không có đường học theo epoch cho hai bộ phân loại này.
 
-BiLSTM khảo sát ba cấu hình từ chiều dài 256/512 từ và số mũ trọng số 0,5/1,0. Cấu hình chọn giữ 512 từ và $\alpha=0,5$; các thành phần kiến trúc ở mục~\ref{sec:bilstm} được cập nhật bằng AdamW. Trọng số dựa vào tần suất train và chuẩn hóa để trung bình theo số bài bằng 1:
+BiLSTM khảo sát ba cấu hình từ chiều dài 256/512 từ và số mũ trọng số 0.5/1.0. Cấu hình chọn giữ 512 từ và $\alpha=0.5$; các thành phần kiến trúc ở mục~\ref{sec:bilstm} được cập nhật bằng AdamW. Trọng số dựa vào tần suất train và chuẩn hóa để trung bình theo số bài bằng 1:
 \begin{equation}
 \widetilde w_c=\left(\frac{N_{train}}{20n_c}\right)^{\alpha},\qquad
 w_c=\frac{\widetilde w_c}{\sum_j(n_j/N_{train})\widetilde w_j}.
 \end{equation}
-Nông thôn mới có trọng số 3,3510 trong cấu hình BiLSTM này, khác trọng số balanced của PhoBERT. Loss batch chia tổng cross-entropy có trọng số cho tổng weight các nhãn; loss epoch cộng tử số và mẫu số, không lấy trung bình ngang nhau giữa các batch có số mẫu khác nhau. Shuffle giữ phân bố train, không oversample validation/test.
+Nông thôn mới có trọng số 3.3510 trong cấu hình BiLSTM này, khác trọng số balanced của PhoBERT. Loss batch chia tổng cross-entropy có trọng số cho tổng weight các nhãn; loss epoch cộng tử số và mẫu số, không lấy trung bình ngang nhau giữa các batch có số mẫu khác nhau. Shuffle giữ phân bố train, không oversample validation/test.
 
 
-Trọng số nghịch tần suất và căn bậc hai của trọng số này thể hiện mức ưu tiên khác nhau. Cấu hình $\alpha=0,5$ làm chênh lệch weight bớt mạnh so với balanced đầy đủ; phép chuẩn hóa giữ thang trung bình theo phân bố train. Đây là quy tắc được khảo sát trong các ứng viên validation, không phải hệ số thêm sau khi thấy lớp hiếm trên test yếu. Không thể từ một nghiệm tốt nhất kết luận số mũ này tối ưu trên mọi snapshot.
+Trọng số nghịch tần suất và căn bậc hai của trọng số này thể hiện mức ưu tiên khác nhau. Cấu hình $\alpha=0.5$ làm chênh lệch weight bớt mạnh so với balanced đầy đủ; phép chuẩn hóa giữ thang trung bình theo phân bố train. Đây là quy tắc được khảo sát trong các ứng viên validation, không phải hệ số thêm sau khi thấy lớp hiếm trên test yếu. Không thể từ một nghiệm tốt nhất kết luận số mũ này tối ưu trên mọi bản dữ liệu.
 
 Tính loss epoch bằng tổng tử và mẫu giúp batch cuối nhỏ không đóng góp như một batch đầy chỉ vì có một scalar loss. Gradient vẫn được tạo qua từng mini-batch để cập nhật tham số. Loss validation và F1 đánh giá khác nhau: loss nhạy với độ tự tin và trọng số nhãn, F1 chỉ phụ thuộc quyết định đúng/sai theo lớp. Giảm một đại lượng không bảo đảm tăng đại lượng còn lại.
 
 
 
-Learning rate khởi đầu $10^{-3}$, weight decay $10^{-4}$ và clip gradient norm 1,0. Batch train 64, validation/test 128, BF16 trên RTX A3000. ReduceLROnPlateau theo Macro-F1 có factor 0,5, patience 0, threshold tuyệt đối 0,001 và learning rate tối thiểu $10^{-5}$. Checkpoint giữ điểm validation tốt nhất, còn early stopping cần vượt mốc trước ít nhất 0,001, patience 2. Hai tiêu chí không hoàn toàn đồng nhất.
+Learning rate khởi đầu $10^{-3}$, weight decay $10^{-4}$ và giới hạn chuẩn gradient ở 1.0. Batch train 64, validation/test 128, BF16 trên RTX A3000. Bộ điều chỉnh learning rate ReduceLROnPlateau theo dõi Macro-F1: giảm learning rate còn một nửa khi không đạt mức cải thiện tuyệt đối 0.001 (factor 0.5, patience 0) và learning rate tối thiểu $10^{-5}$. Bản lưu mô hình giữ điểm validation tốt nhất, còn cơ chế dừng sớm cần vượt mốc trước ít nhất 0.001, patience 2. Hai tiêu chí không hoàn toàn đồng nhất.
 \begin{figure}[tbp]\centering
 \begin{subfigure}[t]{.48\textwidth}\centering
-\includegraphics[width=\linewidth]{assets/compact/lstm_val_loss.png}\caption{Weighted validation loss.}\end{subfigure}\hfill
+\includegraphics[width=\linewidth]{assets/compact/lstm_val_loss.png}\caption{Mất mát trên tập xác thực có trọng số.}\end{subfigure}\hfill
 \begin{subfigure}[t]{.48\textwidth}\centering
-\includegraphics[width=\linewidth]{assets/compact/lstm_val_f1.png}\caption{Validation Macro-F1.}\end{subfigure}
-\caption{Validation của cấu hình BiLSTM được chọn; cực tiểu loss và checkpoint tốt nhất thuộc các epoch khác nhau.}\label{fig:lstm-validation}\end{figure}
-Loss validation thấp nhất ở epoch 5 (0,4230), Macro-F1 cao nhất ở epoch 10 (0,8449). Lượt đã chạy đủ 10 epoch; checkpoint vẫn giữ cải thiện nhỏ ở epoch cuối dù bộ đếm early stopping đạt patience. Learning rate cuối là 0,000125. Những diễn biến này không đủ để quy mọi biến thiên F1 cho overfitting hoặc khẳng định early stopping dừng trước giới hạn.
+\includegraphics[width=\linewidth]{assets/compact/lstm_val_f1.png}\caption{Macro-F1 trên tập xác thực.}\end{subfigure}
+\caption{Validation của cấu hình BiLSTM được chọn; cực tiểu loss và bản lưu mô hình tốt nhất thuộc các epoch khác nhau.}\label{fig:lstm-validation}\end{figure}
+Loss validation thấp nhất ở epoch 5 (0.4230), Macro-F1 cao nhất ở epoch 10 (0.8449). Lượt đã chạy đủ 10 epoch; bản lưu mô hình vẫn giữ cải thiện nhỏ ở epoch cuối dù bộ đếm early stopping đạt patience. Learning rate cuối là 0.000125. Những diễn biến này không đủ để quy mọi biến thiên F1 cho overfitting hoặc khẳng định early stopping dừng trước giới hạn.

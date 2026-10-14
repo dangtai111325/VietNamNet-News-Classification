@@ -1,46 +1,46 @@
 \chapter{Ứng dụng hỗ trợ biên tập}
 \label{chap:application}
 \section{Vai trò của ứng dụng trong bài toán NLP}
-Ứng dụng đưa gói PhoBERT vào một vòng làm việc gồm nhập bài, đề xuất nhãn, rà soát và lưu phản hồi. Kết quả model là tín hiệu hỗ trợ; người dùng có thể giữ, sửa hoặc chuyển bài khó. Ba vai trò là Editor, Admin và Data Scientist, có quyền ở API tương ứng. SVM/LR/BiLSTM được đánh giá offline và có gói suy luận riêng, chưa được tích hợp thành lựa chọn model trong giao diện này. Phần này trình bày các chức năng cần để hiểu cách PhoBERT được sử dụng, thay vì liệt kê toàn bộ chi tiết frontend.
+Ứng dụng đưa gói PhoBERT vào một vòng làm việc gồm nhập bài, đề xuất nhãn, rà soát và lưu phản hồi. Kết quả mô hình là tín hiệu hỗ trợ; người dùng có thể giữ, sửa hoặc chuyển bài khó. Ba vai trò là Editor, Admin và Data Scientist, có quyền ở API tương ứng. SVM/LR/BiLSTM được đánh giá offline và có gói suy luận riêng, chưa được tích hợp thành lựa chọn mô hình trong giao diện này. Phần này trình bày các chức năng cần để hiểu cách PhoBERT được sử dụng, thay vì liệt kê toàn bộ chi tiết frontend.
 
-\section{Kiến trúc triển khai và hợp đồng model}
+\section{Kiến trúc triển khai và hợp đồng mô hình}
 \AppDiagram
-React/Vite phục vụ UI cổng 5173; FastAPI cổng 8000; model service gRPC 50051. PostgreSQL lưu bài, dự đoán, phản hồi, phiên và registry trong schema \texttt{vnn}. Redis cùng Dramatiq xử lý job nhập bài hoặc tính monitoring. Sáu dịch vụ được khởi động bằng Docker Compose với health check và volume dữ liệu.
+React/Vite phục vụ UI cổng 5173; FastAPI cổng 8000; dịch vụ mô hình gRPC 50051. PostgreSQL lưu bài, dự đoán, phản hồi, phiên và registry trong schema \texttt{vnn}. Redis cùng Dramatiq xử lý job nhập bài hoặc tính monitoring. Sáu dịch vụ được khởi động bằng Docker Compose với health check và volume dữ liệu.
 
-Model service nạp \texttt{model/} qua \texttt{app/artifacts/active.json}. Model SHA-256 bắt đầu \texttt{607f3240}, taxonomy 20 lớp, Head--Tail 256, PyVi, temperature 1,4551 và toàn bộ hệ số class khớp notebook. Kiểm tra startup từ chối thiếu file, mapping không đồng bộ hoặc hash trọng số sai. Registry kiểm tra cả hash trọng số và calibration, lấy Macro-F1 cùng ma trận 29.995 mẫu từ kết quả hiện tại.
+Dịch vụ mô hình nạp \texttt{model/} qua \texttt{app/artifacts/active.json}. Mô hình SHA-256 bắt đầu \texttt{607f3240}, hệ thống chuyên mục 20 lớp, Head--Tail 256, PyVi, temperature 1.4551 và toàn bộ hệ số class khớp notebook. Kiểm tra startup từ chối thiếu file, mapping không đồng bộ hoặc hash trọng số sai. Registry kiểm tra cả hash trọng số và hiệu chỉnh xác suất, lấy Macro-F1 cùng ma trận 29,995 mẫu từ kết quả hiện tại.
 
-Inference trong container dùng CPU float32; fine-tuning và đánh giá notebook dùng GPU BF16. Nhãn và các bất biến pipeline cần nhất quán, nhưng logits sát ranh giới có thể chênh nhỏ do precision. Dịch vụ dùng tokenizer local và tắt dropout bằng eval; không tải một tokenizer khác khi nhận yêu cầu.
+Inference trong container dùng CPU float32; fine-tuning và đánh giá notebook dùng GPU BF16. Nhãn và các bất biến quy trình phân loại cần nhất quán, nhưng logits sát ranh giới có thể chênh nhỏ do precision. Dịch vụ dùng tokenizer local và tắt dropout bằng eval; không tải một tokenizer khác khi nhận yêu cầu.
 
 \section{Đăng nhập và nhập bài}
-\PortraitFigure{assets/application/login.png}{Trang đăng nhập phân vai trò, sử dụng taxonomy 20 lớp.}
-Editor nhập URL VietNamNet hoặc dán title/content. Dịch vụ kiểm tra văn bản hữu ích trước suy luận, lưu full text và kết quả. Job bất đồng bộ trả ID để theo dõi trạng thái; lỗi tải được trả rõ thay vì tạo dự đoán giả. Nội dung người dùng nhập không được tự đưa vào train hoặc thay dataset notebook.
+\PortraitFigure{assets/application/login.png}{Trang đăng nhập phân vai trò, sử dụng hệ thống chuyên mục 20 lớp.}
+Editor nhập URL VietNamNet hoặc dán tiêu đề/nội dung. Dịch vụ kiểm tra văn bản hữu ích trước suy luận, lưu full text và kết quả. Job bất đồng bộ trả ID để theo dõi trạng thái; lỗi tải được trả rõ thay vì tạo dự đoán giả. Nội dung người dùng nhập không được tự đưa vào train hoặc thay dataset notebook.
 \PortraitFigure{assets/application/editor_dashboard.png}{Tổng quan Editor với 32 bài minh họa và các số đo từ dự đoán đang lưu.}
-\PortraitFigure{assets/application/review_queue.png}{Hàng đợi ưu tiên bài confidence thấp và margin nhỏ; đây là dữ liệu minh họa có chọn mẫu.}
+\PortraitFigure{assets/application/review_queue.png}{Hàng đợi ưu tiên bài độ tin cậy thấp và margin nhỏ; đây là dữ liệu minh họa có chọn mẫu.}
 
 \section{Đọc bài và ra quyết định}
 \PortraitFigure{assets/application/article_review.png}{Nội dung bài ``Phiên chợ nhộn nhịp ở Bắc Hà, cuộc sống khởi sắc'' trong màn hình rà soát.}
-\PortraitFigure{assets/application/prediction_controls.png}{Nhãn, confidence, ứng viên và thao tác biên tập được chụp riêng để đọc rõ.}
-Ví dụ Bắc Hà có nhiều nội dung du lịch, sinh kế và chính sách giảm nghèo. Model chọn Đời sống với confidence khoảng 0,26, trong khi xác suất Dân tộc -- Tôn giáo khoảng 0,44. Thứ tự này đúng quy tắc chia hệ số: class Đời sống có hệ số khoảng 1,0558, class Dân tộc -- Tôn giáo khoảng 1,8759. Nhãn đứng đầu theo điểm quyết định có thể không có xác suất lớn nhất. Confidence thấp đưa bài vào escalate.
+\PortraitFigure{assets/application/prediction_controls.png}{Nhãn, độ tin cậy, ứng viên và thao tác biên tập được chụp riêng để đọc rõ.}
+Ví dụ Bắc Hà có nhiều nội dung du lịch, sinh kế và chính sách giảm nghèo. Mô hình chọn Đời sống với độ tin cậy khoảng 0.26, trong khi xác suất Dân tộc -- Tôn giáo khoảng 0.44. Thứ tự này đúng quy tắc chia hệ số: class Đời sống có hệ số khoảng 1.0558, class Dân tộc -- Tôn giáo khoảng 1.8759. Nhãn đứng đầu theo điểm quyết định có thể không có xác suất lớn nhất. Độ tin cậy thấp đưa bài vào escalate.
 
-Approve giữ nhãn được đề xuất, Override chọn một nhãn taxonomy khác, Escalate chuyển bài khó. API từ chối approve với nhãn khác top-1, hoặc quyết định khi chưa có suy luận hợp lệ. Prediction ID gắn phản hồi với đúng lần suy luận; chạy lại tạo prediction mới, không coi phản hồi cũ là nhãn đã xác minh của prediction mới.
+Approve giữ nhãn được đề xuất, Override chọn một nhãn hệ thống chuyên mục khác, Escalate chuyển bài khó. API từ chối approve với nhãn khác top-1, hoặc quyết định khi chưa có suy luận hợp lệ. Prediction ID gắn phản hồi với đúng lần suy luận; chạy lại tạo prediction mới, không coi phản hồi cũ là nhãn đã xác minh của prediction mới.
 \ReviewDiagram
-\PortraitFigure{assets/application/label_review.png}{Bảng tất cả bài đã phân loại, gồm confidence, margin, trạng thái và phân trang.}
+\PortraitFigure{assets/application/label_review.png}{Bảng tất cả bài đã phân loại, gồm độ tin cậy, margin, trạng thái và phân trang.}
 
 \section{Chính sách định tuyến và quản trị}
-\PortraitFigure{assets/application/admin_ops.png}{Admin cấu hình confidence routing, xem preview và thông tin vận hành.}
-Hai ngưỡng 0,75 và 0,68 nằm trong database; preview cho biết lượng bài ở từng luồng trước khi cập nhật. Thay ngưỡng không train model, không fit lại temperature và không thay 20 hệ số class. Quyền quản lý người dùng và kích hoạt package thuộc vai trò được cấp; UI không phải lớp bảo vệ duy nhất.
+\PortraitFigure{assets/application/admin_ops.png}{Admin cấu hình độ tin cậy phân luồng, xem preview và thông tin vận hành.}
+Hai ngưỡng 0.75 và 0.68 nằm trong database; preview cho biết lượng bài ở từng luồng trước khi cập nhật. Thay ngưỡng không train mô hình, không ước lượng lại temperature và không thay 20 hệ số class. Quyền quản lý người dùng và kích hoạt gói mô hình thuộc vai trò được cấp; UI không phải lớp bảo vệ duy nhất.
 
 \section{Registry, monitoring và Dataset Lab}
-\PortraitFigure{assets/application/model_versions.png}{Registry của gói PhoBERT 20 lớp; chỉ số offline đọc từ artifact.}
-Registry hiển thị Macro-F1, ma trận, cấu hình, file xuất và trạng thái active. Upload được kiểm tra tên/path, cấu trúc metadata và khả năng nạp suy luận trước đăng ký. Kích hoạt thay manifest theo thao tác nguyên tử, kiểm tra model service đúng phiên bản và phục hồi manifest nếu thất bại.
+\PortraitFigure{assets/application/model_versions.png}{Registry của gói PhoBERT 20 lớp; chỉ số offline đọc từ tệp kết quả.}
+Registry hiển thị Macro-F1, ma trận, cấu hình, file xuất và trạng thái active. Upload được kiểm tra tên/path, cấu trúc thông tin mô tả và khả năng nạp suy luận trước đăng ký. Kích hoạt thay manifest theo thao tác nguyên tử, kiểm tra dịch vụ mô hình đúng phiên bản và phục hồi manifest nếu thất bại.
 \ActivationDiagram
 \PortraitFigure{assets/application/monitoring.png}{Monitoring từ nhóm prediction có phản hồi minh họa, không phải chỉ số test offline.}
-Monitoring ghép phản hồi với prediction tương ứng. Các chỉ số phụ thuộc mẫu đã được rà soát và tập nhãn xuất hiện; không so trực tiếp Macro-F1 này với Macro-F1 offline 20 lớp. Drift score là chỉ báo heuristic từ margin và sai khác phản hồi, chưa là kiểm định phân bố hay bằng chứng model drift. Các phản hồi trong bộ minh họa mô tả thao tác dựa trên nhãn corpus, không phải một đợt đánh giá độc lập bởi biên tập viên.
-Môi trường production cần secret riêng, TLS, giới hạn request, giám sát tải, retention và quản trị nội dung. Phạm vi triển khai của bài tập lớn là minh họa trên localhost.
+Monitoring ghép phản hồi với prediction tương ứng. Các chỉ số phụ thuộc mẫu đã được rà soát và tập nhãn xuất hiện; không so trực tiếp Macro-F1 này với Macro-F1 offline 20 lớp. Drift điểm số là chỉ báo heuristic từ margin và sai khác phản hồi, chưa là kiểm định phân bố hay bằng chứng mô hình drift. Các phản hồi trong bộ minh họa mô tả thao tác dựa trên nhãn tập dữ liệu, không phải một đợt đánh giá độc lập bởi biên tập viên.
+Môi trường môi trường vận hành thực tế cần secret riêng, TLS, giới hạn request, giám sát tải, retention và quản trị nội dung. Phạm vi triển khai của bài tập lớn là minh họa trên localhost.
 
-\PortraitFigure{assets/application/dataset_lab.png}{Dataset Lab theo dõi corpus vận hành và bài khó; không ghi đè dataset huấn luyện.}
-Dataset Lab hiển thị phân bố bài trong database, confidence thấp và ứng viên relabel. Phân bố 32 bài được chọn để minh họa đầy đủ lớp và tình huống khó, nên không đại diện phân bố 199.965 mẫu training. Hệ thống lưu phản hồi và job, nhưng chưa có vòng tự fine-tuning rồi tự triển khai model.
+\PortraitFigure{assets/application/dataset_lab.png}{Dataset Lab theo dõi tập dữ liệu vận hành và bài khó; không ghi đè dataset huấn luyện.}
+Dataset Lab hiển thị phân bố bài trong database, độ tin cậy thấp và ứng viên relabel. Phân bố 32 bài được chọn để minh họa đầy đủ lớp và tình huống khó, nên không đại diện phân bố 199,965 mẫu training. Hệ thống lưu phản hồi và job, nhưng chưa có vòng tự fine-tuning rồi tự triển khai mô hình.
 
 \section{Phạm vi minh họa và vận hành}
-\texttt{app/demo/postgres.backup} chứa schema ứng dụng với 32 bài từ corpus, dự đoán thật của model đang bàn giao và phản hồi minh họa. Backup không chứa dataset hay trọng số. README mô tả chạy, đăng nhập, log, khôi phục và xuất artifact. Các ảnh trong chương là giao diện thực thi của package này, không dùng số liệu hoặc ảnh của một model khác.
+\texttt{app/demo/postgres.backup} chứa schema ứng dụng với 32 bài từ tập dữ liệu, dự đoán thật của mô hình đang bàn giao và phản hồi minh họa. Backup không chứa dataset hay trọng số. README mô tả chạy, đăng nhập, log, khôi phục và xuất tệp kết quả. Các ảnh trong chương là giao diện thực thi của gói mô hình này, không dùng số liệu hoặc ảnh của một mô hình khác.
 

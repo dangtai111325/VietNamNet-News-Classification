@@ -1,35 +1,49 @@
 \chapter*{Tóm tắt}
 \addcontentsline{toc}{chapter}{Tóm tắt}
-Báo cáo nghiên cứu phân loại đơn nhãn 20 chuyên mục tin tức tiếng Việt trên corpus VietNamNet. Từ 200.337 bài sau xác minh chuyên mục ở cấp bài, khử trùng và xử lý xung đột nhãn tạo 199.965 bài. Corpus chia phân tầng 70/15/15 với seed 42; bốn phương pháp được đánh giá trên cùng 29.995 bài test. Nhãn tham chiếu phản ánh taxonomy tòa soạn, với những chuyên mục có nội dung giao thoa.
+Báo cáo nghiên cứu bài toán phân loại tin tức tiếng Việt vào một trong 20 chuyên mục của VietNamNet dựa trên tiêu đề và nội dung bài báo. Nhãn tham chiếu được xác định từ chuyên mục xuất bản; mỗi bài có một nhãn chính dù nội dung có thể đề cập nhiều lĩnh vực. Quy trình gồm thu thập và làm sạch dữ liệu, tiền xử lý tiếng Việt, xây dựng mô hình và đánh giá trên tập kiểm tra độc lập.
 
-Hai mô hình tuyến tính SVM và Logistic Regression dùng TF--IDF toàn văn; BiLSTM học chuỗi với embedding khởi tạo; PhoBERT-base-v2 khai thác tiền huấn luyện và Head--Tail 256 subword. Validation chọn cấu hình, checkpoint và hiệu chỉnh, test dùng đánh giá cuối. Macro-F1 argmax của PhoBERT, SVM, LR và BiLSTM lần lượt đạt 87,22\%, 85,33\%, 84,98\% và 84,60\%. Lợi thế tổng thể không bảo đảm ưu thế ở mọi lớp; các lỗi và độ tin cậy xác suất cần được xem riêng.
+Bốn phương pháp được khảo sát là SVM, Logistic Regression (LR), LSTM hai chiều (BiLSTM) và PhoBERT. Chúng đại diện cho ba hướng: đặc trưng từ vựng TF--IDF, học biểu diễn theo chuỗi và sử dụng mô hình ngôn ngữ tiền huấn luyện. Các phương pháp được đánh giá trên cùng tập kiểm tra; việc chọn cấu hình, bản lưu mô hình và tham số hiệu chỉnh chỉ sử dụng tập xác thực. Macro-F1 của PhoBERT, SVM, LR và BiLSTM lần lượt đạt 87.22\%, 85.33\%, 84.98\% và 84.60\%. Phân tích theo chuyên mục cho thấy phương pháp đứng đầu tổng thể không nhất thiết tốt nhất ở mọi lớp.
 
-Bootstrap ghép cặp trên dự đoán cố định ủng hộ chênh lệch PhoBERT--SVM trong điều kiện đã đo, chưa đo biến thiên nhiều lần huấn luyện. SVM fit nhanh trên CPU; các timer tìm cấu hình, huấn luyện neural và suy luận có phạm vi khác nhau. Một nguồn, một seed và khác biệt lượng văn bản quan sát giới hạn kết luận về kiến trúc hoặc tổng quát hóa.
-
-Một ứng dụng dùng PhoBERT hỗ trợ đề xuất nhãn, rà soát và lưu phản hồi được trình bày ở phụ lục. Chỉ số giao diện và monitoring không thay thế test offline. Báo cáo phân biệt hiệu quả nhãn, calibration và chi phí để hình thành căn cứ lựa chọn pipeline trong phạm vi thực nghiệm.
+Ngoài chất lượng phân loại, báo cáo xem xét các bài dự đoán sai, độ tin cậy của xác suất và chi phí tính toán. Kết quả cho thấy SVM là đối chứng mạnh với thời gian huấn luyện ngắn trên CPU, còn PhoBERT đạt chất lượng tổng thể cao hơn trong điều kiện thực nghiệm. Kết luận được giới hạn ở nguồn dữ liệu và các cấu hình đã khảo sát, chưa khẳng định thứ hạng trên mọi nguồn tin hoặc mọi lần huấn luyện. Ứng dụng hỗ trợ biên tập dùng PhoBERT để đề xuất nhãn, cho phép rà soát và lưu phản hồi, được trình bày ở phụ lục.
 
 \chapter*{Danh mục thuật ngữ}
 \addcontentsline{toc}{chapter}{Danh mục thuật ngữ}
-\begin{longtable}{p{32mm}p{118mm}}
+\begin{longtable}{p{35mm}p{115mm}}
 \toprule Thuật ngữ & Ý nghĩa trong báo cáo\\\midrule
-Corpus & Tập bài báo, nhãn chuyên mục và metadata nguồn.\\
-Phân đoạn từ & Xác định từ tiếng Việt gồm một hoặc nhiều âm tiết.\\
-TF--IDF & Đặc trưng tần suất từ có trọng số nghịch tần suất tài liệu.\\
-SVM & Bộ phân loại học ranh giới có biên; đối chứng dùng hướng tuyến tính.\\
-Logistic Regression & Bộ phân loại tuyến tính tối ưu log-loss, viết tắt LR.\\
-LSTM & Mạng hồi tiếp học trạng thái theo thứ tự chuỗi token.\\
-BiLSTM & LSTM hai chiều; biến thể được thực thi trong đối chứng.\\
-Biểu diễn ngữ cảnh & Vector token phụ thuộc đoạn văn bản bao quanh nó.\\
-BPE & Mã hóa từ thành các đơn vị subword của tokenizer.\\
-Head--Tail & Giữ đầu và cuối chuỗi token khi vượt giới hạn đầu vào.\\
-Fine-tuning & Cập nhật mô hình tiền huấn luyện cho tác vụ chuyên mục.\\
-Validation & Chọn checkpoint và xác định tham số hiệu chỉnh.\\
-Test độc lập & Tập đánh giá cuối không tham gia chọn hoặc fit tham số.\\
-Macro-F1 & Trung bình F1 của 20 lớp, mỗi lớp đóng góp bằng nhau.\\
-Weighted-F1 & Trung bình F1 theo số mẫu của từng lớp.\\
-NLL & Mất mát log xác suất nhãn tham chiếu, không trọng số lớp.\\
-ECE & Sai lệch confidence và tỷ lệ đúng theo 15 khoảng xác suất.\\
-Temperature & Tham số dương $T$ chia logits trước softmax.\\
-Hệ số lớp & $\tau_c$ trong điểm quyết định $p_c(T)/\tau_c$.\\
-Confidence & Xác suất của nhãn được chọn bởi quy tắc quyết định.\\
-\bottomrule\end{longtable}
+\endfirsthead
+\toprule Thuật ngữ & Ý nghĩa trong báo cáo (tiếp theo)\\\midrule
+\endhead
+\bottomrule\endfoot
+Tập dữ liệu (corpus) & Tập bài báo cùng nhãn chuyên mục và thông tin nguồn, dùng để huấn luyện hoặc đánh giá.\\
+Hệ thống chuyên mục (taxonomy) & Danh sách nhãn và quan hệ mục cha--con theo cách tổ chức của tòa soạn.\\
+Loại bỏ bài trùng lặp & Chỉ giữ một đại diện khi nhiều bản ghi có cùng văn bản; loại cả nhóm nếu văn bản giống nhau nhưng nhãn mâu thuẫn.\\
+Rò rỉ dữ liệu & Thông tin của tập đánh giá tham gia vào quá trình học hoặc lựa chọn mô hình, khiến kết quả đánh giá có thể cao hơn thực tế.\\
+Train / validation / test & Tập huấn luyện / tập xác thực để chọn cấu hình / tập kiểm tra cuối.\\
+Phân tầng & Chia dữ liệu sao cho tỷ lệ các chuyên mục trong mỗi tập gần tỷ lệ của toàn bộ dữ liệu.\\
+Seed & Giá trị khởi tạo bộ sinh số ngẫu nhiên, dùng để tái tạo phép chia hoặc lấy mẫu.\\
+Phân đoạn từ & Xác định từ tiếng Việt gồm một hoặc nhiều âm tiết; ví dụ \texttt{trẻ\_em}.\\
+Token / subword & Đơn vị đầu vào của mô hình; subword là đơn vị nhỏ hơn từ hoặc bằng từ, tùy cách mã hóa.\\
+Từ dừng (stopword) & Các từ thường gặp được loại khi tạo đặc trưng cho SVM/LR, theo danh sách cố định.\\
+TF--IDF & Biểu diễn văn bản bằng tần suất từ, giảm trọng số của từ xuất hiện trong nhiều tài liệu.\\
+SVM & Máy vector hỗ trợ; trong báo cáo dùng bộ phân loại tuyến tính học ranh giới giữa các lớp.\\
+Logistic Regression & Hồi quy logistic, viết tắt LR; bộ phân loại tuyến tính tối ưu mất mát logarit.\\
+LSTM / BiLSTM & Mạng hồi tiếp có bộ nhớ / biến thể xử lý chuỗi theo cả chiều xuôi và chiều ngược.\\
+Embedding & Vector số biểu diễn một từ hoặc một token; có thể được học từ dữ liệu huấn luyện.\\
+BPE & Cách mã hóa chuỗi thành các đơn vị subword dùng trong tokenizer PhoBERT.\\
+Head--Tail & Giữ phần đầu và phần cuối khi chuỗi vượt giới hạn đầu vào của mô hình.\\
+Fine-tuning & Huấn luyện điều chỉnh mô hình tiền huấn luyện cho bài toán phân loại chuyên mục.\\
+Bản lưu mô hình & Bản lưu trọng số mô hình tại một thời điểm huấn luyện, dùng để lựa chọn hoặc nạp lại.\\
+Logits & Các điểm số chưa chuẩn hóa do mô hình tạo ra, chưa phải xác suất.\\
+Argmax & Chọn lớp có điểm số lớn nhất trong các lớp được xét.\\
+Softmax & Biến đổi các điểm số thành các xác suất lớp có tổng bằng 1.\\
+Precision / recall & Độ chính xác của các bài được dự đoán vào một lớp / tỷ lệ bài thuộc lớp đó được nhận ra.\\
+Support & Số bài có nhãn tham chiếu thuộc một lớp trong tập đánh giá.\\
+Macro-F1 / Weighted-F1 & Trung bình F1 với các lớp có trọng số bằng nhau / trọng số theo số bài của từng lớp.\\
+NLL & Mất mát logarit âm của xác suất nhãn tham chiếu, không dùng trọng số lớp trong bước hiệu chỉnh.\\
+ECE & Sai lệch giữa độ tin cậy trung bình và tỷ lệ dự đoán đúng trong các khoảng xác suất.\\
+Temperature scaling & Hiệu chỉnh xác suất bằng một tham số dương $T$ chia logits trước softmax.\\
+Hệ số điều chỉnh lớp & $\tau_c$ dùng trong điểm quyết định $p_c(T)/\tau_c$; khác trọng số lớp khi huấn luyện.\\
+Độ tin cậy (confidence) & Xác suất của nhãn được chọn theo quy tắc quyết định đã công bố.\\
+Bootstrap ghép cặp & Lấy mẫu có hoàn lại cùng các bài cho các mô hình, nhằm ước lượng mức dao động của chênh lệch chỉ số.\\
+Ablation & Thí nghiệm thay đổi hoặc bỏ một thành phần, giữ các điều kiện khác để xét ảnh hưởng riêng của thành phần đó.\\
+\end{longtable}

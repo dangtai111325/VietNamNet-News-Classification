@@ -1,42 +1,40 @@
 \chapter{Bài toán và thiết kế đánh giá}\label{chap:problem}
 \FloatBarrier
 \section{Bối cảnh và phát biểu bài toán}
-Mỗi bài báo VietNamNet được tổ chức theo một chuyên mục biên tập, nhưng nội dung có thể giao thoa nhiều lĩnh vực. Bài toán đặt ra là dự đoán một chuyên mục chính từ tiêu đề và nội dung, trong khi nhãn tham chiếu phản ánh taxonomy của tòa soạn thay vì một hệ phân loại chủ đề phổ quát. Các khó khăn gồm phân đoạn từ tiếng Việt, độ dài bài báo, chênh lệch số mẫu giữa các lớp và ranh giới nhãn không hoàn toàn tách biệt. Chất lượng nguồn nhãn và tính nhất quán của phép chia dữ liệu vì vậy có vai trò quan trọng bên cạnh lựa chọn bộ phân loại.
+Tin tức trực tuyến được xuất bản liên tục và bao phủ nhiều lĩnh vực. Việc xác định chuyên mục giúp tổ chức nội dung, tìm kiếm và hỗ trợ biên tập. Với văn bản tiếng Việt, bài toán không chỉ là tìm một vài từ khóa: khoảng trắng thường phân cách âm tiết, bài báo có độ dài khác nhau và một nội dung có thể liên quan đồng thời đến nhiều chủ đề.
 
-Với $x_i=(t_i,b_i)$ gồm tiêu đề và nội dung, $y_i\in\mathcal C$, $|\mathcal C|=20$, corpus giám sát là
-\begin{equation}\mathcal D=\{(x_i,y_i)\}_{i=1}^{199\,965}.\end{equation}
-Phương pháp $m$ biến đổi văn bản bằng $\phi_m$, sinh điểm với mô hình $f_{\theta_m}$ và chọn nhãn:
+Báo cáo xét việc dự đoán chuyên mục chính của một bài VietNamNet từ tiêu đề và nội dung. Nhãn tham chiếu là chuyên mục xuất bản theo cách tổ chức của tòa soạn. Đây là bài toán đa lớp đơn nhãn: mỗi bài được gán một trong các chuyên mục đã xác định. Chẳng hạn, một bài về sinh kế ở địa phương có thể nhắc tới chính sách, văn hóa và du lịch, nhưng nhãn dùng để đánh giá vẫn là một chuyên mục chính.
+
+Ký hiệu $x_i=(t_i,b_i)$ là tiêu đề và nội dung của bài $i$, $y_i\in\mathcal C$ là nhãn tham chiếu, với $\mathcal C$ gồm 20 chuyên mục. Tập dữ liệu có giám sát được viết dưới dạng
+\begin{equation}\mathcal D=\{(x_i,y_i)\}_{i=1}^{N},\end{equation}
+trong đó $N$ là số bài đủ điều kiện sử dụng. Với phương pháp $m$, $\phi_m$ chuyển văn bản thành biểu diễn số, $f_{\theta_m}$ tạo điểm cho các lớp và quy tắc argmax chọn lớp có điểm cao nhất:
 \begin{equation}
 z_i^{(m)}=f_{\theta_m}(\phi_m(x_i)),\qquad
 \hat y_i^{(m)}=\arg\max_{c\in\mathcal C}z_{i,c}^{(m)}.
 \end{equation}
-Argmax là giao thức đối chứng chính. Riêng PhoBERT có thêm quy tắc quyết định theo lớp để phục vụ ứng dụng, được đánh giá tách biệt. URL và breadcrumb dùng xác minh nguồn nhãn, không trở thành đặc trưng của bộ phân loại. Top-$k$ là các ứng viên cạnh tranh, không phải một tập nhãn cùng đúng: tác vụ là đa lớp đơn nhãn.
+URL và thông tin chuyên mục trên trang bài được dùng để kiểm tra nguồn nhãn, không làm đặc trưng đầu vào cho bộ phân loại. Danh sách top-$k$ gồm các nhãn có điểm cao để người dùng xem xét, không có nghĩa một bài được coi là thuộc đồng thời tất cả các nhãn đó.
 
-Một bài về sinh kế vùng dân tộc có thể đồng thời chứa du lịch, văn hóa và chính sách. Vì thế, sai số được hiểu là không khớp chuyên mục tham chiếu, chưa mặc nhiên là sai theo mọi cách diễn giải nội dung. Mô hình không kiểm chứng thông tin trong bài và không có bộ phát hiện chắc chắn văn bản ngoài taxonomy.
+Sai số trong báo cáo được hiểu là dự đoán không khớp chuyên mục tham chiếu. Với những bài giao thoa nội dung, điều này chưa đủ để kết luận mô hình hiểu sai toàn bộ ý nghĩa bài báo. Hệ thống cũng không kiểm chứng tính xác thực của tin và chưa có cơ chế đã được đánh giá để nhận diện chắc chắn mọi bài nằm ngoài các chuyên mục được hỗ trợ.
 
 \FloatBarrier
 \section{Mục tiêu nghiên cứu và phạm vi}
-SVM, Logistic Regression, BiLSTM và PhoBERT được lựa chọn để khảo sát ba họ biểu diễn: đặc trưng từ vựng, embedding chuỗi và biểu diễn ngữ cảnh tiền huấn luyện. Báo cáo trả lời ba câu hỏi:
+Báo cáo lựa chọn SVM, Logistic Regression, BiLSTM và PhoBERT để khảo sát ba hướng biểu diễn văn bản: đặc trưng từ vựng, vector từ kết hợp xử lý chuỗi và biểu diễn ngữ cảnh từ mô hình tiền huấn luyện. Ba câu hỏi nghiên cứu là:
 \begin{enumerate}[label=\textbf{RQ\arabic*:},leftmargin=17mm]
-\item Trên cùng corpus VietNamNet và taxonomy 20 chuyên mục, chất lượng phân loại của bốn phương pháp khác nhau như thế nào?
+\item Trên cùng dữ liệu và hệ thống chuyên mục, chất lượng phân loại của bốn phương pháp khác nhau như thế nào?
 \item Khác biệt chất lượng có tương xứng với thời gian huấn luyện, bộ nhớ và chi phí suy luận của từng hướng tiếp cận không?
 \item Các phương pháp khác nhau thế nào ở chuyên mục ít mẫu hoặc có nội dung giao thoa?
 \end{enumerate}
-Notebook dữ liệu tạo đầu vào chung; bốn notebook huấn luyện tự chứa quy trình tạo biểu diễn, chọn cấu hình, đánh giá và xuất artifact. LSTM được thực thi bằng biến thể hai chiều BiLSTM, với embedding học từ đầu. Các gói đối chứng phục vụ đánh giá offline; ứng dụng minh họa dùng PhoBERT để đề xuất nhãn, hỗ trợ rà soát và lưu phản hồi (Phụ lục~\ref{app:application}).
 
-So sánh xem xét hiệu quả toàn bộ pipeline trong một điều kiện thực nghiệm cụ thể. Nó chưa tách riêng đóng góp của kiến trúc, pretraining, stopword, lặp tiêu đề hay vùng văn bản được giữ. Phân tích lớp hiếm và độ tin cậy xác suất bổ sung cho điểm tổng, nhưng không thay thế đánh giá ngoài nguồn hoặc nhiều lần train.
+Quy trình nghiên cứu gồm chuẩn bị dữ liệu, xây dựng biểu diễn phù hợp từng phương pháp, huấn luyện và đánh giá. LSTM được triển khai bằng biến thể hai chiều BiLSTM, với các vector từ học từ dữ liệu của bài toán. PhoBERT sử dụng tham số ngôn ngữ đã được tiền huấn luyện rồi điều chỉnh cho nhiệm vụ phân loại. So sánh vì vậy phản ánh hiệu quả của các quy trình phân loại cụ thể, chưa tách riêng tác động của từng lựa chọn kiến trúc hay tiền xử lý.
 
-
-Nhãn cuối là một quyết định của bài toán đơn nhãn, còn confidence phục vụ đánh giá mức chắc chắn trong điều kiện taxonomy. Một bài ngoài miền vẫn có thể được gán nhãn cao điểm do bộ phân loại chỉ có 20 lựa chọn; không coi tổng xác suất bằng 1 như bằng chứng đầu vào hợp lệ. Vì thế, ba câu hỏi nghiên cứu không chỉ hỏi model nào có điểm cao nhất, mà còn hỏi lỗi rơi vào đâu và số đo nào có thể hỗ trợ sử dụng kết quả.
-
-Phạm vi ứng dụng là vòng rà soát có người quyết định, không gồm tự sinh bài hoặc tự cập nhật trọng số từ feedback. Bằng chứng giao diện giải thích cách kết quả NLP được dùng; nó không được cộng vào test hoặc dùng chứng minh tổng quát hóa. Sự tách biệt giữa thực nghiệm và minh họa giúp cùng một chỉ số không bị gán hai ý nghĩa khác nhau.
+Phạm vi ứng dụng là hỗ trợ biên tập: đề xuất chuyên mục, hiển thị các nhãn ứng viên và lưu quyết định của người rà soát. Người dùng giữ vai trò xử lý những trường hợp khó; phản hồi không tự động làm thay đổi trọng số mô hình. Phần ứng dụng minh họa cách sử dụng kết quả NLP, còn chất lượng mô hình được xác định bằng đánh giá độc lập.
 
 \FloatBarrier
-\section{Giao thức dữ liệu và tiêu chí đánh giá}
-Khử trùng diễn ra trước chia tập. Phép chia phân tầng 70/15/15, seed 42 tạo train 139.975 bài và hai tập validation, test, mỗi tập 29.995 bài. Bốn pipeline có cùng chỉ số chia, URL và nhãn test theo thứ tự. Train dùng cập nhật trọng số, tính class weights và fit vocabulary/IDF; validation chọn cấu hình, checkpoint và tham số hiệu chỉnh; test chỉ đánh giá cuối sau khi các lựa chọn đã cố định.
-\SplitDiagram
-Macro-F1 là tiêu chí lựa chọn để mỗi lớp đóng góp ngang nhau; Accuracy và Weighted-F1 bổ sung góc nhìn theo số bài. Kết quả theo lớp, confusion matrix và lỗi truy vết chỉ ra nơi chất lượng suy giảm. Chương~\ref{chap:experiments} đánh giá riêng chất lượng nhãn, xác suất và chi phí, tránh lấy một chỉ số thay thế tất cả yêu cầu.
+\section{Nguyên tắc tổ chức dữ liệu và đánh giá}
+Dữ liệu được làm sạch trước khi chia thành tập huấn luyện (train), tập xác thực (validation) và tập kiểm tra (test). Tập huấn luyện dùng để học trọng số, từ vựng và các thống kê tạo đặc trưng. Tập xác thực dùng để lựa chọn cấu hình, bản lưu mô hình và tham số hiệu chỉnh. Tập kiểm tra chỉ dùng để đánh giá cuối sau khi các lựa chọn đã cố định. Bốn phương pháp sử dụng cùng các bài và nhãn trong từng tập để kết quả có thể đối chiếu trực tiếp.
 
-Validation được dùng cho cả lựa chọn model và hiệu chỉnh. Sự dùng lại này tạo phụ thuộc vào tập validation, dù test không tham gia fit. Một seed hỗ trợ tái tạo phép chia trong snapshot, chưa đo biến thiên huấn luyện. Chín đối chiếu giữa các tập theo URL, văn bản thô và văn bản chuẩn hóa không phát hiện giao nhau chính xác; phạm vi kiểm tra chưa bao gồm gần trùng hoặc bài cùng sự kiện.
+Macro-F1 được chọn làm tiêu chí chính vì mỗi chuyên mục đóng góp ngang nhau, giúp phản ánh chất lượng ở các lớp ít bài. Accuracy là tỷ lệ bài được dự đoán đúng trên toàn tập; Weighted-F1 tính trung bình F1 theo số bài của từng lớp. Kết quả theo lớp và ma trận nhầm lẫn giúp nhận ra các cặp chuyên mục khó phân biệt. Độ tin cậy của xác suất và thời gian tính toán được xem xét riêng, vì một phương pháp có F1 cao chưa nhất thiết có xác suất đáng tin cậy nhất hoặc chi phí thấp nhất.
 
-Bốn pipeline được đánh giá trên cùng corpus sau khử trùng và cùng tập test; các phép học biểu diễn riêng chỉ dùng train. Chương tiếp theo xem xét bằng chứng nghiên cứu làm cơ sở lựa chọn các phương pháp.
+Để hạn chế rò rỉ dữ liệu, các bài trùng lặp được xử lý trước khi chia tập và các biến đổi cần học từ dữ liệu chỉ được xây dựng trên tập huấn luyện. Dùng lại tập xác thực cho nhiều quyết định có thể tạo phụ thuộc vào tập này; phép chia ngẫu nhiên cùng nguồn cũng chưa phản ánh đầy đủ tin đến sau hoặc nguồn báo khác. Những giới hạn đó được giữ khi diễn giải kết quả.
+
+Chương tiếp theo trình bày nghiên cứu liên quan và cơ sở lựa chọn các phương pháp. Quy tắc thu thập, làm sạch và tổ chức dữ liệu được trình bày ở chương dữ liệu; các chương sau mô tả kiến trúc, huấn luyện và kết quả thực nghiệm.

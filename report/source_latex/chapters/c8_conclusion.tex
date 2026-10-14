@@ -1,20 +1,20 @@
 \chapter{Kết luận và giới hạn nghiên cứu}\label{chap:conclusion}
 \section{Kết luận từ bằng chứng thực nghiệm}
-Báo cáo khảo sát phân loại đơn nhãn 20 chuyên mục VietNamNet từ tiêu đề và nội dung. Xác minh chuyên mục cấp bài, quy mục con về cha và khử trùng tạo corpus 199.965 bài; bốn pipeline sử dụng cùng train/validation/test phân tầng 70/15/15. TF--IDF với SVM/LR, embedding chuỗi với BiLSTM và PhoBERT tiền huấn luyện được đánh giá bằng cùng nhãn tham chiếu, với lựa chọn cấu hình và hiệu chỉnh giữ ngoài test.
+Báo cáo khảo sát phân loại đơn nhãn 20 chuyên mục VietNamNet từ tiêu đề và nội dung. Xác minh chuyên mục cấp bài, quy mục con về cha và loại bỏ bài trùng lặp tạo tập dữ liệu 199,965 bài; bốn quy trình phân loại sử dụng cùng train/validation/test phân tầng 70/15/15. TF--IDF với SVM/LR, vector biểu diễn từ chuỗi với BiLSTM và PhoBERT tiền huấn luyện được đánh giá bằng cùng nhãn tham chiếu, với lựa chọn cấu hình và hiệu chỉnh giữ ngoài test.
 
-Trên cùng 29.995 bài test, PhoBERT đạt Macro-F1 87,22\%, hơn Linear SVM 1,89 điểm phần trăm; LR và BiLSTM đạt 84,98\% và 84,60\%. Khoảng bootstrap ghép cặp PhoBERT--SVM nằm trên 0 khi model cố định; các baseline gần nhau chưa có bằng chứng cho một thứ hạng ổn định qua các lần train. SVM là đối chứng mạnh về chi phí fit trong phạm vi đo trên CPU; các timer không tạo benchmark latency serving đồng nhất.
+Trên cùng 29,995 bài test, PhoBERT đạt Macro-F1 87.22\%, hơn Linear SVM 1.89 điểm phần trăm; LR và BiLSTM đạt 84.98\% và 84.60\%. Khoảng bootstrap ghép cặp PhoBERT--SVM nằm trên 0 khi mô hình cố định; các baseline gần nhau chưa có bằng chứng cho một thứ hạng ổn định qua các lần train. SVM là đối chứng mạnh về chi phí huấn luyện trong phạm vi đo trên CPU; các phép đo thời gian không tạo benchmark độ trễ phục vụ suy luận đồng nhất.
 
 Kết quả theo lớp cho thấy đứng đầu tổng thể không bảo đảm F1 tốt nhất ở chuyên mục ít mẫu. BiLSTM/LR tăng recall Nông thôn mới nhưng còn precision thấp; các lỗi chung cần đọc cùng quy tắc chuyên mục. Hiệu chỉnh xác suất, lựa chọn nhãn và chi phí rà soát là những khía cạnh liên quan nhưng khác nhau. Ứng dụng PhoBERT minh họa đề xuất nhãn và phản hồi có truy vết, không thay thế đánh giá offline (Phụ lục~\ref{app:application}).
 
 \section{Giới hạn và hướng kiểm chứng tiếp theo}
-Thực nghiệm chỉ có một nguồn báo và một seed. Phép chia ngẫu nhiên trong snapshot chưa đo tin tương lai, nguồn khác hay độ biến thiên huấn luyện; kiểm tra exact duplicates chưa đánh giá near-duplicate hoặc phụ thuộc sự kiện. Bootstrap dự đoán cố định mô tả bất định lấy mẫu test, không bù cho các giới hạn này.
+Thực nghiệm chỉ có một nguồn báo và một seed. Phép chia ngẫu nhiên trong bản dữ liệu chưa đo tin tương lai, nguồn khác hay độ biến thiên huấn luyện; kiểm tra các bài trùng khớp hoàn toàn chưa đánh giá bài gần giống nhau hoặc phụ thuộc sự kiện. Bootstrap dự đoán cố định mô tả bất định lấy mẫu test, không bù cho các giới hạn này.
 
-Các pipeline khác nhau về pretraining, stopword, tiêu đề, lượng văn bản giữ và ngân sách tìm cấu hình. Do đó, chưa quy được khoảng cách cho kiến trúc riêng hoặc một bước tiền xử lý. Khoảng confidence sau temperature không tự xác nhận calibration sau điều chỉnh class factor; các phép đo chi phí cũng cần cùng phạm vi, thiết bị và workload trước khi suy ra lựa chọn serving.
-
-
-Giới hạn nhãn và giới hạn model cần được xử lý theo hai đường khác nhau. Rà soát bài gốc và taxonomy giúp xác định trường hợp dữ liệu chưa đủ đáng tin; ablation trên corpus đã khóa giúp xác định ảnh hưởng của một lựa chọn xử lý. Nếu đổi đồng thời nhãn, split và kiến trúc, một điểm F1 mới không giải thích được nguyên nhân cải thiện. Thiết kế tiếp theo cần giữ đối chứng rõ cho từng giả thuyết.
-
-Các bước đánh giá mở rộng cũng cần khóa phạm vi. Test theo thời gian hỏi khả năng xử lý tin đến sau; nhiều seed hỏi độ ổn định của huấn luyện; calibration split riêng hỏi mức phụ thuộc lựa chọn vào validation. Chúng bổ sung những mặt khác nhau và không thay nhau. Một hệ thống có thể ổn định trong snapshot mà vẫn suy giảm khi sự kiện hoặc cách đặt chuyên mục thay đổi.
+Các quy trình phân loại khác nhau về tiền huấn luyện, từ dừng, tiêu đề, lượng văn bản giữ và ngân sách tìm cấu hình. Do đó, chưa quy được khoảng cách cho kiến trúc riêng hoặc một bước tiền xử lý. Khoảng độ tin cậy sau temperature không tự xác nhận hiệu chỉnh xác suất sau điều chỉnh hệ số điều chỉnh theo lớp; các phép đo chi phí cũng cần cùng phạm vi, thiết bị và khối lượng công việc trước khi suy ra lựa chọn phục vụ suy luận.
 
 
-Ưu tiên tiếp theo là kiểm toán ranh giới nhãn ở lớp hiếm và nhóm cùng sai, phát hiện gần trùng trước split, đánh giá theo thời gian và lặp nhiều seed. Ablation có kiểm soát cho Head--Tail, phân đoạn, bỏ số, stopword và lặp tiêu đề giúp xác định yếu tố cần giữ. Một tập calibration riêng và benchmark từ văn bản đến nhãn bổ sung căn cứ trước khi chuyển kết quả của snapshot sang một môi trường có lưu lượng mới.
+Giới hạn nhãn và giới hạn mô hình cần được xử lý theo hai đường khác nhau. Rà soát bài gốc và hệ thống chuyên mục giúp xác định trường hợp dữ liệu chưa đủ đáng tin; ablation trên tập dữ liệu đã khóa giúp xác định ảnh hưởng của một lựa chọn xử lý. Nếu đổi đồng thời nhãn, split và kiến trúc, một điểm F1 mới không giải thích được nguyên nhân cải thiện. Thiết kế tiếp theo cần giữ đối chứng rõ cho từng giả thuyết.
+
+Các bước đánh giá mở rộng cũng cần khóa phạm vi. Test theo thời gian hỏi khả năng xử lý tin đến sau; nhiều seed hỏi độ ổn định của huấn luyện; tập dữ liệu hiệu chỉnh riêng hỏi mức phụ thuộc lựa chọn vào validation. Chúng bổ sung những mặt khác nhau và không thay nhau. Một hệ thống có thể ổn định trong bản dữ liệu mà vẫn suy giảm khi sự kiện hoặc cách đặt chuyên mục thay đổi.
+
+
+Ưu tiên tiếp theo là kiểm toán ranh giới nhãn ở lớp hiếm và nhóm cùng sai, phát hiện gần trùng trước split, đánh giá theo thời gian và lặp nhiều seed. Ablation có kiểm soát cho Head--Tail, phân đoạn, bỏ số, từ dừng và lặp tiêu đề giúp xác định yếu tố cần giữ. Một tập hiệu chỉnh xác suất riêng và benchmark từ văn bản đến nhãn bổ sung căn cứ trước khi chuyển kết quả của bản dữ liệu sang một môi trường có lưu lượng mới.
