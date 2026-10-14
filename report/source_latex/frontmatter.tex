@@ -1,16 +1,12 @@
 \chapter*{Tóm tắt}
 \addcontentsline{toc}{chapter}{Tóm tắt}
-Phân loại chuyên mục giúp tổ chức bài báo tiếng Việt và hỗ trợ điều phối biên tập. Báo cáo xây dựng corpus VietNamNet, xác minh nhãn ở cấp bài và so sánh SVM, Logistic Regression, LSTM hai chiều (BiLSTM) và PhoBERT trên 20 lớp. Bốn phương pháp đại diện đặc trưng từ vựng, biểu diễn chuỗi và biểu diễn ngữ cảnh có tiền huấn luyện; ứng dụng minh họa dùng PhoBERT để đề xuất nhãn có người rà soát.
+Báo cáo nghiên cứu phân loại đơn nhãn 20 chuyên mục tin tức tiếng Việt trên corpus VietNamNet. Từ 200.337 bài sau xác minh chuyên mục ở cấp bài, khử trùng và xử lý xung đột nhãn tạo 199.965 bài. Corpus chia phân tầng 70/15/15 với seed 42; bốn phương pháp được đánh giá trên cùng 29.995 bài test. Nhãn tham chiếu phản ánh taxonomy tòa soạn, với những chuyên mục có nội dung giao thoa.
 
-Thu thập tạo 205.463 lượt URL, tương ứng 204.280 URL duy nhất. Sau xác minh có 200.337 bài; khử trùng và loại xung đột nhãn tạo corpus 199.965 bài. Chia phân tầng seed 42 tạo 139.975 mẫu train, 29.995 validation và 29.995 test. Mảng chỉ số chia tập của bốn model giống nhau; toàn bộ URL và nhãn test được đối chiếu theo thứ tự. Validation chọn cấu hình/checkpoint và fit calibration; test không tham gia các bước này.
+Hai mô hình tuyến tính SVM và Logistic Regression dùng TF--IDF toàn văn; BiLSTM học chuỗi với embedding khởi tạo; PhoBERT-base-v2 khai thác tiền huấn luyện và Head--Tail 256 subword. Validation chọn cấu hình, checkpoint và hiệu chỉnh, test dùng đánh giá cuối. Macro-F1 argmax của PhoBERT, SVM, LR và BiLSTM lần lượt đạt 87,22\%, 85,33\%, 84,98\% và 84,60\%. Lợi thế tổng thể không bảo đảm ưu thế ở mọi lớp; các lỗi và độ tin cậy xác suất cần được xem riêng.
 
-Với quyết định argmax, Macro-F1 test của PhoBERT/SVM/LR/BiLSTM lần lượt là 87,22\%/85,33\%/84,98\%/84,60\%. PhoBERT đạt Accuracy 91,08\%; sau điều chỉnh hệ số lớp đạt 91,13\% và Macro-F1 87,25\%, thêm 13 bài đúng ròng. Khoảng bootstrap ghép cặp của chênh lệch PhoBERT--SVM nằm trên 0 khi giữ model cố định, trong khi khoảng SVM--LR và LR--BiLSTM chứa 0. Kết luận này không thay thế thực nghiệm nhiều seed.
+Bootstrap ghép cặp trên dự đoán cố định ủng hộ chênh lệch PhoBERT--SVM trong điều kiện đã đo, chưa đo biến thiên nhiều lần huấn luyện. SVM fit nhanh trên CPU; các timer tìm cấu hình, huấn luyện neural và suy luận có phạm vi khác nhau. Một nguồn, một seed và khác biệt lượng văn bản quan sát giới hạn kết luận về kiến trúc hoặc tổng quát hóa.
 
-SVM/LR dùng TF--IDF toàn văn, stopword và tiêu đề lặp ba lần; BiLSTM học embedding từ đầu, giữ tối đa 512 từ; PhoBERT fine-tune backbone với Head--Tail 256 subword. Fit SVM được chọn mất 27,32 giây trên CPU; BiLSTM train 10 epoch mất 29,66 phút, PhoBERT bảy epoch mất 207,17 phút trên RTX A3000 Laptop 12 GB. Phạm vi timer và workload khác nhau được công bố, nên không coi đó là latency serving đồng nhất.
-
-BiLSTM/LR có F1 Nông thôn mới 48,24\%/47,06\%, cao hơn PhoBERT argmax 45,57\%; lợi thế tổng thể không bảo đảm ưu thế mọi lớp. Cả bốn cùng sai ở 1.251 bài, tập trung ở ranh giới nhãn biên tập. Temperature cải thiện NLL/ECE của bốn model; BiLSTM có ECE thấp nhất, PhoBERT có NLL thấp nhất. Một nguồn, một seed và thiếu ablation giới hạn suy luận về nguyên nhân và tổng quát hóa.
-
-Ứng dụng sáu dịch vụ dùng trọng số, tokenizer, mapping và calibration của gói PhoBERT. Nhập bài, rà soát, quản lý ngưỡng, registry và monitoring được kiểm chứng riêng. Chỉ số offline và monitoring phản hồi có phạm vi khác nhau; bộ ví dụ giao diện không được coi là một tập test độc lập.
+Một ứng dụng dùng PhoBERT hỗ trợ đề xuất nhãn, rà soát và lưu phản hồi được trình bày ở phụ lục. Chỉ số giao diện và monitoring không thay thế test offline. Báo cáo phân biệt hiệu quả nhãn, calibration và chi phí để hình thành căn cứ lựa chọn pipeline trong phạm vi thực nghiệm.
 
 \chapter*{Danh mục thuật ngữ}
 \addcontentsline{toc}{chapter}{Danh mục thuật ngữ}
@@ -36,7 +32,4 @@ ECE & Sai lệch confidence và tỷ lệ đúng theo 15 khoảng xác suất.\\
 Temperature & Tham số dương $T$ chia logits trước softmax.\\
 Hệ số lớp & $\tau_c$ trong điểm quyết định $p_c(T)/\tau_c$.\\
 Confidence & Xác suất của nhãn được chọn bởi quy tắc quyết định.\\
-Routing & Phân luồng auto-approve, review hoặc escalate.\\
-Artifact & Trọng số, tokenizer, mapping và cấu hình suy luận.\\
-Prediction ID & Khóa lần suy luận để gắn phản hồi đúng kết quả.\\
 \bottomrule\end{longtable}

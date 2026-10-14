@@ -1,6 +1,6 @@
 % Diagrams follow the template's monochrome TikZ styles.
 \newcommand{\PipelineDiagram}{
-\begin{figure}[H]\centering
+\begin{figure}[tbp]\centering
 \begin{tikzpicture}[node distance=9mm and 10mm]
 \node[box] (a) {20 tệp Parquet\\200.337 bài};
 \node[box,right=of a] (b) {Ghép tiêu đề\\và nội dung};
@@ -15,7 +15,7 @@
 
 
 \newcommand{\SplitDiagram}{
-\begin{figure}[H]\centering
+\begin{figure}[tbp]\centering
 \begin{tikzpicture}[node distance=11mm and 7mm]
 \node[box,text width=60mm] (all) {199.965 bài sau khử trùng\\20 chuyên mục; seed 42};
 \node[box,text width=42mm,below=of all] (val) {Validation: 29.995\\15\%};
@@ -29,19 +29,17 @@
 \end{tikzpicture}\caption{Ba tập có vai trò tách biệt; test nằm ngoài cập nhật, chọn checkpoint và hiệu chỉnh.}\end{figure}}
 
 \newcommand{\PreprocessDiagram}{
-\begin{figure}[H]\centering
-\begin{tikzpicture}[node distance=8mm]
-\node[box,text width=105mm] (a) {Tiêu đề + một khoảng trắng + nội dung};
-\node[box,text width=105mm,below=of a] (b) {Chuyển chữ thường; giữ dấu tiếng Việt};
-\node[box,text width=105mm,below=of b] (c) {Thay ký tự ngoài \texttt{\textbackslash w, \textbackslash s} bằng khoảng trắng};
-\node[box,text width=105mm,below=of c] (d) {Thay chuỗi chữ số bằng khoảng trắng};
-\node[box,text width=105mm,below=of d] (e) {ViTokenizer: nối âm tiết của từ bằng dấu gạch dưới};
-\node[box,text width=105mm,below=of e] (f) {Chuẩn hóa khoảng trắng; giữ stopwords};
-\foreach \x/\y in {a/b,b/c,c/d,d/e,e/f}\draw[flow] (\x)--(\y);
-\end{tikzpicture}\caption{Thứ tự tiền xử lý chính xác của văn bản tiếng Việt.}\end{figure}}
+\begin{figure}[tbp]\centering
+\begin{tikzpicture}[node distance=6mm]
+\node[box,text width=112mm] (a) {Tiêu đề + một khoảng trắng + nội dung};
+\node[box,text width=112mm,below=of a] (b) {Chữ thường $\to$ thay dấu câu $\to$ bỏ chuỗi chữ số\\Giữ dấu tiếng Việt trong văn bản Unicode thông thường};
+\node[box,text width=112mm,below=of b] (c) {PyVi: phân đoạn từ, nối các âm tiết bằng dấu gạch dưới};
+\node[box,text width=112mm,below=of c] (d) {Thu gọn khoảng trắng; giữ stopwords ở corpus chung};
+\foreach \x/\y in {a/b,b/c,c/d}\draw[flow] (\x)--(\y);
+\end{tikzpicture}\caption{Chuẩn hóa chung trước khử trùng; biến đổi riêng của từng model diễn ra sau khi chốt corpus.}\label{fig:preprocess}\end{figure}}
 
 \newcommand{\HeadTailDiagram}{
-\begin{figure}[H]\centering
+\begin{figure}[tbp]\centering
 \begin{tikzpicture}[node distance=9mm and 4mm]
 \node[box,text width=132mm] (raw) at (0,2) {Chuỗi BPE: $u_1,u_2,\ldots,u_L$ (không gồm token đặc biệt)};
 \node[box,text width=16mm] (cls) at (-5.3,0) {$\langle s\rangle$};
@@ -53,7 +51,7 @@
 \end{tikzpicture}\caption{Cách ghép Head--Tail; dấu token được minh họa theo ký hiệu của tokenizer PhoBERT.}\end{figure}}
 
 \newcommand{\EncoderDiagram}{
-\begin{figure}[H]\centering
+\begin{figure}[tbp]\centering
 \begin{tikzpicture}[node distance=8mm]
 \node[box,text width=92mm] (a) {input\_ids, attention\_mask\\$B\times256$};
 \node[box,text width=92mm,below=of a] (b) {Embedding token + vị trí + loại token\\$B\times256\times768$};
@@ -65,7 +63,7 @@
 \end{tikzpicture}\caption{PhoBERT và đầu phân loại trong RobertaForSequenceClassification.}\end{figure}}
 
 \newcommand{\AttentionDiagram}{
-\begin{figure}[H]\centering
+\begin{figure}[tbp]\centering
 \begin{tikzpicture}[node distance=9mm and 9mm]
 \node[box,text width=50mm] (h) {$H\in\mathbb{R}^{256\times768}$};
 \node[box,below left=of h] (q) {$Q=HW_Q$};\node[box,below=of h] (k) {$K=HW_K$};\node[box,below right=of h] (v) {$V=HW_V$};
@@ -76,32 +74,32 @@
 \end{tikzpicture}\caption{Tính toán bên trong một lớp encoder; mask loại vị trí padding khỏi attention.}\end{figure}}
 
 \newcommand{\TrainDiagram}{
-\begin{figure}[H]\centering
+\begin{figure}[tbp]\centering
 \begin{tikzpicture}[node distance=9mm and 10mm]
 \node[box] (b) {Mini-batch 32\\tensor cache};\node[box,right=of b] (m) {PhoBERT\\forward};\node[box,right=of m] (l) {Weighted CE\\backward};\node[box,below=of l] (a) {Tích lũy 2 batch\\AdamW};\node[box,left=of a] (e) {Cuối epoch\\Macro-F1};\node[box,left=of e] (c) {Lưu checkpoint\\tốt nhất};
 \foreach \x/\y in {b/m,m/l,l/a,a/e,e/c}\draw[flow] (\x)--(\y);\draw[flow] (a.east)--++(5mm,0)|-(b.north);
 \end{tikzpicture}\caption{Huấn luyện có tích lũy gradient và chọn checkpoint theo Macro-F1.}\end{figure}}
 
 \newcommand{\CalibrationDiagram}{
-\begin{figure}[H]\centering
+\begin{figure}[htbp]\centering
 \begin{tikzpicture}[node distance=9mm and 8mm]
 \node[box,text width=28mm] (z) {Logits $z_c$};\node[box,text width=35mm,right=of z] (p) {$p_c=\mathrm{softmax}(z/T)_c$};\node[box,text width=28mm,right=of p] (r) {$r_c=p_c/\tau_c$};\node[box,text width=28mm,right=of r] (d) {$\hat y=\arg\max_c r_c$};
-\node[box,text width=43mm,below=of p] (prob) {Xác suất nhãn được chọn\\confidence $=p_{\hat y}$};\node[box,text width=37mm,below=of d] (route) {Chính sách ứng dụng\\Auto / Review / Escalate};
-\draw[flow] (z)--(p);\draw[flow] (p)--(r);\draw[flow] (r)--(d);\draw[flow] (p)--(prob);\draw[flow] (prob.east)-|(route.north);
+\node[box,text width=43mm,below=of p] (prob) {Xác suất nhãn được chọn\\confidence $=p_{\hat y}$};\node[box,text width=37mm,below=of d] (route) {Chính sách ứng dụng\\Auto / Review\\/ Escalate};
+\draw[flow] (z)--(p);\draw[flow] (p)--(r);\draw[flow] (r)--(d);\draw[flow] (p)--(prob);\draw[flow] (d.south)--++(0,-4mm)-|(prob.north);\draw[flow] (prob.east)--++(4mm,0)|-(route.west);
 \end{tikzpicture}\caption{Hiệu chỉnh xác suất, chọn nhãn và định tuyến biên tập là các bước riêng.}\end{figure}}
 
 \newcommand{\AppDiagram}{
-\begin{figure}[H]\centering
+\begin{figure}[tbp]\centering
 \begin{tikzpicture}[node distance=13mm and 13mm]
 \node[box] (ui) {React UI\\HTTP 5173};\node[box,right=of ui] (api) {FastAPI\\HTTP 8000};\node[box,right=of api] (model) {Model service\\gRPC 50051};
 \node[box,below=of api] (db) {Postgres\\Dữ liệu, phiên};\node[box,below=of ui] (redis) {Redis\\Hàng đợi};\node[box,below=of model] (worker) {Dramatiq worker\\Import, recompute};
 \draw[flow] (ui)--(api);\draw[flow] (api)--(model);\draw[flow] (api)--(db);\draw[flow] (api)--(redis);\draw[flow] (redis.south)--++(0,-6mm)-|(worker.south);\draw[flow] (worker)--(model);\draw[flow] (worker)--(db);
 \node[box,text width=121mm,below=16mm of db] (artifact) {model/ + app/artifacts/active.json\\Một gói model, tokenizer, nhãn, $T$ và $\tau_c$};
-\draw[flow] (artifact.east)-|(model.east);
+\draw[flow] (artifact.east)--++(6mm,0)|-(model.east);
 \end{tikzpicture}\caption{Sáu dịch vụ của ứng dụng và gói mô hình dùng cho suy luận.}\end{figure}}
 
 \newcommand{\ReviewDiagram}{
-\begin{figure}[H]\centering
+\begin{figure}[tbp]\centering
 \begin{tikzpicture}[node distance=10mm and 10mm]
 \node[box] (article) {Bài báo\\toàn văn};\node[box,right=of article] (predict) {Dự đoán\\prediction ID};\node[box,right=of predict] (review) {Biên tập viên\\quyết định};
 \node[box,below=of review] (decision) {Approve / Override\\/ Escalate};\node[box,left=of decision] (join) {Ghép phản hồi đúng\\prediction ID};\node[box,left=of join] (monitor) {Monitoring\\nhãn đã rà soát};
@@ -110,7 +108,7 @@
 \end{tikzpicture}\caption{Vòng phản hồi có truy vết phiên bản mô hình và lần dự đoán.}\end{figure}}
 
 \newcommand{\ActivationDiagram}{
-\begin{figure}[H]\centering
+\begin{figure}[tbp]\centering
 \begin{tikzpicture}[node distance=8mm]
 \node[box,text width=109mm] (a) {Upload vào thư mục staging; kiểm tra tên và nội dung gói};
 \node[box,text width=109mm,below=of a] (b) {Kiểm tra metadata + nạp trọng số + suy luận thử};
@@ -120,3 +118,45 @@
 \node[box,text width=109mm,below=of e] (f) {Lỗi: phục hồi manifest; thành công: phục vụ phiên bản mới};
 \foreach \x/\y in {a/b,b/c,c/d,d/e,e/f}\draw[flow] (\x)--(\y);
 \end{tikzpicture}\caption{Kiểm tra và kích hoạt một gói mô hình có kiểm soát.}\end{figure}}
+
+\newcommand{\CorpusAuditDiagram}{
+\begin{figure}[tbp]\centering
+\begin{tikzpicture}[
+audit/.style={box,text width=106mm,minimum height=10mm},
+branch/.style={box,text width=33mm,minimum height=15mm}]
+\node[audit] (raw) at (0,0) {205.463 lượt URL từ 20 chuyên mục\\204.280 URL duy nhất};
+\node[audit] (fetch) at (0,-1.3) {Tải bài; kiểm tra canonical URL, nội dung và breadcrumb};
+\node[audit] (verify) at (0,-2.6) {Đối chiếu bằng chứng chuyên mục ở cấp bài};
+\node[branch] (same) at (-4.1,-4.1) {Giữ nhãn nguồn\\199.463 bài};
+\node[branch] (move) at (0,-4.1) {Chuyển class\\874 bài};
+\node[branch] (drop) at (4.1,-4.1) {Loại/gộp\\3.866 + 76 + 1};
+\node[audit] (clean) at (0,-5.7) {200.337 bài đã xác minh theo URL};
+\node[audit] (dedup) at (0,-7) {Khử trùng văn bản chuẩn hóa\\Loại 8 dòng xung đột nhãn, 364 dòng lặp cùng nhãn};
+\node[audit] (corpus) at (0,-8.3) {Corpus 199.965 bài, 20 nhãn};
+\node[audit] (split) at (0,-9.6) {Train 139.975; validation 29.995; test 29.995};
+\draw[flow] (raw)--(fetch);\draw[flow] (fetch)--(verify);
+\foreach \x in {same,move,drop}\draw[flow] (verify.south)--++(0,-1mm)-|(\x.north);
+\draw[flow] (same.south)--++(0,-2mm)--++(-2,0)|-(clean.west);
+\draw[flow] (move)--(clean);
+\foreach \x/\y in {clean/dedup,dedup/corpus,corpus/split}\draw[flow] (\x)--(\y);
+\end{tikzpicture}
+\caption{Xác minh chuyên mục và tạo corpus; nhánh loại/gộp không đi vào dữ liệu huấn luyện.}\label{fig:corpus-audit}\end{figure}}
+
+\newcommand{\MethodFamiliesDiagram}{
+\begin{figure}[tbp]\centering
+\begin{tikzpicture}[smallbox/.style={box,text width=39mm,minimum height=14mm},node distance=6mm]
+\node[box,text width=100mm] (input) at (0,0) {Tiêu đề + nội dung; chuẩn hóa chung và PyVi};
+\node[smallbox] (a) at (-5,-1.9) {Stopword; tiêu đề $\times3$\\TF--IDF fit trên train};
+\node[smallbox] (b) at (0,-1.9) {Vocabulary train\\Head--Tail 512 từ};
+\node[smallbox] (c) at (5,-1.9) {BPE tokenizer có sẵn\\Head--Tail 256 subword};
+\node[smallbox] (d) at (-5,-3.7) {Linear SVM / LR\\Điểm tuyến tính};
+\node[smallbox] (e) at (0,-3.7) {Embedding học từ đầu\\BiLSTM + Linear};
+\node[smallbox] (f) at (5,-3.7) {PhoBERT tiền huấn luyện\\Đầu phân loại};
+\node[box,text width=100mm] (out) at (0,-5.6) {20 nhãn; cùng 29.995 bài test và cùng thứ tự nhãn};
+\foreach \x in {a,b,c}\draw[flow] (input.south)--++(0,-4mm)-|(\x.north);
+\foreach \x/\y in {a/d,b/e,c/f}\draw[flow] (\x)--(\y);
+\coordinate (joinrail) at (0,-4.85);
+\foreach \x in {d,e,f}\draw[thick] (\x.south)|-(joinrail);
+\draw[flow] (joinrail)--(out.north);
+\end{tikzpicture}
+\caption{Ba họ biểu diễn và bốn pipeline. Phần văn bản quan sát, pretraining và ngân sách tối ưu khác nhau.}\label{fig:method_families}\end{figure}}

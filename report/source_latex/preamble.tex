@@ -12,8 +12,8 @@
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning,calc,fit,backgrounds}
 \usepackage[numbers,sort&compress]{natbib}
-\usepackage{hyperref}
-\hypersetup{colorlinks=true,linkcolor=black,citecolor=black,urlcolor=black,
+\usepackage{placeins}\usepackage{hyperref}
+\hypersetup{plainpages=false,colorlinks=true,linkcolor=black,citecolor=black,urlcolor=black,
  pdftitle={CO5087: Vietnamese news classification},pdfauthor={Dang Nguyen Tan Tai}}
 \setlength{\parindent}{1cm}
 \setlength{\parskip}{4pt}
@@ -43,16 +43,23 @@
  fc/.style={box},output/.style={box},
  flow/.style={-{Latex[length=2mm]},thick},
  note/.style={align=center,font=\footnotesize,text width=35mm}}
-\newcommand{\ReportFigure}[3][.97]{\begin{figure}[H]\centering
+\newcommand{\ReportFigure}[3][.90]{\begin{figure}[tbp]\centering
 \includegraphics[width=#1\linewidth,keepaspectratio]{#2}\caption{#3}\end{figure}}
-\newcommand{\DataTable}[2]{\begin{table}[H]\centering\caption{#2}
+\newcommand{\DataTable}[2]{\begin{table}[htbp]\centering\caption{#2}
 \small\setlength{\tabcolsep}{4pt}\input{#1}\end{table}}
 \newcommand{\Evidence}[1]{\begin{tcolorbox}[colback=white,colframe=black,
  boxrule=.5pt,arc=1mm]#1\end{tcolorbox}}
+\setcounter{topnumber}{3}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{4}
+\renewcommand{\topfraction}{.88}
+\renewcommand{\bottomfraction}{.8}
+\renewcommand{\textfraction}{.1}
+\renewcommand{\floatpagefraction}{.7}
 \input{architectures}
 
-\newcommand{\PortraitFigure}[2]{\begin{figure}[H]\centering
-\makebox[\linewidth][c]{\includegraphics[width=1.13\linewidth,height=.82\textheight,keepaspectratio]{#1}}
+\newcommand{\PortraitFigure}[2]{\begin{figure}[tbp]\centering
+\includegraphics[width=.94\linewidth,height=.72\textheight,keepaspectratio]{#1}
 \caption{#2}\end{figure}}
 
 \newcommand{\PortraitFigureIntro}[3]{#1\PortraitFigure{#2}{#3}}

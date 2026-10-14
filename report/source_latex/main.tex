@@ -42,13 +42,17 @@ với SVM, Logistic Regression, LSTM và PhoBERT\par}
 \input{chapters/c2_data}
 \input{chapters/c3_model}
 \input{chapters/c4_training}
-\input{chapters/c5_results}
-\input{chapters/c5_comparison}
-\input{chapters/c6_application}
-\input{chapters/c7_verification}
+\input{chapters/c5_experiments_compact}
 \input{chapters/c8_conclusion}
+\clearpage\phantomsection\addcontentsline{toc}{chapter}{Tài liệu tham khảo}
 \bibliographystyle{plainnat}
-\bibliography{references}
+{\interlinepenalty=10000\bibliography{references}}
+\clearpage
 \appendix
-\input{chapters/appendix}
+\renewcommand{\thepage}{\Alph{chapter}-\arabic{page}}
+\setcounter{page}{1}
+\input{chapters/appendix_evidence_compact}
+\clearpage
+\setcounter{page}{1}
+\input{chapters/appendix_application_compact}
 \end{document}

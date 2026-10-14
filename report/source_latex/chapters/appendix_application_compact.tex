@@ -1,0 +1,49 @@
+\chapter{Ứng dụng hỗ trợ biên tập}\label{app:application}
+\FloatBarrier
+\section{Kiến trúc dịch vụ và hợp đồng suy luận}
+Ứng dụng đưa gói PhoBERT vào quy trình nhập bài, đề xuất nhãn, rà soát và lưu phản hồi. Sáu dịch vụ trong Docker Compose gồm React/Vite UI, FastAPI API, model service gRPC, PostgreSQL, Redis và Dramatiq worker. UI dùng HTTP 5173, API 8000, model service gRPC 50051; database schema \texttt{vnn} lưu bài, prediction, feedback, phiên và registry. Redis hỗ trợ hàng đợi, worker xử lý import hoặc recompute monitoring.
+\AppDiagram
+Model service nạp artifact theo \texttt{app/artifacts/active.json}: trọng số PhoBERT, tokenizer local, taxonomy 20 lớp, Head--Tail 256, temperature và toàn bộ hệ số lớp. Startup kiểm tra file, mapping và SHA trọng số; model ở eval mode, tắt dropout. Ba gói SVM/LR/BiLSTM là đối chứng offline, chưa là lựa chọn model trong UI. Với container hiện tại, inference dùng CPU float32; notebook neural dùng GPU BF16, nên logits sát ranh giới có thể khác nhỏ dù cùng quy tắc.
+
+Ba vai trò Editor, Admin và Data Scientist có quyền tương ứng ở API. Phân quyền không chỉ dựa vào việc ẩn nút trong UI. Package bao gồm metadata và tokenizer cùng trọng số; chỉ có config/tokenizer trong clone mà thiếu trọng số không đủ để chạy dịch vụ. Hợp đồng này giúp tránh mô hình nạp được tensor nhưng dùng sai nhãn hoặc sai tiền xử lý.
+
+\FloatBarrier
+\section{Quy trình dự đoán, đọc bài và sửa nhãn}
+Editor nhập URL VietNamNet hoặc dán title/content. Dịch vụ kiểm tra văn bản hữu ích, lưu nội dung đầy đủ và gọi inference; công việc bất đồng bộ có job ID để theo dõi. Lỗi tải và đầu vào rỗng không được thay bằng dự đoán giả. Các bài nhập trong app không tự được đưa vào corpus notebook.
+\begin{figure}[htbp]\centering
+\includegraphics[width=.84\linewidth,height=.66\textheight,keepaspectratio]{assets/application/article_review.png}
+\caption{Nội dung bài và URL nguồn trong màn hình rà soát.}\label{fig:app-review}\end{figure}
+\begin{figure}[htbp]\centering
+\includegraphics[width=.84\linewidth,height=.66\textheight,keepaspectratio]{assets/application/prediction_controls.png}
+\caption{Nhãn gợi ý, confidence, các ứng viên và thao tác biên tập.}\end{figure}
+Ví dụ ``Phiên chợ nhộn nhịp ở Bắc Hà, cuộc sống khởi sắc'' có nội dung du lịch, sinh kế và giảm nghèo. Model chọn Đời sống với confidence khoảng 0,26, trong khi xác suất Dân tộc -- Tôn giáo khoảng 0,44. Điều này phù hợp với hệ số quyết định: nhãn xếp đầu theo $r=p/\tau$ có thể không có xác suất lớn nhất. Confidence thấp đưa bài vào escalate; không coi ví dụ này như một đánh giá test mới.
+\ReviewDiagram
+Approve giữ nhãn đề xuất, Override chọn nhãn khác trong taxonomy, Escalate chuyển bài khó. API từ chối approve với nhãn không phải top-1 hoặc khi chưa có prediction hợp lệ. Feedback gắn đúng prediction ID; suy luận lại tạo prediction mới, không tự chuyển phản hồi cho lần cũ thành ground truth của lần mới. Các khối keyword trên UI không phải attribution của attention.
+
+\FloatBarrier
+\section{Routing và vận hành}
+Chính sách database dùng confidence $p_{\hat y}(T)$: từ 0,75 là auto-approve; từ 0,68 đến dưới 0,75 là review; thấp hơn 0,68 là escalate. Các ngưỡng routing khác hệ số $\tau_c$ và khác margin trên $q=r/\sum r$. Thay ngưỡng không fine-tune model, không fit lại temperature và không tạo xác suất calibrated cho $q$.
+\ReportFigure[.83]{assets/application/admin_ops.png}{Admin xem preview và điều chỉnh hai ngưỡng routing của dữ liệu vận hành.}
+Preview tính lượng bài trong từng luồng trước khi áp dụng chính sách. Offline selective prediction ở hình~\ref{fig:coverage} cho thấy đổi ngưỡng giảm khối lượng tự động nhưng không loại bỏ mọi lỗi. Accuracy trên nhóm giữ lại khác Accuracy toàn tập; threshold không phải bảo đảm an toàn hoặc SLA.
+\ReportFigure[.86]{assets/evaluation/coverage_accuracy.png}{Coverage và Accuracy có điều kiện của nhóm đạt ngưỡng trên test; đây là mô phỏng offline.\label{fig:coverage}}
+Registry hiển thị metadata, chỉ số offline, file artifact và trạng thái active. Upload kiểm tra path/tên, metadata và khả năng nạp suy luận trước đăng ký. Kích hoạt kiểm tra package, lấy khóa triển khai, thay manifest bằng thao tác \texttt{os.replace}, health check đúng run ID rồi cập nhật database. Nếu thất bại, code phục hồi manifest cũ; cơ chế này chưa chứng minh an toàn giao dịch toàn hệ thống dưới mọi lỗi tiến trình.
+\ReportFigure[.83]{assets/application/model_versions.png}{Registry gói PhoBERT: phiên bản, calibration và kết quả offline từ artifact.}
+
+\FloatBarrier
+\section{Monitoring và Dataset Lab}
+Monitoring ghép phản hồi với đúng prediction. Macro-F1 ở đây tính trên các nhãn quan sát được trong nhóm có feedback, không mặc định đủ 20 lớp. Các bài được chọn rà soát có thiên lệch, nên không đối chiếu trực tiếp số trên UI với Macro-F1 test offline. Drift score kết hợp margin và sai khác phản hồi theo heuristic, chưa là kiểm định phân bố.
+\begin{figure}[htbp]\centering
+\includegraphics[width=.84\linewidth,height=.66\textheight,keepaspectratio]{assets/application/monitoring.png}
+\caption{Monitoring theo feedback gắn với đúng prediction.}\label{fig:app-monitoring}\end{figure}
+\begin{figure}[htbp]\centering
+\includegraphics[width=.84\linewidth,height=.66\textheight,keepaspectratio]{assets/application/dataset_lab.png}
+\caption{Dataset Lab: phân bố và ứng viên rà soát trong dữ liệu vận hành.}\end{figure}
+Dataset Lab trình bày bài khó, confidence thấp và ứng viên relabel. Hệ thống lưu feedback và job, chưa có vòng tự fine-tuning rồi tự triển khai checkpoint. Snapshot database minh họa có 32 bài từ corpus với dự đoán thật; phân bố được chọn để minh họa lớp và tình huống khó, không đại diện corpus huấn luyện. Backup chứa schema ứng dụng, không chứa toàn bộ dataset và trọng số.
+
+\FloatBarrier
+\section{Kiểm chứng và giới hạn}
+Các nguồn có thể kiểm tra lại gồm output notebook, gói active, source API/model service, ảnh giao diện và snapshot database. Notebook giữ kết quả nạp lại artifact và suy luận kiểm tra trên validation; các điều kiện từ chối đầu vào rỗng, mapping sai, calibration không hữu hạn hoặc artifact thiếu nằm trong code. Báo cáo không coi logic kiểm tra tồn tại như bằng chứng mọi testcase runtime đã được chạy lại.
+
+Health, RBAC, suy luận nhất quán, kích hoạt artifact, worker và văn bản rỗng là các nhóm kiểm chứng liên quan đến pipeline. Số kiểm tra tự động 46 xuất hiện trong tài liệu kiểm chứng của project, nhưng log từng testcase không được giữ trong snapshot hiện tại; vì vậy không dùng số đó làm chứng nhận test có thể tái kiểm toán. Ảnh giao diện chứng minh trạng thái minh họa đã lưu, không chứng minh accuracy hoặc độ bền production.
+
+Triển khai của bài tập lớn giới hạn localhost. Môi trường có lưu lượng mới cần quản trị secret, TLS, tải, retention và đánh giá lỗi tự động theo từng lớp. Một model ngoài taxonomy vẫn có thể nhận nhãn tự tin; monitoring không cung cấp bộ phát hiện ngoài miền đã kiểm chứng. Các giới hạn vận hành này tách biệt với kết quả test của bốn model.

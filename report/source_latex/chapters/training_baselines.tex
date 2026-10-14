@@ -1,44 +1,24 @@
-\section{Huấn luyện và lựa chọn hai mô hình tuyến tính}
-SVM và LR mỗi model khảo sát 12 cấu hình từ hai profile unigram/unigram--bigram, ba giá trị $C\in\{0,5;1,5;3,0\}$ và hai chính sách trọng số lớp uniform/balanced. Các profile được fit độc lập chỉ trên train; classifier dùng cùng ma trận của profile tương ứng. Với balanced, trọng số $w_c=N_{train}/(20n_c)$ dựa trên phân bố train, không cân bằng lại validation/test.
+SVM và LR mỗi model duyệt 12 cấu hình: hai profile unigram/unigram--bigram, ba giá trị $C\in\{0,5;1,5;3,0\}$ và uniform/balanced. Các profile TF--IDF chỉ fit trên train; mỗi classifier dùng ma trận của profile tương ứng. Validation chọn Macro-F1, rồi Weighted-F1 và Accuracy khi bằng nhau; không refit thêm validation vào train. Cả 12 cấu hình của mỗi model đều hội tụ; bảng~\ref{tab:linear_config} ghi nghiệm được chọn. Không có đường học theo epoch cho hai bộ phân loại này.
 
-Validation chọn cấu hình bằng Macro-F1, tiếp đến Weighted-F1 và Accuracy khi bằng nhau. Mỗi cấu hình phải đạt hội tụ trước khi đủ điều kiện được chọn. Output xác nhận cả 12 cấu hình SVM và 12 cấu hình LR hội tụ; cấu hình được giữ là hai cấu hình trong bảng~\ref{tab:linear_config}. Không lấy cấu hình tốt nhất theo test và không refit thêm validation vào train sau lựa chọn. Chi phí tìm cấu hình được ghi riêng với thời gian fit classifier đã chọn.
-
-\section{Huấn luyện BiLSTM và chọn checkpoint}
-\label{sec:lstm_training}
-Ba cấu hình khảo sát kết hợp Head--Tail 256/512 từ với số mũ trọng số lớp 0,5/1,0; các thành phần kiến trúc còn lại giữ như mục~\ref{sec:bilstm}. Báo cáo phân tích cấu hình được chọn: 512 từ, embedding 200, hidden 128 mỗi hướng, một layer, dropout 0,35 và $\alpha=0,5$. Trọng số được chuẩn hóa theo trung bình có trọng số của train:
+BiLSTM khảo sát ba cấu hình từ chiều dài 256/512 từ và số mũ trọng số 0,5/1,0. Cấu hình chọn giữ 512 từ và $\alpha=0,5$; các thành phần kiến trúc ở mục~\ref{sec:bilstm} được cập nhật bằng AdamW. Trọng số dựa vào tần suất train và chuẩn hóa để trung bình theo số bài bằng 1:
 \begin{equation}
 \widetilde w_c=\left(\frac{N_{train}}{20n_c}\right)^{\alpha},\qquad
 w_c=\frac{\widetilde w_c}{\sum_j(n_j/N_{train})\widetilde w_j}.
 \end{equation}
-Nông thôn mới có trọng số 3,3510 trong cấu hình này, khác 10,3226 của PhoBERT. Loss của batch là tổng cross-entropy có trọng số chia tổng trọng số các nhãn trong batch. Loss epoch được cộng từ các tử số và mẫu số, không lấy trung bình không trọng số giữa batch đầy và batch cuối.
+Nông thôn mới có trọng số 3,3510 trong cấu hình BiLSTM này, khác trọng số balanced của PhoBERT. Loss batch chia tổng cross-entropy có trọng số cho tổng weight các nhãn; loss epoch cộng tử số và mẫu số, không lấy trung bình ngang nhau giữa các batch có số mẫu khác nhau. Shuffle giữ phân bố train, không oversample validation/test.
 
-\begin{table}[H]\centering\small\caption{Tối ưu BiLSTM của cấu hình được chọn.}\label{tab:bilstm_training}
-\begin{tabular}{lr}\toprule Thiết lập & Giá trị\\\midrule
-Optimizer & AdamW\\
-Learning rate ban đầu / tối thiểu & $10^{-3}$ / $10^{-5}$\\
-Weight decay / gradient clip & $10^{-4}$ / 1,0\\
-Batch train / validation và test & 64 / 128\\
-Epoch tối đa / epoch đã chạy & 10 / 10\\
-Checkpoint chọn & Epoch 10\\
-Early stopping patience / min delta & 2 / 0,001\\
-ReduceLROnPlateau factor / patience & 0,5 / 0\\
-GPU / precision & RTX A3000 12 GB / BF16\\\bottomrule
-\end{tabular}\end{table}
 
-AdamW cập nhật embedding, recurrent layer và classifier. AMP dùng BF16; gradient được clip về norm tối đa 1,0 trước bước optimizer. Scheduler theo Macro-F1 validation, giảm learning rate một nửa sau epoch không cải thiện đủ ngưỡng tuyệt đối 0,001. Batch giữ phân bố train thực tế qua shuffle; trọng số loss không tương đương oversampling lớp hiếm.
+Trọng số nghịch tần suất và căn bậc hai của trọng số này thể hiện mức ưu tiên khác nhau. Cấu hình $\alpha=0,5$ làm chênh lệch weight bớt mạnh so với balanced đầy đủ; phép chuẩn hóa giữ thang trung bình theo phân bố train. Đây là quy tắc được khảo sát trong các ứng viên validation, không phải hệ số thêm sau khi thấy lớp hiếm trên test yếu. Không thể từ một nghiệm tốt nhất kết luận số mũ này tối ưu trên mọi snapshot.
 
-Checkpoint và early stopping có tiêu chí khác nhau: checkpoint giữ giá trị validation tốt nhất kể cả cải thiện nhỏ; bộ đếm dừng cần vượt mốc tốt trước đó ít nhất 0,001. Vì vậy, epoch 10 có Macro-F1 0,8449 cao nhất nhưng vẫn kích hoạt bộ đếm patience sau hai epoch không cải thiện đủ ngưỡng. Thực nghiệm đã chạy 10 epoch; không mô tả như được dừng trước giới hạn. Bảng và các đồ thị dưới đây thuộc duy nhất cấu hình được chọn, không nối lịch sử của ba cấu hình.
-\DataTable{tables/lstm_epochs.tex}{Lịch sử 10 epoch của BiLSTM được chọn; loss có trọng số, checkpoint theo Macro-F1.}
-Loss validation thấp nhất ở epoch 5 (0,4230), trong khi Macro-F1 cao nhất ở epoch 10 (0,8449). Loss train giảm từ 1,2428 xuống 0,2360; loss validation cuối là 0,4341. Chênh lệch này cảnh báo về mức phù hợp giữa train và validation, nhưng không đủ để quy mọi thay đổi F1 cho overfitting. Weighted loss, Macro-F1 và calibration đánh giá các tính chất khác nhau.
-\ReportFigure{assets/baselines/lstm/training/train_loss.png}{Weighted cross-entropy train của BiLSTM qua 10 epoch, xuất riêng từ notebook.}
-\ReportFigure{assets/baselines/lstm/training/validation_loss.png}{Loss validation của BiLSTM; cực tiểu loss không trùng checkpoint Macro-F1 tốt nhất.}
-\ReportFigure{assets/baselines/lstm/training/validation_f1_macro.png}{Macro-F1 validation của BiLSTM; checkpoint được chọn ở epoch 10.}
-\ReportFigure{assets/baselines/lstm/training/learning_rate.png}{Learning rate theo epoch của BiLSTM; giảm từ 0,001 đến 0,000125.}
+Tính loss epoch bằng tổng tử và mẫu giúp batch cuối nhỏ không đóng góp như một batch đầy chỉ vì có một scalar loss. Gradient vẫn được tạo qua từng mini-batch để cập nhật tham số. Loss validation và F1 đánh giá khác nhau: loss nhạy với độ tự tin và trọng số nhãn, F1 chỉ phụ thuộc quyết định đúng/sai theo lớp. Giảm một đại lượng không bảo đảm tăng đại lượng còn lại.
 
-\section{Hiệu chỉnh điểm số của các mô hình đối chứng}
-SVM tạo margin, LR và BiLSTM tạo logits. Cả ba dùng $p(T)=\operatorname{softmax}(s/T)$, tìm $T>0$ bằng NLL trên validation và cố định trước đánh giá test. SVM dùng phép chuẩn hóa margin thành phân bố, không có xác suất sinh sẵn từ \texttt{LinearSVC}. Temperature dương giữ thứ tự score, nên Accuracy, precision, recall và F1 không thay đổi. Ba đối chứng không dùng hệ số điều chỉnh quyết định theo lớp như PhoBERT.
 
-Validation phục vụ cả lựa chọn model lẫn fit temperature. Việc dùng lại validation có thể tăng phụ thuộc vào tập này; test vẫn không tham gia fit. Khoảng tin cậy trong notebook dùng bootstrap IID 500 lần trên test với model cố định. Nó mô tả biến thiên do mẫu đánh giá, không mô phỏng nhiều lần huấn luyện với seed khác nhau. So sánh ghép cặp ở chương~\ref{chap:comparison} giữ chung các mẫu bootstrap để đánh giá chênh lệch giữa model.
 
-\section{Fine-tuning và hiệu chỉnh PhoBERT}
-Các mục sau mô tả quy trình PhoBERT; trọng số, optimizer, lịch học và hệ số quyết định thuộc cấu hình riêng của mô hình. Phép chia và tiêu chí đánh giá thống nhất với ba đối chứng, còn cách biểu diễn và ngân sách tìm tham số khác nhau. Mọi kết luận về đóng góp riêng của Head--Tail, trọng số lớp hoặc pretraining cần một ablation tương ứng.
+Learning rate khởi đầu $10^{-3}$, weight decay $10^{-4}$ và clip gradient norm 1,0. Batch train 64, validation/test 128, BF16 trên RTX A3000. ReduceLROnPlateau theo Macro-F1 có factor 0,5, patience 0, threshold tuyệt đối 0,001 và learning rate tối thiểu $10^{-5}$. Checkpoint giữ điểm validation tốt nhất, còn early stopping cần vượt mốc trước ít nhất 0,001, patience 2. Hai tiêu chí không hoàn toàn đồng nhất.
+\begin{figure}[tbp]\centering
+\begin{subfigure}[t]{.48\textwidth}\centering
+\includegraphics[width=\linewidth]{assets/compact/lstm_val_loss.png}\caption{Weighted validation loss.}\end{subfigure}\hfill
+\begin{subfigure}[t]{.48\textwidth}\centering
+\includegraphics[width=\linewidth]{assets/compact/lstm_val_f1.png}\caption{Validation Macro-F1.}\end{subfigure}
+\caption{Validation của cấu hình BiLSTM được chọn; cực tiểu loss và checkpoint tốt nhất thuộc các epoch khác nhau.}\label{fig:lstm-validation}\end{figure}
+Loss validation thấp nhất ở epoch 5 (0,4230), Macro-F1 cao nhất ở epoch 10 (0,8449). Lượt đã chạy đủ 10 epoch; checkpoint vẫn giữ cải thiện nhỏ ở epoch cuối dù bộ đếm early stopping đạt patience. Learning rate cuối là 0,000125. Những diễn biến này không đủ để quy mọi biến thiên F1 cho overfitting hoặc khẳng định early stopping dừng trước giới hạn.

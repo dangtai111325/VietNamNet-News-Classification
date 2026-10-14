@@ -1,87 +1,105 @@
-\chapter{Huấn luyện và hiệu chỉnh dự đoán}
-\label{chap:training}
-Các mô hình dùng cùng train/validation/test nhưng có optimizer, trọng số lớp, tiêu chí hội tụ và ngân sách lựa chọn riêng. Chương này trình bày lựa chọn SVM/LR, huấn luyện BiLSTM và fine-tuning PhoBERT; chương~\ref{chap:comparison} đối chiếu chất lượng, calibration và chi phí của các cấu hình được chọn.
+\chapter{Huấn luyện, lựa chọn cấu hình và hiệu chỉnh}\label{chap:training}
+\FloatBarrier
+\section{Giao thức lựa chọn và thông số thực nghiệm}
+Các model dùng cùng corpus và split, nhưng có mục tiêu tối ưu, trọng số và ngân sách lựa chọn khác nhau. Tất cả cấu hình trong test được chọn bằng validation. Từ vựng/IDF, vocabulary chuỗi và class weights chỉ học từ train; test không dùng chọn cấu hình, epoch, temperature hoặc hệ số quyết định.
+\begin{table}[htbp]\centering\small\caption{Thiết lập lựa chọn và thiết bị; cấu hình biểu diễn chi tiết ở chương~\ref{chap:model}.}\label{tab:training_protocol}
+\begin{tabularx}{\linewidth}{lXXl}\toprule Model & Ngân sách lựa chọn & Tiêu chí và tối ưu & Thiết bị\\\midrule
+SVM & 12 cấu hình; train-only TF--IDF & Hội tụ squared hinge; Macro-F1 validation & CPU, 4 luồng\\
+LR & 12 cấu hình; train-only TF--IDF & Hội tụ log-loss; Macro-F1 validation & CPU, 4 luồng\\
+BiLSTM & 3 cấu hình; tối đa 10 epoch/lượt & AdamW; checkpoint theo Macro-F1 & RTX A3000\\
+PhoBERT & Cấu hình cố định; tối đa 7 epoch & AdamW; checkpoint theo Macro-F1 & RTX A3000\\\bottomrule
+\end{tabularx}\end{table}
+Validation còn được dùng fit hiệu chỉnh nên kết quả có phụ thuộc vào tập này; một tập calibration riêng là hướng kiểm tra thêm. Seed 42 khóa phép chia trong snapshot, chưa bảo đảm phép tính GPU giống bit giữa thiết bị/phiên bản. Ngân sách tìm cấu hình khác nhau cần được giữ khi diễn giải đánh đổi, thay vì coi đây là một phép thay kiến trúc có kiểm soát mọi yếu tố.
+
+\FloatBarrier
+\section{Huấn luyện SVM/LR và BiLSTM}
 \input{chapters/training_baselines}
-\section{Chuẩn bị ba tập và tensor}
-Phân tầng được thực hiện sau khử trùng, seed 42, theo tỷ lệ 70/15/15. Các tensor input IDs, attention mask và nhãn bảo toàn thứ tự bài. Cache train, validation và test có chiều lần lượt $139\,975\times256$, $29\,995\times256$ và $29\,995\times256$. Padding không tham gia attention như token văn bản. Dataloader train xáo trộn mẫu; validation và test giữ phân bố lớp thực tế.
 
-Seed giúp tái tạo các lựa chọn ngẫu nhiên có kiểm soát, nhưng không bảo đảm mọi phép tính GPU giống bit giữa các phiên bản và thiết bị. Thực nghiệm sử dụng một seed; độ biến thiên do khởi tạo và thứ tự batch chưa được đo.
 
-\section{Fine-tuning toàn bộ mô hình}
-Mô hình được khởi tạo từ \texttt{vinai/phobert-base-v2}; đầu phân loại có 20 nhãn. Toàn bộ encoder và head được cập nhật qua backward, không đóng băng backbone và không chỉ huấn luyện lớp tuyến tính cuối. Đây là học chuyển giao có giám sát; corpus dự án không được dùng tiền huấn luyện mô hình ngôn ngữ từ đầu.
+\subsection{Hội tụ, lựa chọn và ngân sách thực nghiệm}
+Điều kiện hội tụ của SVM/LR xác nhận optimizer đã đạt tiêu chí số của cấu hình, không chứng minh model tối ưu về nhãn hay tổng quát hóa. Với LR, L-BFGS tối ưu log-loss có regularization; với LinearSVC, mục tiêu squared hinge theo các bài toán một-chống-còn-lại. Cùng Macro-F1 validation để lựa chọn không làm hai mục tiêu train trở thành giống nhau. Số vòng tối ưu vì thế không so trực tiếp như số epoch neural.
 
-\section{Weighted cross-entropy}
-Với $n_c$ là số mẫu class $c$ trong train, trọng số là
-\begin{equation}w_c=\frac{N_{train}}{20n_c}.\end{equation}
-Không có boost thủ công. Lớp Kinh doanh có trọng số 0,7908, Nông thôn mới 10,3226, Dân tộc thiểu số và miền núi 9,1847. Trọng số phản ánh train, không lấy support test để xác định ưu tiên tối ưu.
-Hàm mất mát trên mini-batch $\mathcal B$ của PyTorch dùng reduction mean có trọng số:
-\begin{equation}\mathcal L_{\mathcal B}=\frac{-\sum_{i\in\mathcal B}w_{y_i}\log p_{i,y_i}}{\sum_{i\in\mathcal B}w_{y_i}}.\end{equation}
-Trọng số thay đổi đóng góp lỗi, không làm tăng số bài hay khử nhiễu. Nếu lớp nhỏ có nhãn mơ hồ, ưu tiên lỗi lớn có thể tăng tác động của nhiễu. Sampler vẫn ngẫu nhiên theo phân bố corpus; validation và test không oversample.
+Mỗi candidate được học từ train trước khi đo trên validation. Không dùng test để loại candidate hội tụ nhưng có điểm thấp, và không gộp train/validation rồi fit lại một package có điều kiện khác với package đo test. Kết quả được báo cáo thuộc cấu hình đã chọn, còn chi phí search tính toàn bộ ứng viên. Khoảng giữa thời gian fit chọn và search phản ánh khác biệt giữa dùng lại một thiết lập và tìm ra thiết lập đó.
 
-Evaluation loss của WeightedTrainer dùng hàm mất mát có trọng số; NLL ở calibration là trung bình log xác suất không trọng số. Hai đại lượng có đơn vị log-loss nhưng khác cách tính, nên không trực tiếp đồng nhất trị số.
+Với BiLSTM, loss train giảm chưa là tiêu chí nạp checkpoint cuối. Checkpoint theo Macro-F1 và bộ đếm early stopping có ngưỡng cải thiện riêng, nên một epoch có thể trở thành best checkpoint dù không reset patience. Cơ chế này giải thích vì sao lịch sử đủ 10 điểm và checkpoint 10 cùng tồn tại; không cần suy một đợt train khác hoặc nối hai lịch sử.
 
-\DataTable{tables/class_weights.tex}{Trọng số balanced tính từ số mẫu train.}
-\ReportFigure{assets/training/class_weights.png}{Trọng số loss của 20 lớp; ID được đối chiếu với bảng taxonomy.}
-\PortraitFigure{assets/dataset/split_distribution.png}{Số mẫu train, validation và test theo từng lớp sau khử trùng.}
+\FloatBarrier
+\section{Fine-tuning PhoBERT và diễn biến validation}
+Mô hình khởi tạo từ \texttt{vinai/phobert-base-v2}; head 20 lớp được tạo cho tác vụ. Toàn bộ encoder và đầu phân loại được cập nhật qua backward, không đóng băng backbone. Train tensor có $139\,975\times256$ vị trí; validation/test có $29\,995\times256$. Input IDs, attention mask và nhãn giữ thứ tự, train shuffle batch còn các tập đánh giá giữ phân bố thực tế.
 
-\section{Optimizer và siêu tham số}
-\begin{table}[H]\centering\caption{Cấu hình thực thi fine-tuning trên máy local.}\small
-\begin{tabular}{lr}\toprule Thuộc tính & Giá trị\\\midrule
-GPU & RTX A3000 Laptop, 12 GB\\
-Backbone / đầu vào & PhoBERT-base-v2 / Head--Tail 256\\
-Train batch / tích lũy & 32 / 2\\
-Effective batch / eval batch & 64 / 64\\
-Epoch tối đa & 7\\
-Learning rate cực đại & $2\times10^{-5}$\\
-Weight decay / warmup & 0,01 / 200 bước\\
-Optimizer & AdamW fused\\
-Mixed precision / TF32 & BF16 / bật\\
-Evaluation và checkpoint & Cuối mỗi epoch\\
-Tiêu chí best checkpoint & Macro-F1 validation\\
-Early stopping & Patience 2; ngưỡng 0,001\\
-Logging / dataloader workers & 100 bước / 0\\
-Gradient checkpointing / compile & Tắt / tắt\\\bottomrule\end{tabular}\end{table}
-AdamW tách weight decay khỏi cập nhật thích nghi \citep{adamw}. Scheduler tăng learning rate trong 200 bước warmup và giảm theo tiến độ. Số mini-batch mỗi epoch là $\lceil139\,975/32\rceil=4\,375$; tích lũy hai batch tạo 2.188 bước cập nhật. Bảy epoch có 15.316 bước. Batch cuối không nhất thiết đủ 64 mẫu.
+Với $n_c$ là số bài lớp $c$ trong train, PhoBERT dùng balanced weight:
+\begin{equation}w_c=\frac{N_{train}}{20n_c},\qquad
+\mathcal L_{\mathcal B}=\frac{-\sum_{i\in\mathcal B}w_{y_i}\log p_{i,y_i}}{\sum_{i\in\mathcal B}w_{y_i}}.\end{equation}
+Không có boost thủ công. Nông thôn mới, Dân tộc thiểu số và miền núi, Kinh doanh có weight lần lượt 10,3226; 9,1847; 0,7908. Weight đổi đóng góp lỗi, không bổ sung dữ liệu hoặc làm sạch nhãn; nếu lớp nhỏ có nhiễu, ưu tiên loss có thể khuếch đại ảnh hưởng đó. Evaluation loss có trọng số cũng khác NLL calibration không trọng số.
+
+\begin{table}[htbp]\centering\small\caption{Cấu hình fine-tuning PhoBERT trên một RTX A3000 Laptop 12 GB.}
+\begin{tabular}{lr}\toprule Thiết lập & Giá trị\\\midrule
+Batch train / tích lũy gradient & 32 / 2\\
+Effective batch / batch đánh giá & 64 / 64\\
+Optimizer / weight decay & AdamW fused / 0,01\\
+Learning rate cực đại / warmup & $2\times10^{-5}$ / 200 bước\\
+Precision / TF32 & BF16 / bật\\
+Epoch tối đa / checkpoint chọn & 7 / 7\\
+Early stopping patience / min delta & 2 / 0,001\\
+Evaluation và lưu checkpoint & Cuối mỗi epoch\\
+Gradient checkpointing / compile & Tắt / tắt\\\bottomrule
+\end{tabular}\end{table}
+AdamW tách weight decay khỏi cập nhật thích nghi \citep{adamw}. Scheduler warmup 200 bước rồi giảm theo tiến độ. Mỗi epoch có $\lceil139\,975/32\rceil=4\,375$ mini-batch, tạo 2.188 bước cập nhật sau tích lũy; bảy epoch có 15.316 bước. Batch cuối có thể nhỏ hơn effective batch 64, nên con số này là kích thước danh nghĩa.
+
+Trainer chọn bằng Macro-F1 validation và nạp checkpoint tốt nhất ở cuối. Lần thực nghiệm chạy đủ bảy epoch; không mô tả như dừng sớm. Loss validation nhỏ nhất epoch 3 là 0,3548, trong khi checkpoint chọn epoch 7 có Macro-F1 khoảng 0,8723. Bảng~\ref{tab:pho_epochs} giữ mốc validation; test không dùng đổi tiêu chí sau khi xem kết quả.
+\begin{table}[htbp]\centering\small\caption{Đánh giá cuối epoch trên validation PhoBERT.}\label{tab:pho_epochs}
+\input{tables/epochs_compact.tex}\end{table}
+\begin{figure}[tbp]\centering
+\begin{subfigure}[t]{.48\textwidth}\centering
+\includegraphics[width=\linewidth]{assets/compact/pho_val_loss.png}\caption{Weighted validation loss.}\end{subfigure}\hfill
+\begin{subfigure}[t]{.48\textwidth}\centering
+\includegraphics[width=\linewidth]{assets/compact/pho_val_f1.png}\caption{Validation Macro-F1.}\end{subfigure}
+\caption{PhoBERT qua bảy epoch; lựa chọn checkpoint theo Macro-F1 không trùng cực tiểu loss.}\label{fig:phobert-validation}\end{figure}
+Loss tăng về cuối trong khi F1 nhích lên phản ánh hai mục tiêu đánh giá khác nhau. Một số bài sai với xác suất tự tin có thể tăng log-loss mà không làm đổi số nhãn đúng theo cùng cách. Đây là cách diễn giải cần đối chiếu với calibration; các đường học không tự chứng minh một cơ chế lỗi riêng hay xác lập epoch tối ưu cho mọi seed. Không so train loss ghi theo bước với validation loss như hai đại lượng được tổng hợp đồng nhất.
+
+
+
+\subsection{Chọn checkpoint theo mục tiêu đánh giá}
+Argmax và log-loss phản ứng khác nhau với một thay đổi logits. Nếu xác suất nhãn tham chiếu thay đổi nhưng nhãn đứng đầu giữ nguyên, F1 không đổi; weighted loss vẫn đổi. Nếu một số bài của lớp nhỏ đổi từ sai sang đúng, Macro-F1 có thể tăng đáng kể dù nhiều bài khó khác bị tự tin sai hơn. Bởi vậy, chọn checkpoint theo F1 và theo cực tiểu validation loss có thể dẫn tới hai trọng số khác nhau mà không có mâu thuẫn số liệu.
+
+Checkpoint được xác định bằng validation sau từng epoch; test chỉ được dùng sau khi lựa chọn cố định. Bảng epoch ghi cùng split và cách tổng hợp, không lấy một epoch có loss thấp ở lượt khác ghép với F1 của lượt hiện tại. Không dùng đường train loss thấp nhất làm quy tắc chọn thêm khi đã xác định Macro-F1. Sự tách biệt này ngăn một quyết định hậu nghiệm trông như thiết kế đã công bố trước đánh giá.
+
+Early stopping là điều kiện dừng theo tiến triển validation, chưa chứng minh đạt nghiệm tối ưu. Với giới hạn bảy epoch của PhoBERT, chạy đủ giới hạn là một kết quả hợp lệ của cơ chế; với BiLSTM, best checkpoint có thể xảy ra ở lượt chạm patience do ngưỡng cải thiện của bộ đếm. Muốn xác định độ bền của mốc chọn cần nhiều seed, không suy từ một đường cong mượt hoặc một giá trị ở cuối.
+
+Khác biệt weighted loss và NLL cần giữ xuyên suốt calibration. Validation loss phục vụ theo dõi cùng mục tiêu có class weights, còn temperature tối ưu NLL không trọng số để điều chỉnh phân bố xác suất. Một class weight cao không làm mọi nhãn hiếm chắc chắn được calibrated hơn. Sau fine-tuning, calibration phải được fit và đo theo giao thức của chính package được chọn.
+
+
+\subsection{Tính toán mini-batch và precision}
+Gradient accumulation cho phép cộng gradient từ hai mini-batch trước một bước optimizer, giữ batch thực 32 để phù hợp bộ nhớ. Nó không tăng ngữ cảnh: mỗi bài vẫn có tối đa 256 vị trí. Effective batch 64 mô tả số bài danh nghĩa đóng góp trước cập nhật, trong khi batch cuối và cách chuẩn hóa weighted loss cần được phân biệt với một lần forward chứa đủ 64 bài.
+
+BF16 là precision của phép tính trong autocast, không có nghĩa mọi tensor checkpoint được lưu bằng BF16. Chọn eval mode tắt dropout khi đánh giá; thứ tự validation/test giữ cố định để liên kết logits và metadata. Dataloader shuffle train thay đổi thứ tự tối ưu nhưng không thay vai trò các tập. Những bất biến này là điều kiện đối chiếu package với output, không một chứng nhận mọi kernel GPU có kết quả giống bit.
 
 \TrainDiagram
-BF16 và TF32 là cấu hình tính toán; checkpoint không phải toàn bộ được lưu dưới dạng BF16. Bộ nhớ GPU allocated cực đại trong metadata là 5,39 GiB, reserved khoảng 5,72 GiB. Phân đoạn 200.337 bài dùng bốn tiến trình trong 362 giây; mã hóa ba tập mất khoảng 191, 40 và 41 giây. Các số này thuộc lần thực thi cụ thể, không là cam kết thời gian trên mọi máy.
+Checkpoint tốt nhất được nạp trước calibration, giúp $T$ và $\tau_c$ gắn đúng trọng số được chọn. Nếu dùng logits từ một epoch khác để fit rồi gắn calibration vào package cuối, hình thức file vẫn có thể hợp lệ nhưng confidence không còn thuộc model đó. Project giữ hash và mapping để phát hiện sự lệch package; file metadata cùng số lớp chưa đủ khi không đối chiếu trọng số.
 
-\section{Checkpoint và early stopping}
-Trainer đánh giá, lưu và chọn theo Macro-F1 validation; \texttt{load\_best\_model\_at\_end} nạp trọng số tốt nhất. Early stopping có patience 2 và cải thiện tối thiểu 0,001. Lần thực nghiệm chạy đủ bảy epoch; không được mô tả như đã dừng sớm trước giới hạn.
+Một lượt fresh PhoBERT khởi tạo từ backbone với optimizer/scheduler mới. Continue nạp trọng số tương thích nhưng vẫn khởi tạo lại trạng thái tối ưu, không resume giữa epoch. Snapshot dùng một lượt fresh bảy epoch; các điểm trên đường validation không là tổng của nhiều lần Run All. Chế độ thực thi và fingerprint là bằng chứng tái hiện, không được dùng suy thêm một seed hoặc ablation chưa chạy.
 
-Macro-F1 validation cao nhất là 0,87229785 ở epoch 7. Loss validation thấp nhất ở epoch 3 là 0,3548, sau đó tăng đến 0,4980 ở epoch 7. F1 cao hơn nhưng loss tăng là tín hiệu cần xem xét sự tự tin ở các mẫu sai; hai tiêu chí có thể chọn epoch khác nhau. Tiêu chí được xác định trước là Macro-F1, không đổi sang loss sau khi xem test.
-\DataTable{tables/epochs.tex}{Bảy lần đánh giá cuối epoch trên validation.}
-\ReportFigure{assets/training/train_loss.png}{Loss train được ghi theo bước cập nhật.}
-\ReportFigure{assets/training/eval_loss.png}{Loss validation theo epoch; thấp nhất tại epoch 3.}
-\ReportFigure{assets/training/eval_accuracy.png}{Accuracy validation qua bảy epoch.}
-\ReportFigure{assets/training/eval_macro_f1.png}{Macro-F1 validation dùng chọn checkpoint.}
-\ReportFigure{assets/training/eval_weighted_f1.png}{Weighted-F1 validation, bổ sung góc nhìn theo support.}
-\ReportFigure{assets/training/train_validation_loss.png}{Loss train và validation trong một biểu đồ độc lập; cách tổng hợp cần được phân biệt.}
-\ReportFigure{assets/training/learning_rate.png}{Learning rate của optimizer, gồm warmup và giai đoạn giảm.}
-\ReportFigure{assets/training/gradient_norm.png}{Gradient norm tại những bước có log; không trực tiếp giải thích nhãn của một bài.}
-\ReportFigure{assets/training/epoch_duration.png}{Thời gian mỗi epoch bao gồm huấn luyện và kiểm định.}
+\FloatBarrier
 
-Tổng thời gian fine-tuning là 12.429,91 giây, khoảng 207,17 phút. Dự đoán test theo batch 64 mất 106,32 giây, khoảng 282,11 mẫu/giây, không bao gồm nạp model. Throughput GPU theo batch không đồng nghĩa độ trễ một yêu cầu HTTP/gRPC chạy CPU trong Docker.
+\subsection{Validation dùng lại và nguy cơ phụ thuộc lựa chọn}
+Tìm nhiều cấu hình trên cùng validation cung cấp tiêu chí thống nhất nhưng tạo khả năng phụ thuộc vào những mẫu cụ thể của tập này. Cấu hình đứng đầu trong 12 ứng viên không có nghĩa điểm validation là ước lượng không thiên lệch cho chất lượng cuối. Test giữ độc lập giúp đo package sau lựa chọn; nó không được quay lại thành tiêu chí chọn ứng viên khác khi kết quả thấp hơn kỳ vọng.
 
-\section{Chế độ thực thi và lịch sử}
-\texttt{fresh} là mặc định, khởi tạo từ backbone và optimizer/scheduler mới. \texttt{continue} nạp trọng số khi dữ liệu, mapping, tiền xử lý và fingerprint ba tập tương thích; optimizer/scheduler khởi tạo mới, không khôi phục bước đang chạy dở. Model đầu vào được giữ nếu lượt fine-tuning không cải thiện Macro-F1 validation. \texttt{evaluate} chỉ đánh giá gói tương thích.
+PhoBERT dùng validation cho checkpoint rồi temperature và hệ số lớp. Các quyết định này liên tiếp tận dụng cùng tập, nên một calibration split riêng hoặc thiết kế cross-validation có thể khảo sát độ ổn định tốt hơn. Tuy vậy, thực nghiệm hiện có không được đổi tên thành đã dùng cross-validation hoặc ba seed. Báo cáo giữ đúng giao thức và nêu giới hạn thay vì đưa thêm một thủ tục không có trong output.
 
-Lịch sử continue nối các record với offset epoch và bước, nên bảy epoch nối thêm bảy epoch có thể tạo đường học 14 epoch nếu không dừng trước. Lượt fresh tạo lịch sử của lượt mới. Điều này khác resume checkpoint ở giữa một epoch. Lần thực nghiệm trong báo cáo là một lượt fresh bảy epoch; không cộng điểm của các lượt khác.
+\FloatBarrier
 
-\section{Temperature scaling trên validation}
-Với nhiệt độ $T>0$,
-\begin{equation}p_c(T)=\frac{\exp(z_c/T)}{\sum_j\exp(z_j/T)}.\end{equation}
-Temperature scaling hiệu chỉnh độ tập trung của xác suất \citep{calibration}. Một nhiệt độ chung không đổi argmax. Notebook tìm $T$ trong $[0,5;5,0]$ bằng tối thiểu hóa NLL validation, giữ $T=1$ nếu nghiệm không giảm NLL validation:
-\begin{equation}\mathrm{NLL}(T)=-\frac1N\sum_i\log(p_{i,y_i}(T)+10^{-10}).\end{equation}
-Nhiệt độ cố định dùng trên test là 1,45511457. Test không được dùng fit lại giá trị này. Khi $T>1$, phân bố mềm hơn; nhãn argmax chuẩn không thay đổi.
-
-\section{Điều chỉnh quyết định theo lớp}
-Quy tắc quyết định là $r_c=p_c(T)/\tau_c$, $\hat y=\arg\max_c r_c$. Hệ số lớn giảm ưu tiên tương đối, hệ số nhỏ tăng ưu tiên. Đây không phải kiểm tra nhiều ngưỡng để xuất nhiều nhãn, và $r_c$ không phải xác suất.
-
-Tìm kiếm tọa độ khởi tạo 20 hệ số bằng 1, duyệt ba lượt; mỗi lớp thử 200 giá trị đều từ 0,3 đến 3,5. Giữ các hệ số khác, thử nhãn của toàn bộ validation và đánh giá \textbf{Macro-F1 của toàn bộ 20 lớp}; cập nhật nếu tăng hơn $10^{-5}$. Tie được xử lý theo ID nhỏ hơn. Tìm kiếm này là tham lam theo từng tọa độ, không bảo đảm nghiệm tối ưu toàn cục và có thể phụ thuộc thứ tự lớp.
+\section{Temperature scaling và quyết định theo lớp}
 \CalibrationDiagram
+SVM sinh margin, LR và các model neural sinh logits. Một phép softmax trực tiếp từ margin chưa bảo đảm xác suất có ý nghĩa. Cả bốn fit temperature dương bằng NLL trên validation rồi giữ cố định ở test \citep{calibration}:
+\begin{equation}
+p_c(T)=\frac{\exp(z_c/T)}{\sum_j\exp(z_j/T)},\qquad
+\operatorname{NLL}(T)=-\frac1N\sum_i\log(p_{i,y_i}(T)+10^{-10}).
+\end{equation}
+Với SVM, $z$ trong công thức là margin. $T>0$ không đổi thứ tự score, nên argmax và các chỉ số nhãn không đổi. PhoBERT tìm $T$ trong $[0,5;5,0]$, giữ $T=1$ nếu nghiệm không giảm NLL validation; nghiệm được dùng là 1,45511457. Các đối chứng có tham số riêng, không dùng chung temperature của PhoBERT.
 
-\section{Xác suất, điểm quyết định và định tuyến}
-Top-$k$ xếp theo $r_c$, nhưng thanh xác suất hiển thị $p_c(T)$. Confidence là $p_{\hat y}(T)$ của nhãn cuối, có thể nhỏ hơn xác suất cực đại. Margin là chênh lệch hai điểm lớn nhất trong $q_c=r_c/\sum_jr_j$; $q$ không được chứng minh là xác suất đúng. Top-$k$ không đổi nhãn hoặc margin vì chúng tính trên toàn bộ 20 lớp.
+Bước độc lập dành riêng PhoBERT đổi ưu tiên nhãn bằng
+\begin{equation}r_c=\frac{p_c(T)}{\tau_c},\qquad\hat y=\arg\max_c r_c.\end{equation}
+Hệ số lớn giảm ưu tiên tương đối, hệ số nhỏ tăng ưu tiên. Tìm kiếm tọa độ khởi tạo 20 hệ số bằng 1, duyệt ba lượt và 200 giá trị mỗi lớp trong $[0,3;3,5]$. Mỗi ứng viên được đánh giá bằng Macro-F1 toàn bộ 20 lớp validation; cải thiện cần vượt $10^{-5}$. Tie theo ID nhỏ hơn. Đây là tìm kiếm tham lam, có thể phụ thuộc thứ tự lớp; chưa có bảo đảm tối ưu toàn cục.
+$r$ là điểm quyết định, không phải xác suất hiệu chuẩn. Top-$k$ xếp theo $r_c$, còn confidence là $p_{\hat y}(T)$ của nhãn cuối và có thể nhỏ hơn xác suất cực đại. Margin dùng chênh lệch hai điểm lớn nhất của $q_c=r_c/\sum_jr_j$; $q$ chưa được kiểm chứng calibration. Quy tắc này vẫn chỉ xuất một nhãn, không phải 20 ngưỡng phân loại đa nhãn.
 
-Ngưỡng nghiệp vụ mặc định auto-approve 0,75 và review floor 0,68 dùng confidence: đạt 0,75 chuyển auto; từ 0,68 đến dưới 0,75 chuyển review; dưới 0,68 chuyển escalate. Hai ngưỡng này khác 20 hệ số $\tau_c$ và không sửa trọng số model. ECE trong notebook dùng confidence cực đại cùng argmax chuẩn của $p(T)$; không phải ECE của $q$ hay của quyết định cuối sau hệ số.
+Class weights được tính từ train; $T$ và $\tau_c$ được chọn bằng validation; các phép đo cuối dùng test. ECE trong kết quả dùng confidence cực đại và argmax chuẩn của $p(T)$, chưa đo tính hiệu chuẩn của $q$ hay của nhãn sau điều chỉnh hệ số. Routing là ứng dụng tiếp theo của kết quả, với chính sách nghiệp vụ trình bày ở Phụ lục~\ref{app:application}.

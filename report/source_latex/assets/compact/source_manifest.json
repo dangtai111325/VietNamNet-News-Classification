@@ -1,0 +1,120 @@
+[
+  {
+    "file": "class_distribution_final.png",
+    "sources": [
+      {
+        "path": "result/evaluation/dataset_audit.json",
+        "sha256": "97e826c03942a612021550e635230b8d4d1735d5e93757b2efe69606c8314c7a"
+      }
+    ],
+    "operation": "plot saved values only; no training or inference"
+  },
+  {
+    "file": "bpe_length.png",
+    "sources": [
+      {
+        "path": "result/evaluation/dataset_lengths.npz",
+        "sha256": "ff727b505ebac67f48885be56c6363e86a2d03abce1c3ab79bbf8b235b9de465"
+      }
+    ],
+    "operation": "plot saved values only; no training or inference"
+  },
+  {
+    "file": "bpe_retention.png",
+    "sources": [
+      {
+        "path": "result/evaluation/dataset_lengths.npz",
+        "sha256": "ff727b505ebac67f48885be56c6363e86a2d03abce1c3ab79bbf8b235b9de465"
+      }
+    ],
+    "operation": "plot saved values only; no training or inference"
+  },
+  {
+    "file": "svm_features.png",
+    "sources": [
+      {
+        "path": "result/svm/evaluation/top_features.json",
+        "sha256": "bca62c8f86dcf648f0c66e73daa95c92f467538ece251214657efe3610da4d17"
+      }
+    ],
+    "operation": "plot saved values only; no training or inference"
+  },
+  {
+    "file": "lr_features.png",
+    "sources": [
+      {
+        "path": "result/logistic/evaluation/top_features.json",
+        "sha256": "d59627a7701af00b4c7854b4c2ab5484392a2e8f216a467338d40ad14f3141e1"
+      }
+    ],
+    "operation": "plot saved values only; no training or inference"
+  },
+  {
+    "file": "lstm_val_loss.png",
+    "sources": [
+      {
+        "path": "result/lstm/evaluation/training_history.json",
+        "sha256": "4d5c44871129e656a56ab001efc5d7de7b3a856b784657f8b4a25c69d770bdd9"
+      }
+    ],
+    "operation": "plot saved values only; no training or inference"
+  },
+  {
+    "file": "lstm_val_f1.png",
+    "sources": [
+      {
+        "path": "result/lstm/evaluation/training_history.json",
+        "sha256": "4d5c44871129e656a56ab001efc5d7de7b3a856b784657f8b4a25c69d770bdd9"
+      }
+    ],
+    "operation": "plot saved values only; no training or inference"
+  },
+  {
+    "file": "pho_val_loss.png",
+    "sources": [
+      {
+        "path": "result/evaluation/training_history.json",
+        "sha256": "e6ded1a704abaa95edccb1f3236e01dfd73abeece9f5177dfa17cb6e091d4627"
+      }
+    ],
+    "operation": "plot saved values only; no training or inference"
+  },
+  {
+    "file": "pho_val_f1.png",
+    "sources": [
+      {
+        "path": "result/evaluation/training_history.json",
+        "sha256": "e6ded1a704abaa95edccb1f3236e01dfd73abeece9f5177dfa17cb6e091d4627"
+      }
+    ],
+    "operation": "plot saved values only; no training or inference"
+  },
+  {
+    "file": "pho_reliability_before.png",
+    "sources": [
+      {
+        "path": "result/evaluation/logits.npz",
+        "sha256": "6399345e66201b323b85dcb1a2ee879e3229d07a8b80d155d76d70e209185bc7"
+      },
+      {
+        "path": "model/thresholds.json",
+        "sha256": "ec7de7a7b394ceb1207a9270c078b8d1ec1c84262ed3a3834a5ec6cfc33d069a"
+      }
+    ],
+    "operation": "plot saved values only; no training or inference"
+  },
+  {
+    "file": "pho_reliability_after.png",
+    "sources": [
+      {
+        "path": "result/evaluation/logits.npz",
+        "sha256": "6399345e66201b323b85dcb1a2ee879e3229d07a8b80d155d76d70e209185bc7"
+      },
+      {
+        "path": "model/thresholds.json",
+        "sha256": "ec7de7a7b394ceb1207a9270c078b8d1ec1c84262ed3a3834a5ec6cfc33d069a"
+      }
+    ],
+    "operation": "plot saved values only; no training or inference"
+  }
+]

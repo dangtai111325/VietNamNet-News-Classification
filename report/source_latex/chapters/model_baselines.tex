@@ -26,7 +26,7 @@ p_c(v)=\frac{\exp(w_c^\top v+b_c)}{\sum_{j=1}^{20}\exp(w_j^\top v+b_j)}.
 \end{equation}
 Mục tiêu là log-loss có trọng số lớp, khác squared hinge của SVM. Cả hai có cùng thông tin từ vựng, nhưng nghiệm tối ưu và thang điểm khác nhau. Xác suất do LR học vẫn cần kiểm tra calibration; tối ưu log-loss không bảo đảm confidence đúng trên mọi nhóm bài.
 
-\begin{table}[H]\centering\small\caption{Hai cấu hình tuyến tính được chọn bằng validation.}\label{tab:linear_config}
+\begin{table}[htbp]\centering\small\caption{Hai cấu hình tuyến tính được chọn bằng validation.}\label{tab:linear_config}
 \begin{tabular}{lcc}\toprule Thuộc tính & SVM & Logistic Regression\\\midrule
 Đặc trưng & \multicolumn{2}{c}{TF--IDF unigram/bigram, 150.000 chiều}\\
 Trọng số lớp & balanced & balanced\\
@@ -40,9 +40,18 @@ Luồng CPU & 4 & 4\\\bottomrule
 
 \subsection{Đặc trưng học được và giới hạn diễn giải}
 Hệ số dương lớn cho biết đặc trưng tăng điểm của lớp trong mô hình đã fit. Với Nông thôn mới, SVM có hệ số 3,1823 cho \texttt{nông\_thôn}; LR có hệ số 13,5690 cho cùng đặc trưng và 6,1810 cho bigram \texttt{xây\_dựng nông\_thôn}. Không so độ lớn giữa hai model như một thang quan trọng chung: mục tiêu, $C$ và thang score khác nhau. Hệ số cũng không phải tác động nhân quả hoặc một lời giải thích đầy đủ cho từng bài.
-\ReportFigure{assets/baselines/svm/features/class_10.png}{Các hệ số dương lớn của SVM cho Nông thôn mới; hình độc lập từ notebook SVM.}
-\ReportFigure{assets/baselines/logistic/features/class_10.png}{Đặc trưng của Logistic Regression cho Nông thôn mới; cùng lớp nhưng khác nghiệm tối ưu.}
-\ReportFigure{assets/baselines/svm/features/class_14.png}{Đặc trưng SVM của Thể thao; tín hiệu từ vựng tập trung được đối chiếu với kết quả theo lớp.}
+
+\begin{figure}[tbp]\centering
+\begin{subfigure}[t]{.85\textwidth}\centering
+\includegraphics[width=\linewidth]{assets/compact/svm_features.png}\caption{Linear SVM.}\end{subfigure}\par\medskip
+\begin{subfigure}[t]{.85\textwidth}\centering
+\includegraphics[width=\linewidth]{assets/compact/lr_features.png}\caption{Logistic Regression.}\end{subfigure}
+\caption{Đặc trưng có hệ số dương lớn ở Nông thôn mới; thang hệ số không trực tiếp tương đương giữa hai model.}\label{fig:linear-features}\end{figure}
+
+Việc bỏ stopword giảm một phần vốn từ thường xuất hiện, nhưng cũng có thể bỏ tín hiệu diễn ngôn hoặc cách viết của tòa soạn. N-gram còn khai thác cụm cục bộ sau bước lọc, với từ nhiều âm tiết đã được nối bằng PyVi. Vì thế, một bigram là hai đơn vị phân đoạn, không nhất thiết hai âm tiết cách trắng ban đầu. Vocabulary train cố định cũng có thể bỏ thuật ngữ mới ở test; khác biệt này không đồng nhất với UNK của model chuỗi.
+
+Một hệ số lớn không có nghĩa mọi bài chứa term đó phải nhận nhãn tương ứng. Điểm tuyến tính còn cộng các đặc trưng khác và bias, trong khi giá trị term đã qua IDF cùng chuẩn hóa vector. Bỏ một term khỏi một bài có thể thay chuẩn hóa và làm đổi cả vector. Phân tích hệ số cung cấp tín hiệu toàn cục của model được fit, chưa là phép giải thích cục bộ có kiểm soát cho một dự đoán cụ thể.
+\FloatBarrier
 
 \section{Biểu diễn chuỗi và kiến trúc BiLSTM}
 \label{sec:bilstm}
@@ -54,18 +63,31 @@ Vocabulary đếm từ trên train, lấy từ có tần suất ít nhất hai, 
 Cấu hình được chọn giới hạn 512 \emph{từ đã phân đoạn}. Bài dài giữ 256 từ đầu và 256 từ cuối, không thêm BOS/EOS. Bài ngắn được giữ đầy đủ; mỗi batch pad đến độ dài lớn nhất của các mẫu trong batch, rồi dùng packed sequence để bỏ padding khỏi quá trình recurrent. Head--Tail vẫn bỏ phần giữa và nối hai đoạn không kề nhau, nhưng đơn vị cắt khác 254 subword nội dung của PhoBERT.
 
 Trên corpus 199.965 bài, 44,14\% vượt 512 từ; tỷ lệ từ giữ trung bình là 87,13\%. Hai giá trị được tính từ độ dài đã xuất, không phải một lần tokenize mới. Tỷ lệ OOV trên toàn chuỗi train/validation/test lần lượt là 0,7782\%, 0,8714\% và 0,8696\%. Audit OOV tính trước cắt Head--Tail; không đồng nhất với tỷ lệ UNK trong tensor cuối hoặc lượng thông tin ngữ nghĩa bị mất.
-\ReportFigure{assets/baselines/lstm/dataset/oov_rate.png}{Tỷ lệ từ ngoài vocabulary train của BiLSTM; mỗi tập được đo trên toàn văn bản chuẩn hóa.}
-\ReportFigure{assets/baselines/lstm/dataset/token_retention.png}{Tỷ lệ từ giữ bởi Head--Tail 512 trên toàn corpus; không dùng đơn vị BPE.}
+
+
+Việc đặt UNK chỉ xử lý khả năng tra ID, không bổ sung nghĩa riêng cho mỗi từ lạ. Những từ ngoài vocabulary khác nhau cùng đi vào một embedding UNK; chúng vẫn có thể được phân biệt một phần bởi các từ bao quanh, nhưng thông tin từ vựng gốc đã mất. Tỷ lệ OOV thấp trên snapshot chưa dự báo tỷ lệ ở tin tương lai chứa tên riêng và thuật ngữ mới.
+
+Packed sequence giúp trạng thái kết thúc phản ánh độ dài thật của bài, tránh recurrent tiếp tục quét nhiều PAD tới độ dài batch. Hai hướng đều quét chuỗi sau Head--Tail; hướng ngược không khôi phục phần giữa đã bị bỏ. Khi nối hai đoạn xa nhau, mô hình vẫn coi chúng là một chuỗi kề nhau, một giả định chung của cách cắt này với PhoBERT.
+
+
+
+\subsection{Cơ chế cổng và trạng thái chuỗi}
+LSTM duy trì hidden state $h_t$ cùng cell state $c_t$. Forget gate quyết định phần trạng thái cũ giữ lại, input gate điều chỉnh phần thông tin mới ghi vào, output gate điều chỉnh thông tin đưa ra hidden. Dạng cập nhật chuẩn giải thích vai trò của các cổng trong recurrent layer được dùng:
+\begin{equation}c_t=f_t\odot c_{t-1}+i_t\odot\widetilde c_t,\qquad h_t=o_t\odot\tanh(c_t).\end{equation}
+Các vector gate có giá trị sigmoid và được học từ embedding hiện tại cùng hidden trước đó; candidate cell dùng biến đổi phi tuyến. Đây là trạng thái theo chuỗi, không phải một đặc trưng TF--IDF được coi tùy ý như trục thời gian. Cổng cho phép điều chỉnh truyền thông tin nhưng không bảo đảm nhớ đủ mọi chi tiết qua một bài dài \citep{kowsari2019}.
+
+Hai hướng của BiLSTM có tham số riêng và quét theo hai thứ tự ngược nhau. Chúng cung cấp hai cách tổng hợp cùng chuỗi đã giữ, rồi head nhận vector nối; số lớp recurrent vẫn là một, không biến thành mạng nhiều tầng vì có hai hướng. Dropout bên ngoài recurrent có vai trò regularization, không bổ sung token hoặc tri thức ngôn ngữ tiền huấn luyện.
+
 
 \subsection{Trạng thái hai chiều và đầu phân loại}
-Embedding có chiều 200; một recurrent layer có hidden size 128 cho mỗi hướng. Các cổng của LSTM điều chỉnh việc giữ trạng thái cũ, ghi thông tin và tạo đầu ra theo chuỗi \citep{kowsari2019}. Mô hình quét chuỗi đã cắt ở cả hai hướng, rồi ghép trạng thái kết thúc phép quét xuôi và ngược:
+Embedding có chiều 200; một recurrent layer có hidden size 128 cho mỗi hướng. Các cổng forget, input và output lần lượt điều chỉnh thông tin cũ giữ lại, thông tin mới ghi vào cell state và phần trạng thái được xuất theo chuỗi \citep{kowsari2019}. Mô hình quét chuỗi đã cắt ở cả hai hướng, rồi ghép trạng thái kết thúc phép quét xuôi và ngược:
 \begin{equation}
 r=[\overrightarrow h_{\mathrm{end}};\overleftarrow h_{\mathrm{end}}]\in\mathbb R^{256},\qquad
 z=W\operatorname{Dropout}(r)+b\in\mathbb R^{20}.
 \end{equation}
 Trạng thái kết thúc hướng ngược không phải hidden tại vị trí cuối theo thứ tự đọc xuôi. Code lấy hai hidden cuối của hai hướng từ packed sequence, không lấy trung bình các token. Dropout 0,35 đặt sau embedding và trước lớp tuyến tính; recurrent dropout giữa các layer bằng 0 vì chỉ có một layer.
 
-\begin{figure}[H]\centering
+\begin{figure}[tbp]\centering
 \begin{tikzpicture}[box/.append style={text width=23mm,minimum height=15mm}]
 \node[box] (ids) at (0,0) {ID từ\\$B\times L$\\$L\le512$};
 \node[box] (emb) at (3,0) {Embedding\\$B\times L\times200$};

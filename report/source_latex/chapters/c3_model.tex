@@ -1,22 +1,23 @@
-\chapter{Biểu diễn văn bản và kiến trúc các mô hình}
+\chapter{Biểu diễn và kiến trúc bốn phương pháp}
 \label{chap:model}
 Chương~\ref{chap:related} xác định ba hướng biểu diễn được lựa chọn. Chương này mô tả đúng các cấu hình thực thi: TF--IDF với SVM/LR, LSTM hai chiều với embedding học từ đầu và PhoBERT-base-v2 có tiền huấn luyện. Các khác biệt về stopword, tiêu đề và đơn vị cắt được công khai để diễn giải kết quả so sánh.
 \input{chapters/model_baselines}
-\section{Biểu diễn theo ngữ cảnh với PhoBERT}
+\FloatBarrier
+\section{PhoBERT, BPE và Head--Tail}
 Với tin tức giao thoa chủ đề, cùng một từ như ``thị trường'' có thể chỉ thị trường tài chính, du lịch hoặc tiêu dùng; encoder tạo biểu diễn phụ thuộc đoạn văn bản được giữ để cung cấp tín hiệu cho đầu phân loại.
 
 Encoder Transformer tạo biểu diễn của mỗi vị trí dựa trên các vị trí còn lại trong đoạn văn bản được giữ. Mô hình tiền huấn luyện cung cấp tham số đã học các quy luật ngôn ngữ; fine-tuning điều chỉnh biểu diễn và đầu phân loại theo 20 nhãn của bài toán. BERT là một cơ sở của hướng học biểu diễn hai chiều và fine-tuning cho tác vụ downstream \citep{bert}; RoBERTa nghiên cứu các thay đổi trong quy trình tiền huấn luyện BERT \citep{roberta}. PhoBERT tập trung vào tiếng Việt \citep{phobert}.
 
 Bài tập lớn sử dụng \texttt{vinai/phobert-base-v2}. Theo model card chính thức, bản base-v2 có quy mô khoảng 135 triệu tham số, độ dài tối đa 256 và corpus tiền huấn luyện gồm 20 GB Wikipedia/tin tức cùng 120 GB OSCAR-2301 \citep{phobertcard}. Corpus này là dữ liệu tiền huấn luyện của mô hình nền. Dataset dự án có 200.337 bài sạch theo chuyên mục; sau khử trùng văn bản, 199.965 bài được chia thành ba tập phục vụ fine-tuning và đánh giá. Báo cáo không coi số liệu hiệu năng của nhà phát triển PhoBERT ở các benchmark khác là kết quả của bài tập lớn.
 
-\section{Phân đoạn từ và mã hóa BPE}
+\subsection{Phân đoạn từ và mã hóa BPE}
 Sau PyVi, chuỗi được mã hóa bởi \texttt{PhobertTokenizer} cùng \texttt{vocab.txt} và \texttt{bpe.codes}. Các từ phổ biến có thể được biểu diễn gọn, trong khi một từ ít gặp có thể bị chia thành nhiều subword. Do đó, số token không bằng số từ, và một bài có cùng số từ với bài khác vẫn có thể cần số vị trí khác nhau.
 
 Mã hóa sinh các ID số nguyên, không truyền chuỗi tiếng Việt trực tiếp vào mạng neural. ID được tra trong ma trận embedding; attention mask cho biết vị trí nào thuộc văn bản thật. Từ vựng có 64.001 mục, bao gồm các token đặc biệt. Trong cấu hình, token bắt đầu có ID 0, padding có ID 1 và token kết thúc có ID 2. Những ID này phải được lấy từ tokenizer tương ứng với checkpoint; thay tokenizer bằng một phiên bản khác có thể làm tensor vẫn đúng kích thước nhưng sai ý nghĩa.
 
 Tokenizer và cấu hình nhãn là một phần của gói mô hình, cùng với trọng số và tham số hiệu chỉnh. Dịch vụ sử dụng \texttt{local\_files\_only=True}, nên suy luận không phụ thuộc vào việc tải một tokenizer mới từ mạng trong lúc khởi động. Đây là điều kiện quan trọng để đối chiếu notebook với ứng dụng.
 
-\section{Lựa chọn Head--Tail cho bài báo dài}
+\subsection{Lựa chọn Head--Tail cho bài báo dài}
 Giới hạn 256 vị trí gồm cả hai token đặc biệt. Nếu chuỗi BPE không có token đặc biệt dài $L>254$, đầu vào được tạo như sau:
 \begin{equation}
 s=[\langle s\rangle,u_1,\ldots,u_{127},u_{L-126},\ldots,u_L,\langle/ s\rangle].
@@ -33,8 +34,8 @@ Attention chuẩn xét các cặp vị trí nên ma trận attention mỗi head 
 
 Các phương án cần so sánh trong một thực nghiệm bổ sung gồm head-only, tail-only, lấy đoạn trượt với tổng hợp logits, biểu diễn phân cấp theo đoạn và encoder ngữ cảnh dài. Sản phẩm hiện có một cấu hình Head--Tail; không có phép ablation đã huấn luyện để chứng minh cấu hình này tối ưu hoặc tốt hơn head-only bao nhiêu. Số liệu độ dài hỗ trợ lý do nghiên cứu cách cắt, nhưng không thay thế phép so sánh thực nghiệm.
 
-\section{Cấu hình kiến trúc thực tế}
-\begin{table}[H]\centering\caption{Thông số đọc từ config.json của checkpoint.}\small
+\subsection{Cấu hình kiến trúc thực tế}
+\begin{table}[htbp]\centering\caption{Thông số đọc từ config.json của checkpoint.}\small
 \begin{tabular}{lr}\toprule
 Thuộc tính & Giá trị\\\midrule
 Kiến trúc & RobertaForSequenceClassification\\
@@ -45,9 +46,6 @@ Chiều mỗi head & 64\\
 Intermediate size & 3.072\\
 Vocabulary size & 64.001\\
 Max position embeddings & 258\\
-Token type vocabulary size & 1\\
-Hidden / attention dropout & 0,1 / 0,1\\
-LayerNorm epsilon & $10^{-5}$\\
 Activation & GELU\\
 Số nhãn đầu ra & 20\\\bottomrule
 \end{tabular}\end{table}
@@ -56,12 +54,13 @@ Giá trị 258 của bảng vị trí không có nghĩa hệ thống nhận bài
 \EncoderDiagram
 Với batch $B$, input IDs và mask có kích thước $B\times256$. Embedding và mỗi tầng encoder tạo tensor $B\times256\times768$. Đầu phân loại lấy biểu diễn vị trí đầu tiên và sinh logits $B\times20$. Vị trí đầu là token tổng hợp cho tác vụ phân loại; đây không phải lấy trung bình các token và cũng không phải sử dụng một vector TF--IDF.
 
-\section{Embedding và thông tin vị trí}
+\FloatBarrier
+\section{Cơ chế self-attention, encoder và đầu phân loại}\subsection{Embedding và thông tin vị trí}
 Embedding đầu vào kết hợp vector token, vị trí và token type. Bộ token type có một loại trong cấu hình này, nên không tạo hai segment độc lập cho tiêu đề và nội dung. LayerNorm và dropout được áp dụng trong thành phần embedding trước encoder. Vector vị trí giúp mạng phân biệt thứ tự, vì phép attention tự nó không biết một từ đứng ở đầu hay cuối nếu không có thông tin vị trí.
 
 Vì chuỗi Head--Tail được ghép trước khi mã hóa qua encoder, embedding vị trí thể hiện thứ tự của chuỗi đã ghép. Mạng có thể học đặc trưng của đoạn đầu và đoạn cuối trong cách biểu diễn này, nhưng không được cung cấp số token bị loại ở giữa. Một giả thuyết cải thiện là bổ sung cơ chế biểu diễn theo đoạn; giả thuyết đó cần thay đổi thiết kế và đánh giá riêng.
 
-\section{Self-attention và xử lý theo ngữ cảnh}
+\subsection{Self-attention và xử lý theo ngữ cảnh}
 Theo cơ chế attention của Transformer \citep{attention}, ở một head, biểu diễn $H$ được chiếu thành query, key và value:
 \begin{equation}
 Q=HW_Q,\quad K=HW_K,\quad V=HW_V.
@@ -75,12 +74,12 @@ $M$ là attention mask đã chuyển thành dạng cộng để các vị trí p
 \AttentionDiagram
 Mười hai head cung cấp các phép chiếu học được khác nhau; đầu ra được nối và chiếu về chiều 768. Không nên gán sẵn mỗi head cho một chức năng như ``nhận biết pháp luật'' nếu chưa có phân tích thực nghiệm. Attention là thành phần tính toán tạo biểu diễn, không tự động là lời giải thích nhân quả của nhãn cuối.
 
-\section{Residual, LayerNorm và feed-forward}
+\subsection{Residual, LayerNorm và feed-forward}
 Mỗi tầng có residual connection và LayerNorm quanh các thành phần attention và FFN theo kiến trúc RoBERTa. Residual tạo đường truyền để biểu diễn đầu vào được giữ cùng phần biến đổi học được. LayerNorm ổn định thang giá trị trong chiều đặc trưng. FFN áp dụng các phép chiếu tại từng vị trí với chiều trung gian 3.072 và activation GELU, rồi trả về 768.
 
 Attention cho phép trao đổi thông tin giữa các vị trí; FFN biến đổi đặc trưng của từng vị trí sau trao đổi. Qua 12 tầng, biểu diễn đầu vào không còn là vector từ độc lập mà đã kết hợp các quan hệ trong đoạn văn bản. Tuy nhiên, mọi quan hệ vẫn giới hạn ở các token đã chọn. Không tầng nào có thể đọc lại đoạn giữa bị bỏ bởi Head--Tail.
 
-\section{Đầu phân loại và logits}
+\subsection{Đầu phân loại và logits}
 \texttt{RobertaForSequenceClassification} sử dụng đầu phân loại trên hidden state của token đầu, gồm dropout, dense $768\to768$, tanh, dropout và phép chiếu $768\to20$. Dropout hoạt động ở chế độ train; dịch vụ gọi \texttt{eval()} để tắt ngẫu nhiên dropout khi suy luận. Logits là điểm chưa chuẩn hóa; chúng có thể âm hoặc dương và không phải xác suất.
 
 Softmax chuẩn chuyển logits thành phân bố:
@@ -89,8 +88,22 @@ p_c=\frac{\exp(z_c)}{\sum_{j=1}^{20}\exp(z_j)}.
 \end{equation}
 Xác suất tổng bằng 1 giữa 20 lớp trong taxonomy. Điều đó không bảo đảm bài nằm trong taxonomy hoặc xác suất là ước lượng đúng của xác suất thực. Một đầu vào ngoài miền vẫn bị buộc vào một trong 20 lớp nếu không có cơ chế từ chối độc lập.
 
-\section{Quy mô tham số và ý nghĩa của fine-tuning}
+\subsection{Quy mô tham số và ý nghĩa của fine-tuning}
 Checkpoint có 135.013.652 tham số. Embedding chiếm 49.353.216; 12 lớp encoder chiếm 85.054.464; đầu phân loại chiếm 605.972. Tổng số tham số được tính từ kiến trúc và tensor của gói mô hình, không suy ra bằng cách làm tròn nhãn ``135M''.
 
 Fine-tuning cập nhật mô hình cho tác vụ chuyên mục, thay vì tiền huấn luyện lại từ đầu trên corpus tin tức này. Đầu phân loại tương thích 20 lớp được khởi tạo khi tạo mô hình cho tác vụ; encoder nhận tham số mô hình nền. Toàn bộ quá trình dùng nhãn giám sát của corpus. Đối chứng ở chương~\ref{chap:comparison} cho biết hiệu quả các pipeline trên cùng test, nhưng chưa cô lập phần lợi ích riêng của pretraining khỏi kiến trúc và biểu diễn.
 
+
+
+Ở bước fine-tuning, gradient của head truyền qua biểu diễn $h_0$ vào encoder và embedding. Encoder được cập nhật nhưng vẫn khởi đầu từ tri thức của checkpoint nền; ``train từ đầu'' trong một lượt fresh không có nghĩa khởi tạo ngẫu nhiên toàn PhoBERT. Điều đó khác BiLSTM, nơi cả bảng embedding lẫn recurrent layer học từ corpus có giám sát. Đối chứng không có một PhoBERT khởi tạo ngẫu nhiên cùng kiến trúc để định lượng riêng đóng góp tiền huấn luyện.
+
+\subsection{Đọc một head attention và giới hạn giải thích}
+Với một bài, $Q,K,V$ của từng head có 256 hàng và 64 chiều; ma trận $QK^\top$ có $256\times256$ điểm. Softmax theo các vị trí key cho mỗi query tạo trọng số để tổng hợp các hàng của $V$. Hệ số $1/\sqrt{d_k}$ điều chỉnh thang dot product trước chuẩn hóa; nó không là hệ số quyết định theo lớp $\tau_c$. Padding mask tác động đến các vị trí được dùng làm key, không mang nhãn chuyên mục.
+
+Mười hai head học các phép chiếu khác nhau, rồi nối đầu ra trước chiếu về chiều 768. Residual giữ đường truyền biểu diễn ban đầu cạnh phần biến đổi; FFN chuyển đặc trưng tại từng vị trí sau trao đổi thông tin. Qua nhiều tầng, token đầu có thể tổng hợp tín hiệu của đoạn đã giữ. Tuy nhiên, attention weight lớn không tự chứng minh token gây ra nhãn; muốn giải thích nhân quả cần một thiết kế perturbation hoặc attribution riêng, chưa có trong project.
+
+\FloatBarrier
+\section{Đối chiếu thông tin đầu vào và giới hạn diễn giải}
+Bốn pipeline cùng giải một bài toán và được đánh giá trên cùng tập test, nhưng không sử dụng cùng cơ chế biểu diễn hoặc lượng văn bản quan sát. SVM/LR khai thác TF--IDF toàn văn với tiêu đề tăng tần suất; BiLSTM xử lý tối đa 512 từ; PhoBERT sử dụng 256 subword với tiền huấn luyện. Vì vậy, chênh lệch thực nghiệm phản ánh toàn bộ cấu hình xử lý, chưa cô lập đóng góp riêng của kiến trúc.
+
+BiLSTM có thể học trật tự token trong chuỗi nhưng chưa có tri thức từ một corpus tiền huấn luyện. PhoBERT có tri thức ngôn ngữ nền song chỉ nhìn đoạn đã giữ; TF--IDF quan sát phần giữa mà hai model neural có thể bỏ. Một đối chứng cố định lượng thông tin, nguồn embedding và ngân sách tối ưu cần được thiết kế riêng trước khi kết luận nguyên nhân của khoảng cách F1.
